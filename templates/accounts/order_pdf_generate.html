@@ -314,7 +314,7 @@
                   <span class="badge badge-accent">{{ item.quantity }}</span>
                 </td>
                 <td style="text-align: right;">
-                  <strong>₹{{ item.product_price }}</strong>
+                  <strong>¥{{ item.product_price }}</strong>
                 </td>
               </tr>
               {% endfor %}
@@ -388,17 +388,17 @@
           <div class="card-body">
             <div class="summary-item">
               <span class="info-label">Subtotal</span>
-              <span class="info-value">₹{{ order.order_total_price }}</span>
+              <span class="info-value">¥{{ order.order_total_price }}</span>
             </div>
             <div class="summary-item">
               <span class="info-label">Coupon Discount</span>
-              <span class="info-value discount-value">-₹{{ order.coupon.discount_amount|default:"0" }}</span>
+              <span class="info-value discount-value">-¥{{ order.coupon.discount_amount|default:"0" }}</span>
             </div>
             <hr class="summary-divider">
             <div class="total-item">
               <div class="summary-item">
                 <span class="info-label">Grand Total</span>
-                <span class="info-value">₹{{ order.grand_total }}</span>
+                <span class="info-value">¥{{ order.grand_total }}</span>
               </div>
             </div>
           </div>

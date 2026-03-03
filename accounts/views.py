@@ -1,6 +1,8 @@
 import os
 import json
 import uuid
+import random
+import time
 from products.models import *
 from django.urls import reverse
 from django.conf import settings
@@ -8,8 +10,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.template.loader import get_template
-from accounts.models import Profile, Cart, CartItem, Order, OrderItem
-from base.emails import send_account_activation_email
+from accounts.models import Profile, Cart, CartItem, Order, OrderItem, UserCourse
+from base.emails import send_account_activation_email, send_verification_code_email, send_delivery_email
 from django.views.decorators.http import require_POST
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -54,22 +56,86 @@ def login_page(request):
     return render(request, 'accounts/login.html')
 
 
+def send_register_code(request):
+    """发送注册验证码（AJAX POST）"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': '请求方式错误'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+    except Exception:
+        return JsonResponse({'success': False, 'message': '参数错误'}, status=400)
+
+    if not email:
+        return JsonResponse({'success': False, 'message': '请填写邮箱'})
+
+    # 简单格式校验（必须包含 @ 和 .）
+    if '@' not in email or '.' not in email.split('@')[-1]:
+        return JsonResponse({'success': False, 'message': '邮箱格式不正确，请填写完整邮箱（如 123456@qq.com）'})
+
+    if User.objects.filter(email=email).exists():
+        return JsonResponse({'success': False, 'message': '该邮箱已被注册'})
+
+    # 60 秒冷却检测
+    last_sent = request.session.get('reg_code_sent_at', 0)
+    if time.time() - last_sent < 60:
+        remaining = int(60 - (time.time() - last_sent))
+        return JsonResponse({'success': False, 'message': f'请等待 {remaining} 秒后再发送'})
+
+    code = str(random.randint(100000, 999999))
+    request.session['reg_code'] = code
+    request.session['reg_code_email'] = email
+    request.session['reg_code_sent_at'] = time.time()
+    # Session 5 分钟后过期（覆盖全局设置，仅作标记，校验时手动判断时间差）
+
+    try:
+        send_verification_code_email(email, code)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'邮件发送失败：{str(e)}'})
+
+    return JsonResponse({'success': True, 'message': '验证码已发送，请查收邮件'})
+
+
 def register_page(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        input_code = request.POST.get('verify_code', '').strip()
 
-        user_obj = User.objects.filter(username=username, email=email)
+        # ── 验证码校验 ──
+        session_code = request.session.get('reg_code')
+        session_email = request.session.get('reg_code_email')
+        sent_at = request.session.get('reg_code_sent_at', 0)
 
-        if user_obj.exists():
-            messages.info(request, '用户名或邮箱已存在！')
+        if not session_code:
+            messages.warning(request, '请先获取验证码')
+            return HttpResponseRedirect(request.path_info)
+
+        if email != session_email:
+            messages.warning(request, '邮箱与发送验证码的邮箱不一致')
+            return HttpResponseRedirect(request.path_info)
+
+        if time.time() - sent_at > 300:  # 5 分钟
+            messages.warning(request, '验证码已过期，请重新获取')
+            return HttpResponseRedirect(request.path_info)
+
+        if input_code != session_code:
+            messages.warning(request, '验证码错误，请重新输入')
+            return HttpResponseRedirect(request.path_info)
+
+        # ── 常规注册逻辑 ──
+        if User.objects.filter(username=username).exists():
+            messages.info(request, '用户名已存在！')
+            return HttpResponseRedirect(request.path_info)
+
+        if User.objects.filter(email=email).exists():
+            messages.info(request, '该邮箱已被注册！')
             return HttpResponseRedirect(request.path_info)
 
         user_obj = User.objects.create(
-            username=username, first_name=first_name, last_name=last_name, email=email)
+            username=username, email=email)
         user_obj.set_password(password)
         user_obj.save()
 
@@ -77,8 +143,11 @@ def register_page(request):
         profile.is_email_verified = True
         profile.save()
 
-        messages.success(request, "注册成功！请登录。")
+        # 清除验证码 Session
+        for key in ('reg_code', 'reg_code_email', 'reg_code_sent_at'):
+            request.session.pop(key, None)
 
+        messages.success(request, '注册成功！请登录。')
         return HttpResponseRedirect(request.path_info)
 
     return render(request, 'accounts/register.html')
@@ -87,7 +156,7 @@ def register_page(request):
 @login_required
 def user_logout(request):
     logout(request)
-    messages.warning(request, "Logged Out Successfully!")
+    messages.warning(request, "已退出登录！")
     return redirect('index')
 
 
@@ -216,6 +285,26 @@ def success(request):
     cart.save()
 
     order = create_order(cart)
+
+    # ── 自动发货 ──
+    order_items = order.order_items.select_related('product').all()
+    try:
+        send_delivery_email(order.user.email, order_items)
+    except Exception as e:
+        print(f'[发货邮件] 发送失败：{e}')
+
+    # 更新 UserCourse 发货状态
+    import django.utils.timezone as tz
+    for item in order_items:
+        if item.product:
+            uc, _ = UserCourse.objects.get_or_create(
+                user=order.user, product=item.product
+            )
+            uc.is_delivered = True
+            uc.netdisk_link = item.product.full_content_link
+            uc.netdisk_password = item.product.netdisk_password
+            uc.delivered_at = tz.now()
+            uc.save()
 
     context = {'order': order}
     return render(request, 'payment_success/payment_success.html', context)

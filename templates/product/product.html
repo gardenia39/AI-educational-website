@@ -141,15 +141,15 @@
                   <i class="fa fa-star"></i>
                 </li>
               </ul>
-              <small class="label-rating text-muted">{{ product.reviews.count }} reviews</small>
+              <small class="label-rating text-muted">{{ product.reviews.count }} 条评价</small>
             </div>
             <!-- rating-wrap.// -->
 
             <div class="mb-3">
               {% if updated_price %}
-              <var class="price h4">₹{{ updated_price }}.00</var>
+              <var class="price h4">¥{{ updated_price }}.00</var>
               {% else%}
-              <var class="price h4">₹{{ product.price }}.00</var>
+              <var class="price h4">¥{{ product.price }}.00</var>
               {% endif %}
             </div>
             <!-- price-detail-wrap .// -->
@@ -157,20 +157,6 @@
             <p style="line-height: 2rem; margin-top: revert; text-align: justify">
               {{product.product_desription}}
             </p>
-            <br />
-            <dl class="row">
-              <dt class="col-sm-3">Brand</dt>
-              <dd class="col-sm-9">Nike</dd>
-
-              <dt class="col-sm-3">Color</dt>
-              <dd class="col-sm-9">
-                {% for color in product.color_variant.all %} {{ color.color_name }} {% endfor %}
-              </dd>
-
-              <dt class="col-sm-3">Delivery</dt>
-              <dd class="col-sm-9">All over the World!</dd>
-            </dl>
-
             <hr />
             <div class="form-row">
               {% if sorted_size_variants %}
@@ -200,14 +186,14 @@
                   <form method="POST" action="{% url 'add_to_wishlist' product.uid %}?size={{ selected_size }}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-outline-primary">
-                      <i class="fas fa-heart"></i> Add to Wishlist
+                      <i class="fas fa-heart"></i> 加入收藏
                     </button>
                   </form>
                 </div>
                 <a href="{% url 'add_to_cart' product.uid %}?size={{ selected_size }}" id="add-to-cart-btn"
                   class="btn btn-primary">
                   <i class="fas fa-shopping-bag mr-1"></i>
-                  <span>Add to cart</span>
+                  <span>加入购物车</span>
                 </a>
               </div>
             </div>
@@ -217,20 +203,20 @@
     </div>
 
     <!-- Related Products Section -->
-    <h3 class="title padding-y-sm">Related products</h3>
+    <h3 class="title padding-y-sm">相关课程</h3>
     {% if related_products%}
     {% with related_products as list_products %}
     {% include 'product_parts/product_list.html' %}
     {% endwith %}
     {% else %}
-    <p>No related products found.</p>
+    <p>暂无相关课程。</p>
     {% endif %}
     <!-- Related Products Section End -->
 
     <hr />
 
     <!-- Product Review Section -->
-    <h3 class="title padding-bottom-sm">Reviews</h3>
+    <h3 class="title padding-bottom-sm">课程评价</h3>
 
     {% for review in product.reviews.all %}
     <div class="card mb-3">
@@ -238,10 +224,10 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <p>
-              <strong>Posted on: </strong>{{ review.date_added|date:"Y-m-d" }} by
+              <strong>发布时间：</strong>{{ review.date_added|date:"Y-m-d" }} by
               <strong>{{ review.user.get_full_name|default:review.user.username }}</strong><br />
-              <strong>Rating: </strong>{{ review.stars }}/5<br />
-              <strong>Comment: </strong>{{ review.content }}
+              <strong>评分：</strong>{{ review.stars }}/5<br />
+              <strong>评价内容：</strong>{{ review.content }}
             </p>
           </div>
           <div class="d-flex flex-wrap align-items-center gap-2">
@@ -283,14 +269,14 @@
       </div>
     </div>
     {% empty %}
-    <p class="padding-bottom-sm">No reviews yet...</p>
+    <p class="padding-bottom-sm">暂无评价...</p>
     {% endfor %}
 
     <!-- Modern Review Form -->
     <div class="review-form-section mt-5">
       <div class="section-header text-center mb-4">
-        <h3 class="section-title">Share Your Experience</h3>
-        <p class="section-subtitle text-muted">Help other customers by writing a review</p>
+        <h3 class="section-title">分享你的体验</h3>
+        <p class="section-subtitle text-muted">写下评价，帮助其他用户做出选择</p>
       </div>
 
       {% if request.user.is_authenticated %}
@@ -313,14 +299,14 @@
                 </div>
                 <div class="reviewer-details ms-3">
                   <h5 class="reviewer-name mb-1">{{ request.user.get_full_name|default:request.user.username }}</h5>
-                  <p class="reviewer-label text-muted mb-0">Verified Customer</p>
+                  <p class="reviewer-label text-muted mb-0">已认证用户</p>
                 </div>
               </div>
             </div>
 
             <!-- Rating Section -->
             <div class="rating-section mb-4">
-              <label class="form-label fw-semibold mb-3">How would you rate this product?</label>
+              <label class="form-label fw-semibold mb-3">您对这门课程的评分是？</label>
               <div class="star-rating-container">
                 <div class="star-rating" id="starRating">
                   <input type="hidden" name="stars" id="ratingValue" value="0">
@@ -332,7 +318,7 @@
                     <i class="fas fa-star star" data-rating="5"></i>
                   </div>
                   <div class="rating-text">
-                    <span id="ratingText">Click to rate</span>
+                    <span id="ratingText">点击星星评分</span>
                   </div>
                 </div>
               </div>
@@ -340,9 +326,9 @@
 
             <!-- Review Content Section -->
             <div class="review-content-section mb-4">
-              <label for="reviewContent" class="form-label fw-semibold">Write your review</label>
+              <label for="reviewContent" class="form-label fw-semibold">写下您的评价</label>
               <textarea name="content" id="reviewContent" class="form-control review-textarea" rows="4"
-                placeholder="Share your thoughts about this product. What did you like or dislike? How was the quality, fit, and overall experience?"
+                placeholder="分享您对这门课程的看法，例如：内容质量如何、是否物超所值？"
                 maxlength="500" required></textarea>
             </div>
 
@@ -352,15 +338,15 @@
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="recommendProduct">
                   <label class="form-check-label text-muted" for="recommendProduct">
-                    I would recommend this product to others
+                    我会向他人推荐这门课程
                   </label>
                 </div>
                 <div class="submit-buttons">
                   <button type="button" class="btn btn-outline-secondary me-2" onclick="resetForm()">
-                    <i class="fas fa-undo me-1"></i>Reset
+                    <i class="fas fa-undo me-1"></i>重置
                   </button>
                   <button type="submit" class="btn btn-primary btn-submit" disabled>
-                    <i class="fas fa-paper-plane me-1"></i>Submit Review
+                    <i class="fas fa-paper-plane me-1"></i>提交评价
                   </button>
                 </div>
               </div>
@@ -374,14 +360,14 @@
           <div class="login-icon mb-3">
             <i class="fas fa-user-circle"></i>
           </div>
-          <h4 class="mb-3">Sign in to Write a Review</h4>
-          <p class="text-muted mb-4">Share your experience and help other customers make informed decisions</p>
+          <h4 class="mb-3">登录后即可发表评价</h4>
+          <p class="text-muted mb-4">分享您的使用体验，帮助其他用户做出选择</p>
           <div class="login-buttons">
             <a href="{% url 'login' %}" class="btn btn-primary me-2">
-              <i class="fas fa-sign-in-alt me-1"></i>Sign In
+              <i class="fas fa-sign-in-alt me-1"></i>登录
             </a>
             <a href="{% url 'register' %}" class="btn btn-outline-primary">
-              <i class="fas fa-user-plus me-1"></i>Create Account
+              <i class="fas fa-user-plus me-1"></i>注册账号
             </a>
           </div>
         </div>
@@ -399,20 +385,20 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="deleteReviewModalLabel">
-            Confirm Delete
+            确认删除
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to delete this review?
+          确定要删除这条评价吗？
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Cancel
+            取消
           </button>
           <form id="deleteReviewForm" method="POST" style="display: inline">
             {% csrf_token %}
-            <button type="submit" class="btn btn-outline-primary delete-review-btn">Delete</button>
+            <button type="submit" class="btn btn-outline-primary delete-review-btn">删除</button>
           </form>
         </div>
       </div>
@@ -868,12 +854,12 @@
 
     // Rating texts for different star values
     const ratingTexts = {
-      0: 'Click to rate',
-      1: 'Poor - Not satisfied',
-      2: 'Fair - Below expectations',
-      3: 'Good - Meets expectations',
-      4: 'Very Good - Exceeds expectations',
-      5: 'Excellent - Outstanding product!'
+      0: '点击星星评分',
+      1: '不满意',
+      2: '一般',
+      3: '还行',
+      4: '满意',
+      5: '非常满意'
     };
 
     // Star rating functionality

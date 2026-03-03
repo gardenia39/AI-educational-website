@@ -57,7 +57,7 @@
                 <td>
                   <select class="form-control" onchange="updateCartItem(this, '{{ cart_item.uid }}')">
                     {% for i in quantity_range %}
-                    <option value="{{ i }}" {% if cart_item.quantity==i %}selected{% endif %}>{{ i }}</option>
+                    <option value="{{ i }}" {% if cart_item.quantity == i %}selected{% endif %}>{{ i }}</option>
                     {% endfor %}
                   </select>
                 </td>
@@ -92,7 +92,7 @@
 
         <div class="alert delivery-alert mt-3">
           <p class="icontext">
-            <i class="icon delivery-icon fa fa-truck"></i>免费配送1-2周内送达
+            <i class="icon delivery-icon fa fa-truck"></i>线上自动发货
           </p>
         </div>
       </main>

@@ -6,6 +6,7 @@ urlpatterns = [
     # User view urls with login, register, logout, and email activation.
     path('login/', login_page, name="login"),
     path('register/', register_page, name="register"),
+    path('send-register-code/', send_register_code, name='send_register_code'),
     path('logout/', user_logout, name='logout'),
     path('activate/<email_token>/', activate_email_account, name="activate_email"),
 

@@ -10,7 +10,7 @@
         <div class="card mb-4">
           <div class="card-header" style="text-align: center; font-size: 25px;">注册</div>
           <div class="card-body">
-            <form method="POST">
+            <form method="POST" id="registerForm">
               {% csrf_token %} {% include "base/alert.html" %}
 
               <!-- form-group// -->
@@ -19,18 +19,23 @@
                   autocomplete="username" />
               </div>
 
+              <!-- 邮箱 + 发送验证码按钮 -->
               <div class="form-group">
-                <input class="form-control" required placeholder="名" name="first_name" type="text"
-                  autocomplete="given-name" />
+                <div class="input-group">
+                  <input class="form-control" required placeholder="邮箱" name="email" id="emailInput"
+                    type="email" autocomplete="email" />
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary" id="sendCodeBtn"
+                      onclick="sendVerifyCode()">发送验证码</button>
+                  </div>
+                </div>
+                <small id="codeMsg" class="form-text text-muted"></small>
               </div>
 
+              <!-- 验证码输入框 -->
               <div class="form-group">
-                <input class="form-control" required placeholder="姓" name="last_name" type="text"
-                  autocomplete="family-name" />
-              </div>
-
-              <div class="form-group">
-                <input class="form-control" required placeholder="邮箱" name="email" type="text" autocomplete="email" />
+                <input class="form-control" required placeholder="请输入6位验证码" name="verify_code"
+                  id="verifyCodeInput" type="text" maxlength="6" autocomplete="off" />
               </div>
 
               <div class="form-group">
@@ -74,5 +79,64 @@
   </div>
 </section>
 <!-- ============================ COMPONENT Sign-Up END ================================= -->
+
+<script>
+function sendVerifyCode() {
+  const email = document.getElementById('emailInput').value.trim();
+  const btn = document.getElementById('sendCodeBtn');
+  const msg = document.getElementById('codeMsg');
+
+  if (!email) {
+    msg.style.color = 'red';
+    msg.textContent = '请先填写邮箱';
+    return;
+  }
+
+  btn.disabled = true;
+  msg.style.color = '#555';
+  msg.textContent = '发送中...';
+
+  fetch("{% url 'send_register_code' %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: JSON.stringify({ email: email })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      msg.style.color = 'green';
+      msg.textContent = data.message;
+      startCountdown(btn, 60);
+    } else {
+      msg.style.color = 'red';
+      msg.textContent = data.message;
+      btn.disabled = false;
+    }
+  })
+  .catch(() => {
+    msg.style.color = 'red';
+    msg.textContent = '网络错误，请重试';
+    btn.disabled = false;
+  });
+}
+
+function startCountdown(btn, seconds) {
+  let remaining = seconds;
+  btn.textContent = remaining + 's 后重发';
+  const timer = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.textContent = '重新发送';
+    } else {
+      btn.textContent = remaining + 's 后重发';
+    }
+  }, 1000);
+}
+</script>
 
 {% endblock %}
