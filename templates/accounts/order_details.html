@@ -11,11 +11,11 @@
       <div class="col-12">
         <div class="order-header d-flex justify-content-between align-items-center p-4 rounded-lg shadow-sm">
           <div>
-            <h2 class="order-title mb-2">Order Details</h2>
-            <p class="order-subtitle mb-0">Order #{{ order.order_id }}</p>
+            <h2 class="order-title mb-2">订单详情</h2>
+            <p class="order-subtitle mb-0">订单号 #{{ order.order_id }}</p>
           </div>
           <a href="{% url 'download_invoice' order.order_id %}" class="btn btn-primary download-invoice-btn">
-            <i class="fas fa-download me-2"></i>Download Invoice
+            <i class="fas fa-download me-2"></i>下载发票
           </a>
         </div>
       </div>
@@ -27,7 +27,7 @@
         <div class="card modern-card">
           <div class="card-header">
             <h4 class="card-title mb-0">
-              <i class="fas fa-shopping-bag me-2"></i>Order Items
+              <i class="fas fa-shopping-bag me-2"></i>课程列表
             </h4>
           </div>
           <div class="card-main-body p-0">
@@ -35,11 +35,8 @@
               <table class="table table-hover mb-0">
                 <thead class="table-header">
                   <tr>
-                    <th class="border-0">Product</th>
-                    <th class="border-0">Size</th>
-                    <th class="border-0">Color</th>
-                    <th class="border-0">Quantity</th>
-                    <th class="border-0 text-end">Price</th>
+                    <th class="border-0">商品</th>
+                    <th class="border-0 text-end">价格</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -49,19 +46,6 @@
                       <a href="{% url 'get_product' item.product.slug %}" class="product-link">
                         {{ item.product.product_name }}
                       </a>
-                    </td>
-                    <td class="py-3">
-                      <span class="size-badge">{{ item.size_variant.size_name|default:"N/A" }}</span>
-                    </td>
-                    {% if item.size_variant %}
-                    {% for color in item.product.color_variant.all %}
-                    <td class="py-3">
-                      <span class="color-badge">{{ color.color_name|default:"N/A" }}</span>
-                    </td>
-                    {% endfor %}
-                    {% endif %}
-                    <td class="py-3">
-                      <span class="quantity-badge">{{ item.quantity }}</span>
                     </td>
                     <td class="py-3 text-end">
                       <span class="price-text">¥{{ item.product_price }}</span>
@@ -83,21 +67,21 @@
         <div class="card modern-card">
           <div class="card-header">
             <h4 class="card-title mb-0">
-              <i class="fas fa-info-circle me-2"></i>Order Information
+              <i class="fas fa-info-circle me-2"></i>订单信息
             </h4>
           </div>
           <div class="card-main-body">
             <div class="order-info-grid">
               <div class="info-item">
-                <div class="info-label">Order ID</div>
+                <div class="info-label">订单号</div>
                 <div class="info-value">{{ order.order_id }}</div>
               </div>
               <div class="info-item">
-                <div class="info-label">Order Date</div>
-                <div class="info-value">{{ order.order_date|date:"F j, Y" }}</div>
+                <div class="info-label">下单时间</div>
+                <div class="info-value">{{ order.order_date|date:"Y-m-d" }}</div>
               </div>
               <div class="info-item">
-                <div class="info-label">Customer</div>
+                <div class="info-label">用户</div>
                 <div class="info-value">
                   {% if order.user.first_name or order.user.last_name %}
                   {{ order.user.first_name }} {{ order.user.last_name }}
@@ -109,22 +93,19 @@
                 </div>
               </div>
               <div class="info-item">
-                <div class="info-label">Payment Status</div>
+                <div class="info-label">支付状态</div>
                 <div class="info-value">
                   <span
                     class="status-badge {% if order.payment_status == 'Paid' %}status-success{% else %}status-warning{% endif %}">
-                    {{ order.payment_status }}
+                    {% if order.payment_status == 'Paid' %}已付款{% else %}{{ order.payment_status }}{% endif %}
                   </span>
                 </div>
               </div>
               <div class="info-item">
-                <div class="info-label">Payment Mode</div>
+                <div class="info-label">支付方式</div>
                 <div class="info-value">{{ order.payment_mode }}</div>
               </div>
-              <div class="info-item full-width">
-                <div class="info-label">Shipping Address</div>
-                <div class="info-value">{{ order.shipping_address|default:"Not Provided" }}</div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -135,21 +116,21 @@
         <div class="card modern-card payment-summary-card">
           <div class="card-header">
             <h4 class="card-title mb-0">
-              <i class="fas fa-receipt me-2"></i>Payment Summary
+              <i class="fas fa-receipt me-2"></i>支付汇总
             </h4>
           </div>
           <div class="card-main-body">
             <div class="summary-item">
-              <span class="summary-label">Subtotal</span>
+              <span class="summary-label">小计</span>
               <span class="summary-value">¥{{ order.order_total_price }}</span>
             </div>
             <div class="summary-item">
-              <span class="summary-label">Coupon Discount</span>
+              <span class="summary-label">优惠券折扣</span>
               <span class="summary-value discount-value">-¥{{ order.coupon.discount_amount|default:"0" }}</span>
             </div>
             <hr class="summary-divider">
             <div class="summary-item total-item">
-              <span class="summary-label">Grand Total</span>
+              <span class="summary-label">合计</span>
               <span class="summary-value total-value">¥{{ order.grand_total }}</span>
             </div>
           </div>

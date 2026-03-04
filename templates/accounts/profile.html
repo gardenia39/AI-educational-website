@@ -80,22 +80,29 @@
         <div class="card mb-4 mb-xl-0">
           <div class="card-header">头像</div>
           <div class="card-body text-center">
-            <form method="POST" enctype="multipart/form-data">
+            <!-- 头像上传表单（独立） -->
+            <form method="POST" enctype="multipart/form-data" id="avatarForm">
               {% csrf_token %}
-
-              {% if user.profile.profile_image %}
-              <img class="img-account-profile rounded-circle mb-2" src="{{ user.profile.profile_image }}"
-                alt="Profile Picture" />
-
-              {% else %}
-              <img class="img-account-profile rounded-circle mb-2" src="{% static 'images/default-profile.png' %}"
-                alt="Default Profile Picture" />
-              {% endif %}
-
-              <div class="small font-italic text-muted mb-4">
-                JPG 或 PNG，不超过 5 MB
-              </div>
+              <input type="hidden" name="avatar_upload" value="1">
+              <!-- 隐藏的文件 input -->
+              <input type="file" id="avatarInput" name="profile_image" accept="image/*" style="display:none"
+                onchange="previewAndSubmit(this)">
             </form>
+
+            {% if user.profile.profile_image %}
+            <img class="img-account-profile rounded-circle mb-2" id="avatarPreview"
+              src="{{ user.profile.profile_image.url }}" alt="Profile Picture" />
+            {% else %}
+            <img class="img-account-profile rounded-circle mb-2" id="avatarPreview"
+              src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture" />
+            {% endif %}
+
+            <div class="small font-italic text-muted mb-3">JPG 或 PNG，不超过 5 MB</div>
+
+            <button type="button" class="btn btn-sm btn-primary"
+              onclick="document.getElementById('avatarInput').click()">
+              <i class="fas fa-camera me-1"></i> 修改头像
+            </button>
           </div>
         </div>
       </div>
@@ -119,5 +126,20 @@
     </div>
   </div>
 </section>
+
+<script>
+  function previewAndSubmit(input) {
+    if (input.files && input.files[0]) {
+      // 实时预览
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('avatarPreview').src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+      // 自动提交
+      document.getElementById('avatarForm').submit();
+    }
+  }
+</script>
 
 {% endblock %}

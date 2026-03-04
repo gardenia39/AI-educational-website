@@ -192,8 +192,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "public/media")]
 
-# Media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'public/media')
+# Media files（用户上传文件）
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/media/'
 
 # Default primary key field type

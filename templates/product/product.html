@@ -104,7 +104,7 @@
               <div class="carousel-inner">
                 {% for image in product.product_images.all %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                  <img id="mainImage" src="{{ image.image_url }}" alt="{{ product.product_name }}" />
+                  <img id="mainImage" src="{{ image.image.url }}" alt="{{ product.product_name }}" />
                 </div>
                 {% endfor %}
               </div>
@@ -113,7 +113,7 @@
               <div class="form-row thumbs-wrap mt-5 d-flex justify-content-center">
                 {% for image in product.product_images.all %}
                 <p class="item-thumb mx-2">
-                  <img src="{{image.image_url}}" class="img-thumbnail" onclick="updateMainImage(this.src)" />
+                  <img src="{{image.image.url}}" class="img-thumbnail" onclick="updateMainImage(this.src)" />
                 </p>
                 {% endfor %}
               </div>
@@ -345,7 +345,7 @@
                   <button type="button" class="btn btn-outline-secondary me-2" onclick="resetForm()">
                     <i class="fas fa-undo me-1"></i>重置
                   </button>
-                  <button type="submit" class="btn btn-primary btn-submit" disabled>
+                  <button type="button" class="btn btn-submit btn-submit-inactive" onclick="handleSubmit()">
                     <i class="fas fa-paper-plane me-1"></i>提交评价
                   </button>
                 </div>
@@ -679,6 +679,34 @@
     left: 100%;
   }
 
+  /* Submit button states */
+  .btn-submit-inactive {
+    background: #9ca3af;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-submit-inactive:hover {
+    background: #6b7280;
+    color: #ffffff;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-submit-active {
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+  }
+
+  .btn-submit-active:hover {
+    background: var(--accent-color);
+    color: var(--text-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
   /* Login Prompt Card */
   .login-prompt-card {
     max-width: 600px;
@@ -900,27 +928,44 @@
       reviewContent.addEventListener('input', validateForm);
     }
 
-    // Form validation
+    // Form validation - only controls button style
     function validateForm() {
       const rating = parseInt(ratingValue.value) || 0;
       const content = reviewContent ? reviewContent.value.trim() : '';
-
       const isValid = rating > 0 && content.length >= 10;
 
       if (submitBtn) {
-        submitBtn.disabled = !isValid;
-
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>提交评价';
         if (isValid) {
-          submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Submit Review';
+          submitBtn.classList.remove('btn-submit-inactive');
+          submitBtn.classList.add('btn-submit-active');
         } else {
-          if (rating === 0) {
-            submitBtn.innerHTML = '<i class="fas fa-star me-1"></i>Please rate first';
-          } else if (content.length < 10) {
-            submitBtn.innerHTML = '<i class="fas fa-edit me-1"></i>Write more details';
-          }
+          submitBtn.classList.remove('btn-submit-active');
+          submitBtn.classList.add('btn-submit-inactive');
         }
       }
     }
+
+    // Handle submit button click
+    window.handleSubmit = function () {
+      const rating = parseInt(ratingValue.value) || 0;
+      const content = reviewContent ? reviewContent.value.trim() : '';
+
+      if (rating === 0 && content.length < 10) {
+        alert('请先完成以下步骤再提交：\n① 点击星星进行评分\n② 填写至少10个字的评价内容');
+        return;
+      }
+      if (rating === 0) {
+        alert('请先点击星星进行评分。');
+        return;
+      }
+      if (content.length < 10) {
+        alert('评价内容至少需要10个字，请补充后再提交。');
+        reviewContent.focus();
+        return;
+      }
+      reviewForm.submit();
+    };
 
     // Highlight stars function
     function highlightStars(rating, className) {
@@ -940,27 +985,17 @@
       }
     }
 
-    // Form submission handling
+    // Form submission handling (fallback guard)
     if (reviewForm) {
       reviewForm.addEventListener('submit', function (e) {
         const rating = parseInt(ratingValue.value) || 0;
         const content = reviewContent ? reviewContent.value.trim() : '';
-
-        if (rating === 0) {
+        if (rating === 0 || content.length < 10) {
           e.preventDefault();
-          alert('Please select a rating before submitting your review.');
-          return;
-        }
-
-        if (content.length < 10) {
-          e.preventDefault();
-          alert('Please write at least 10 characters in your review.');
-          reviewContent.focus();
-          return;
         }
 
         // Add submission animation
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Submitting...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>提交中...';
         submitBtn.disabled = true;
 
         // Add success animation to form
@@ -999,14 +1034,16 @@
 
     // Reset rating text
     if (ratingText) {
-      ratingText.textContent = 'Click to rate';
+      ratingText.textContent = '点击星星评分';
       ratingText.classList.remove('has-rating');
     }
 
     // Reset submit button
     if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Submit Review';
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('btn-submit-active');
+      submitBtn.classList.add('btn-submit-inactive');
+      submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>提交评价';
     }
 
     // Reset checkbox

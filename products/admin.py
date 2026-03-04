@@ -1,80 +1,50 @@
 from django.contrib import admin
-from django import forms
 from django.utils.html import format_html
 from .models import *
 
-# Register your models here.
 
-
-class CategoryAdminForm(forms.ModelForm):
-    image_file = forms.ImageField(
-        required=False, help_text="Upload an image file (will be converted to URL)")
-
-    class Meta:
-        model = Category
-        fields = '__all__'
-        widgets = {
-            'category_image': forms.URLInput(attrs={
-                'placeholder': 'Enter image URL or upload a file below',
-                'style': 'width: 100%;'
-            })
-        }
-
-
+# ── Category Admin ──────────────────────────────────────────
 class CategoryAdmin(admin.ModelAdmin):
-    form = CategoryAdminForm
     list_display = ['category_name', 'image_preview']
 
     def image_preview(self, obj):
         if obj.category_image:
-            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', obj.category_image)
-        return "No Image"
-    image_preview.short_description = 'Preview'
+            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', obj.category_image.url)
+        return "无图片"
+    image_preview.short_description = '预览'
 
 
-class ProductImageAdminForm(forms.ModelForm):
-    image_file = forms.ImageField(
-        required=False, help_text="Upload an image file (will be converted to URL)")
-
-    class Meta:
-        model = ProductImage
-        fields = '__all__'
-        widgets = {
-            'image_url': forms.URLInput(attrs={
-                'placeholder': 'Enter image URL or upload a file below',
-                'style': 'width: 100%;'
-            })
-        }
-
-
-class ProductImageAdmin(admin.StackedInline):
+# ── ProductImage inline ───────────────────────────────────────
+class ProductImageInline(admin.StackedInline):
     model = ProductImage
-    form = ProductImageAdminForm
     extra = 1
     readonly_fields = ['image_preview']
 
     def image_preview(self, obj):
-        if obj.image_url:
-            return format_html('<img src="{}" width="200" style="object-fit: contain;" />', obj.image_url)
-        return "No Image"
-    image_preview.short_description = 'Preview'
+        if obj.image:
+            return format_html('<img src="{}" width="200" style="object-fit: contain;" />', obj.image.url)
+        return "无图片"
+    image_preview.short_description = '预览'
 
 
+# ── Product Admin ─────────────────────────────────────────────
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['product_name', 'price']
-    inlines = [ProductImageAdmin]
+    list_display = ['product_name', 'price', 'is_free']
+    inlines = [ProductImageInline]
+    # slug 自动生成，隐藏避免混淆
+    exclude = ['slug']
 
 
+# ── ProductImage standalone Admin ────────────────────────────
 class ProductImageStandaloneAdmin(admin.ModelAdmin):
-    form = ProductImageAdminForm
     list_display = ['product', 'image_thumbnail']
     readonly_fields = ['img_preview']
 
     def image_thumbnail(self, obj):
-        if obj.image_url:
-            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', obj.image_url)
-        return "No Image"
-    image_thumbnail.short_description = 'Thumbnail'
+        if obj.image:
+            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', obj.image.url)
+        return "无图片"
+    image_thumbnail.short_description = '缩略图'
 
 
 admin.site.register(Category, CategoryAdmin)

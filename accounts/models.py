@@ -13,7 +13,7 @@ class Profile(BaseModel):
         User, on_delete=models.CASCADE, related_name="profile")
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=100, null=True, blank=True)
-    profile_image = models.URLField(max_length=500, blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     bio = models.TextField(null=True, blank=True)
 
     def __str__(self):

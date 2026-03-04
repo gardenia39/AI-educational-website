@@ -48,7 +48,7 @@
         <label for="sort">排序：</label>
         <select id="sort" name="sort" class="form-control" onchange="this.form.submit()">
           <option value="">请选择</option>
-          <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>最新</option>
+          <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>时间：由新到旧</option>
           <option value="priceAsc" {% if selected_sort == 'priceAsc' %}selected{% endif %}>价格：从低到高</option>
           <option value="priceDesc" {% if selected_sort == 'priceDesc' %}selected{% endif %}>价格：从高到低</option>
         </select>
@@ -62,12 +62,12 @@
     <div class="col-md-3">
       <figure class="card card-product-grid">
         <div class="img-wrap">
-          <img src="{{product.product_images.first.image_url}}" />
+          <img src="{{product.product_images.first.image.url}}" />
         </div>
         <figcaption class="info-wrap border-top">
           <a href="{% url 'get_product' product.slug %}" class="title">
             <b>{{ product.product_name }}</b></a>
-          <div class="price mt-2">¥{{product.price}}.00</div>
+          <div class="price mt-2">¥{{product.price|floatformat:"-2"}}</div>
         </figcaption>
       </figure>
     </div>

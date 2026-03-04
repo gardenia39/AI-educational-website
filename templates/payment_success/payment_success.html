@@ -9,19 +9,18 @@
       <div class="col-xl-5">
         <div class="card mb-4">
           <div class="card-header" style="text-align: center; font-size: 25px">
-            Payment Successful!
+            🎉 支付成功！
           </div>
           <div class="card-body text-center">
             <p>
-              Your order with Order ID: <strong>{{ order_id }} </strong> has
-              been successfully processed.
+              您的订单 <strong>{{ order.order_id }}</strong> 已成功处理。
             </p>
-            <p>Thank you for shopping with us!</p>
+            <p>感谢您的购买，课程发货邮件已发送至您的邮箱！</p>
             <a href="{% url 'index' %}" class="btn btn-primary mt-3 mb-3 mr-3">
-              Continue Shopping
+              继续学习
             </a>
-            <a href="{% url 'order_details' order_id=order_id %}" class="btn btn-outline-primary view-order-btn">
-              View Order Details
+            <a href="{% url 'order_details' order_id=order.order_id %}" class="btn btn-outline-primary view-order-btn">
+              查看订单详情
             </a>
           </div>
         </div>

@@ -276,36 +276,10 @@ def remove_coupon(request, cart_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-# 支付成功回调（后续接入国内支付时使用）
+# 支付成功页（由 checkout 视图跳转过来）
 def success(request):
     order_id = request.GET.get('order_id')
-    cart = get_object_or_404(Cart, uid=order_id)
-
-    cart.is_paid = True
-    cart.save()
-
-    order = create_order(cart)
-
-    # ── 自动发货 ──
-    order_items = order.order_items.select_related('product').all()
-    try:
-        send_delivery_email(order.user.email, order_items)
-    except Exception as e:
-        print(f'[发货邮件] 发送失败：{e}')
-
-    # 更新 UserCourse 发货状态
-    import django.utils.timezone as tz
-    for item in order_items:
-        if item.product:
-            uc, _ = UserCourse.objects.get_or_create(
-                user=order.user, product=item.product
-            )
-            uc.is_delivered = True
-            uc.netdisk_link = item.product.full_content_link
-            uc.netdisk_password = item.product.netdisk_password
-            uc.delivered_at = tz.now()
-            uc.save()
-
+    order = get_object_or_404(Order, order_id=order_id, user=request.user)
     context = {'order': order}
     return render(request, 'payment_success/payment_success.html', context)
 
@@ -355,14 +329,24 @@ def profile_view(request, username):
     profile_form = UserProfileForm(instance=profile)
 
     if request.method == 'POST':
+        # 头像单独上传
+        if request.POST.get('avatar_upload'):
+            avatar_file = request.FILES.get('profile_image')
+            if avatar_file:
+                profile.profile_image = avatar_file
+                profile.save()
+                messages.success(request, '头像已更新！')
+            else:
+                messages.warning(request, '请选择一张图片。')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        # 账号信息更新
         user_form = UserUpdateForm(request.POST, instance=user)
-        profile_form = UserProfileForm(
-            request.POST, request.FILES, instance=profile)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(
-                request, '您的个人资料已成功更新!')
+            messages.success(request, '您的个人资料已成功更新!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
@@ -449,3 +433,53 @@ def delete_account(request):
         messages.success(
             request, "您的账户已成功删除。")
         return redirect('index')
+
+
+@require_POST
+@login_required
+def checkout(request):
+    """模拟支付：接收支付方式，标记订单已付款并触发发货"""
+    payment_method = request.POST.get('payment_method', '')
+    cart_uid = request.POST.get('cart_uid', '')
+
+    # 校验支付方式
+    if payment_method not in ('alipay', 'wechat'):
+        return JsonResponse({'success': False, 'message': '无效的支付方式'}, status=400)
+
+    # 获取购物车
+    try:
+        cart_obj = Cart.objects.get(uid=cart_uid, user=request.user, is_paid=False)
+    except Cart.DoesNotExist:
+        return JsonResponse({'success': False, 'message': '购物车不存在或已支付'}, status=404)
+
+    # 标记已付款
+    cart_obj.is_paid = True
+    cart_obj.save()
+
+    # 创建订单
+    payment_mode_map = {'alipay': '支付宝', 'wechat': '微信支付'}
+    order = create_order(cart_obj)
+    order.payment_mode = payment_mode_map[payment_method]
+    order.save()
+
+    # 自动发货
+    import django.utils.timezone as tz
+    order_items = order.order_items.select_related('product').all()
+    try:
+        send_delivery_email(order.user.email, order_items)
+    except Exception as e:
+        print(f'[发货邮件] 发送失败：{e}')
+
+    for item in order_items:
+        if item.product:
+            uc, _ = UserCourse.objects.get_or_create(
+                user=order.user, product=item.product
+            )
+            uc.is_delivered = True
+            uc.netdisk_link = item.product.full_content_link
+            uc.netdisk_password = item.product.netdisk_password
+            uc.delivered_at = tz.now()
+            uc.save()
+
+    success_url = reverse('success') + f'?order_id={order.order_id}'
+    return JsonResponse({'success': True, 'redirect_url': success_url})

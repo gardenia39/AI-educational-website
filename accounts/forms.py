@@ -8,16 +8,11 @@ from accounts.models import Profile
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['profile_image', 'bio']
+        fields = ['bio']
         labels = {
-            'profile_image': '头像图片',
             'bio': '个人简介',
         }
         widgets = {
-            'profile_image': forms.URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': '输入图片链接（例如：https://example.com/image.jpg）'
-            }),
             'bio': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 4

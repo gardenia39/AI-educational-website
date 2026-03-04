@@ -39,6 +39,7 @@ urlpatterns = [
 
     # Success url after payment is done.
     path('success/', success, name="success"),
+    path('checkout/', checkout, name="checkout"),
 
     # Order history and details urls
     path('order-history/', order_history, name='order_history'),

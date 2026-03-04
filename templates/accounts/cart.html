@@ -27,30 +27,14 @@
                 <td>
                   <figure class="itemside">
                     <div class="aside">
-                      <img src="{{ cart_item.product.product_images.first.image_url }}" class="img-sm" />
+                      <img src="{{ cart_item.product.product_images.first.image.url }}" class="img-sm" />
                     </div>
                     <figcaption class="info">
                       <a href="{% url 'get_product' cart_item.product.slug %}" class="title text-dark">
                         {{ cart_item.product.product_name }}
                       </a>
 
-                      <p class="text-muted small">
-                        {% if cart_item.size_variant %}
-                        Size: {{ cart_item.size_variant.size_name }}<br />
-                        {% else %}
-                        Size : N/A <br />
-                        {% endif %}
 
-                        {% if cart_item.product.color_variant.exists %}
-                        {% for color in cart_item.product.color_variant.all %}
-                        Color: {{ color.color_name }}<br />
-                        {% endfor %}
-                        {% else %}
-                        Color: N/A<br />
-                        {% endif %}
-
-                        Brand: Nike
-                      </p>
                     </figcaption>
                   </figure>
                 </td>
@@ -79,12 +63,12 @@
           </table>
 
           <div class="card-body border-top">
-            <button id="rzp-button1" class="btn btn-primary float-md-right">
+            <button type="button" class="btn btn-primary float-md-right" data-bs-toggle="modal" data-bs-target="#paymentModal">
               结算 <i class="fa fa-chevron-right"></i>
             </button>
 
             <a href="{% url 'index' %}" class="btn btn-light">
-              <i class="fa fa-chevron-left"></i> 继续购物
+              <i class="fa fa-chevron-left"></i> 继续学习
             </a>
           </div>
         </div>
@@ -145,9 +129,28 @@
             </dl>
             {% endif %}
             <hr />
-            <p class="text-center mb-3">
-              <img src="{% static 'images/misc/payments.png' %}" height="26" />
-            </p>
+            <div class="d-flex justify-content-center align-items-center gap-2 mb-3 flex-wrap">
+              <!-- 支付宝 -->
+              <svg width="110" height="36" viewBox="0 0 110 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="110" height="36" rx="6" fill="#1677FF"/>
+                <!-- Alipay A icon -->
+                <path d="M14 26 L18 12 L22 26 M15.5 22 L20.5 22" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <line x1="14" y1="26" x2="22" y2="26" stroke="white" stroke-width="0" fill="none"/>
+                <text x="28" y="23" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="600" fill="white">支付宝</text>
+              </svg>
+              <!-- 微信支付 -->
+              <svg width="118" height="36" viewBox="0 0 118 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="118" height="36" rx="6" fill="#07C160"/>
+                <!-- WeChat bubble icon (simplified) -->
+                <ellipse cx="13" cy="17" rx="8" ry="6.5" fill="white" opacity="0.95"/>
+                <ellipse cx="19" cy="21" rx="7" ry="5.5" fill="white" opacity="0.85"/>
+                <!-- dots inside -->
+                <circle cx="10" cy="17" r="1.2" fill="#07C160"/>
+                <circle cx="13" cy="17" r="1.2" fill="#07C160"/>
+                <circle cx="16" cy="17" r="1.2" fill="#07C160"/>
+                <text x="30" y="23" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="600" fill="white">微信支付</text>
+              </svg>
+            </div>
           </div>
           <!-- card-body.// -->
         </div>
@@ -159,70 +162,145 @@
   <!-- container .//  -->
 </section>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- 支付方式选择模态框 -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px; overflow:hidden;">
+      <div class="modal-header" style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+        <h5 class="modal-title fw-bold" id="paymentModalLabel">
+          <i class="fas fa-shield-alt me-2" style="color:#6366f1;"></i>选择支付方式
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="text-muted mb-3">订单金额：<strong style="color:#1e293b;">¥{{ cart.get_cart_total_price_after_coupon }}</strong></p>
+        <div class="d-flex flex-column gap-3">
+
+          <!-- 支付宝 -->
+          <button class="pay-option-btn" id="alipayBtn" onclick="selectPayment('alipay', this)">
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="me-3">
+              <rect width="32" height="32" rx="8" fill="#1677FF"/>
+              <path d="M11 24 L16 9 L21 24 M13 20 L19 20" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="text-start">
+              <div class="fw-bold">支付宝</div>
+              <div class="small text-muted">推荐 · 安全快捷</div>
+            </div>
+            <i class="fas fa-check-circle ms-auto pay-check" style="display:none; color:#1677FF;"></i>
+          </button>
+
+          <!-- 微信支付 -->
+          <button class="pay-option-btn" id="wechatBtn" onclick="selectPayment('wechat', this)">
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="me-3">
+              <rect width="32" height="32" rx="8" fill="#07C160"/>
+              <ellipse cx="12" cy="15" rx="7" ry="5.5" fill="white" opacity="0.95"/>
+              <ellipse cx="20" cy="19" rx="6" ry="4.5" fill="white" opacity="0.85"/>
+              <circle cx="9.5" cy="15" r="1.2" fill="#07C160"/>
+              <circle cx="12" cy="15" r="1.2" fill="#07C160"/>
+              <circle cx="14.5" cy="15" r="1.2" fill="#07C160"/>
+            </svg>
+            <div class="text-start">
+              <div class="fw-bold">微信支付</div>
+              <div class="small text-muted">微信扫码支付</div>
+            </div>
+            <i class="fas fa-check-circle ms-auto pay-check" style="display:none; color:#07C160;"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer" style="background:#f8fafc;">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary px-4" id="confirmPayBtn" onclick="confirmPayment()" disabled>
+          <i class="fas fa-lock me-1"></i>确认支付
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.pay-option-btn {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.pay-option-btn:hover {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.04);
+}
+.pay-option-btn.selected {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.06);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+</style>
 
 <script>
-  var options = {
-    key: "rzp_test_5XxorWz3z1N2m5",
-    amount: "{{ cart.get_cart_total_price_after_coupon|floatformat:0 }}",
-    currency: "INR",
-    name: "Django Ecommerce Site",
-    description: "Purchased",
-    order_id: "{{ payment.id }}",
+  var selectedPayment = null;
 
-    handler: function (response) {
-      console.log("Success");
-      window.location.href = `{{ base_url }}/accounts/success/?order_id={{ payment.id }}`;
-    },
-    prefill: {
-      name: "Gaurav Kumar",
-      email: "gaurav.kumar@example.com",
-      contact: "9000090000",
-    },
-    notes: {
-      address: "Razorpay Corporate Office",
-    },
-    theme: {
-      color: "#3399cc",
-    },
-  };
-  var rzp1 = new Razorpay(options);
-  rzp1.on("payment.failed", function (response) {
-    alert(response.error.code);
-    alert(response.error.description);
-    alert(response.error.source);
-    alert(response.error.step);
-    alert(response.error.reason);
-    alert(response.error.metadata.order_id);
-    alert(response.error.metadata.payment_id);
-  });
-  document.getElementById("rzp-button1").onclick = function (e) {
-    rzp1.open();
-    e.preventDefault();
-  };
+  function selectPayment(method, btn) {
+    selectedPayment = method;
+    document.querySelectorAll('.pay-option-btn').forEach(el => {
+      el.classList.remove('selected');
+      el.querySelector('.pay-check').style.display = 'none';
+    });
+    btn.classList.add('selected');
+    btn.querySelector('.pay-check').style.display = 'inline';
+    document.getElementById('confirmPayBtn').disabled = false;
+  }
+
+  function confirmPayment() {
+    if (!selectedPayment) return;
+    const btn = document.getElementById('confirmPayBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>支付中...';
+
+    const formData = new FormData();
+    formData.append('payment_method', selectedPayment);
+    formData.append('cart_uid', '{{ cart.uid }}');
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    fetch("{% url 'checkout' %}", {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = data.redirect_url;
+      } else {
+        alert('支付失败：' + data.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock me-1"></i>确认支付';
+      }
+    })
+    .catch(() => {
+      alert('网络错误，请重试。');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-lock me-1"></i>确认支付';
+    });
+  }
 
   function updateCartItem(selectElement, cartItemId) {
     const quantity = selectElement.value;
-
     fetch("{% url 'update_cart_item' %}", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": "{{ csrf_token }}"
       },
-      body: JSON.stringify({
-        "cart_item_id": cartItemId,
-        "quantity": quantity
-      })
+      body: JSON.stringify({ "cart_item_id": cartItemId, "quantity": quantity })
     })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          window.location.reload();
-        } else {
-          alert("Error updating cart");
-        }
-      });
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) { window.location.reload(); }
+      else { alert("更新失败，请刷新重试"); }
+    });
   }
 </script>
 

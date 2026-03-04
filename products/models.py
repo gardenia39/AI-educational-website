@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 class Category(BaseModel):
     category_name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, null=True, blank=True)
-    category_image = models.URLField(max_length=500, blank=True, null=True)
+    category_image = models.ImageField(upload_to='categories/', blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.category_name)
@@ -25,9 +25,9 @@ class Product(BaseModel):
     slug = models.SlugField(unique=True, null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="products")
-    price = models.IntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     product_desription = models.TextField()
-    newest_product = models.BooleanField(default=False)
+
 
     # 课程相关字段
     is_free = models.BooleanField(default=False, verbose_name="是否免费")
@@ -59,11 +59,12 @@ class Product(BaseModel):
 class ProductImage(BaseModel):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='product_images')
-    image_url = models.URLField(
-        max_length=500, default='https://via.placeholder.com/500')
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
 
     def img_preview(self):
-        return mark_safe(f'<img src="{self.image_url}" width="500"/>')
+        if self.image:
+            return mark_safe(f'<img src="{self.image.url}" width="500"/>')
+        return '(无图片)'
 
 
 class Coupon(BaseModel):
