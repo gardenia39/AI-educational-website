@@ -84,10 +84,10 @@
         </div>
 
         <div class="col-lg-4 col-sm-6 col-8">
-          <div class="widgets-wrap float-md-right">
+          <div class="widgets-wrap float-md-right d-flex align-items-center" style="gap: 20px;">
 
             <!-- Cart Icon with badge -->
-            <div class="widget-header mr-3">
+            <div class="widget-header" style="position:relative; margin-right: 24px;">
               <a href="{% url 'cart' %}" class="icon icon-sm rounded-circle border">
                 <i class="fa fa-shopping-cart"></i>
               </a>
@@ -101,20 +101,20 @@
             </div>
 
             <!-- Profile Icon -->
-            <div class="widget-header icontext">
+            <div class="widget-header d-flex align-items-center" style="gap: 10px;">
               {% if user.is_authenticated %}
               {% if user.profile.profile_image %}
-              <a href="{% url 'profile' username=user.username %}" class="icon icon-sm rounded-circle border">
+              <a href="{% url 'profile' username=user.username %}" class="icon icon-sm rounded-circle border flex-shrink-0">
                 <img src="{{ user.profile.profile_image.url }}" alt="Profile Image" class="rounded-circle" width="42"
                   height="42" />
               </a>
               {% else %}
-              <a href="{% url 'profile' username=user.username %}" class="icon icon-sm rounded-circle border">
+              <a href="{% url 'profile' username=user.username %}" class="icon icon-sm rounded-circle border flex-shrink-0">
                 <i class="fa fa-user"></i>
               </a>
               {% endif %}
               {% else %}
-              <a href="{% url 'login' %}" class="icon icon-sm rounded-circle border">
+              <a href="{% url 'login' %}" class="icon icon-sm rounded-circle border flex-shrink-0">
                 <i class="fa fa-user"></i>
               </a>
               {% endif %}
@@ -122,7 +122,7 @@
               <!-- Welcome Text and Logout Link -->
               <div class="text">
                 {% if request.user.is_authenticated %}
-                <span class="text-muted">欢迎, {{ request.user }}!</span>
+                <span class="text-muted" style="white-space:nowrap;">欢迎, {{ request.user }}!</span>
                 <div>
                   <a href="{% url 'logout' %}">退出</a>
                 </div>
@@ -181,16 +181,16 @@
     transform: scale(1.05);
   }
 
-  /* Navigation Links */
+  /* Navigation Links — white on dark navbar */
   .navbar-nav .nav-link {
-    color: var(--text-dark);
+    color: rgba(255,255,255,0.85) !important;
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
   }
 
   .navbar-nav .nav-link:hover {
-    color: var(--primary-color);
+    color: var(--accent-color) !important;
   }
 
   .navbar-nav .nav-link::after {

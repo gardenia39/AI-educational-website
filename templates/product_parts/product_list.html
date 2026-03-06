@@ -2,16 +2,18 @@
 <div class="row">
   {% for product in list_products %}
   <div class="col-md-3">
-    <figure class="card card-product-grid">
-      <div class="img-wrap">
-        <img src="{{product.product_images.first.image.url}}" />
-      </div>
-      <figcaption class="info-wrap border-top">
-        <a href="{% url 'get_product' product.slug %}" class="title">
-          <b>{{ product.product_name }}</b></a>
-        <div class="price mt-2">¥{{product.price|floatformat:"-2"}}</div>
-      </figcaption>
-    </figure>
+    <!-- 整个 card 都可点击 -->
+    <a href="{% url 'get_product' product.slug %}" class="card-product-link">
+      <figure class="card card-product-grid">
+        <div class="img-wrap">
+          <img src="{{product.product_images.first.image.url}}" />
+        </div>
+        <figcaption class="info-wrap border-top text-center">
+          <div class="title"><b>{{ product.product_name }}</b></div>
+          <div class="price mt-2">¥{{product.price|floatformat:"-2"}}</div>
+        </figcaption>
+      </figure>
+    </a>
   </div>
 
   {% endfor %}

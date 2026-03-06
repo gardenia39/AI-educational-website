@@ -27,11 +27,17 @@
           <td>{{ order.order_id }}</td>
           <td>{{ order.order_date|date:"F j, Y" }}</td>
           <td>
-            <span class="badge {% if order.payment_status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">
-              {{ order.payment_status }}
-            </span>
+            {% if order.payment_status == 'Paid' %}
+              <span class="badge" style="background-color: #10b981; color: white; padding: 0.4em 0.6em; border-radius: 4px;">
+                已支付
+              </span>
+            {% else %}
+              <span class="badge badge-warning">
+                {{ order.payment_status }}
+              </span>
+            {% endif %}
           </td>
-          <td>¥{{ order.grand_total }}</td>
+          <td>¥{{ order.grand_total|floatformat:"-2" }}</td>
           <td>{{ order.payment_mode }}</td>
           <td>
             <a href="{% url 'order_details' order.order_id %}" class="btn btn-outline-primary btn-sm">

@@ -8,22 +8,85 @@
     margin-bottom: 10px;
   }
 
-  @keyframes appear {
-    from {
-      opacity: 0;
-      scale: 0.5;
-    }
-
-    to {
-      opacity: 1;
-      scale: 1;
-    }
+  /* ── 商品卡片 ── */
+  .card-product-grid {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1.2rem;
+    height: 100%;
+    border: none;
   }
 
-  .card {
-    animation: appear linear;
-    animation-timeline: view();
-    animation-range: entry 0% cover 40%;
+  .card-product-grid:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(99,102,241,0.18);
+  }
+
+  /* 图片区域固定高度 */
+  .card-product-grid .img-wrap {
+    height: 220px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-product-grid .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .card-product-grid:hover .img-wrap img {
+    transform: scale(1.04);
+  }
+
+  .card-product-grid .info-wrap {
+    padding: 0.8rem 1rem;
+  }
+
+  .card-product-grid .title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-product-grid .price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6366f1;
+    margin-top: 0.4rem;
+  }
+
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-product-grid {
+    animation: appear 0.4s ease both;
+  }
+
+  /* 整个 card 可点击，但不影响外观 */
+  .card-product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+
+  .card-product-link:hover {
+    text-decoration: none;
+    color: inherit;
   }
 </style>
 <div class="container mt-3 pt-3">
@@ -60,16 +123,17 @@
   <div class="row">
     {% for product in products %}
     <div class="col-md-3">
-      <figure class="card card-product-grid">
-        <div class="img-wrap">
-          <img src="{{product.product_images.first.image.url}}" />
-        </div>
-        <figcaption class="info-wrap border-top">
-          <a href="{% url 'get_product' product.slug %}" class="title">
-            <b>{{ product.product_name }}</b></a>
-          <div class="price mt-2">¥{{product.price|floatformat:"-2"}}</div>
-        </figcaption>
-      </figure>
+      <a href="{% url 'get_product' product.slug %}" class="card-product-link">
+        <figure class="card card-product-grid">
+          <div class="img-wrap">
+            <img src="{{product.product_images.first.image.url}}" />
+          </div>
+          <figcaption class="info-wrap border-top text-center">
+            <div class="title"><b>{{ product.product_name }}</b></div>
+            <div class="price mt-2">¥{{product.price|floatformat:"-2"}}</div>
+          </figcaption>
+        </figure>
+      </a>
     </div>
     {% endfor %}
   </div>

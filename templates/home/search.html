@@ -1,43 +1,159 @@
 {% extends "base/base.html"%}
-{% block title %}Search Product{% endblock %}
+{% block title %}搜索商品{% endblock %}
 {% block start %}
 
 <style>
-  h3 {
-    margin-bottom: 20px;
+  :root {
+    --primary: #6366f1;
+    --accent: #fbbf24;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --radius: 14px;
+  }
+
+  .search-header {
+    margin: 28px 0 20px;
+  }
+
+  .search-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .search-header .query-word {
+    color: var(--primary);
+  }
+
+  .search-count {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  /* 商品卡片 */
+  .card-product-grid {
+    border: none;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    margin-bottom: 24px;
+  }
+
+  .card-product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-product-link:hover .card-product-grid {
+    box-shadow: 0 8px 28px rgba(99,102,241,0.18);
+    transform: translateY(-4px);
+  }
+
+  /* 图片区域固定高度 */
+  .img-wrap {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #f1f5f9;
+  }
+
+  .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .card-product-link:hover .img-wrap img {
+    transform: scale(1.04);
+  }
+
+  /* 信息区 */
+  .info-wrap {
+    padding: 14px 16px 16px;
+    background: #fff;
+    text-align: center;
+  }
+
+  .info-wrap .title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .info-wrap .price {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-top: 6px;
+  }
+
+  /* 空结果提示 */
+  .no-result {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .no-result i {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+  }
+
+  .no-result p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
   }
 </style>
 
 <section class="section-content padding-y">
   <div class="container">
-    {% if query %}
-    <h3>Showing results for '{{ query }}':</h3>
-    {% else %}
-    <h3>No search query entered.</h3>
-    {% endif %}
+
+    <div class="search-header">
+      {% if query %}
+      <h2>搜索 "<span class="query-word">{{ query }}</span>" 的结果</h2>
+      <p class="search-count">共找到 {{ products|length }} 件商品</p>
+      {% else %}
+      <h2>请输入搜索关键词</h2>
+      {% endif %}
+    </div>
 
     <div class="row">
-      {% if products %} {% for product in products %}
-      <div class="col-md-3">
-        <figure class="card card-product-grid">
-          <div class="img-wrap">
-            <img src="{{product.product_images.first.image.url}}" />
-          </div>
-          <figcaption class="info-wrap border-top">
-            <a href="{% url 'get_product' product.slug %}" class="title">
-              <b>{{ product.product_name }}</b></a>
-            <div class="price mt-2">¥{{ product.price }}.00</div>
-          </figcaption>
-        </figure>
-      </div>
+      {% if products %}
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+          <a href="{% url 'get_product' product.slug %}" class="card-product-link">
+            <figure class="card card-product-grid">
+              <div class="img-wrap">
+                <img src="{{ product.product_images.first.image.url }}" alt="{{ product.product_name }}" />
+              </div>
+              <figcaption class="info-wrap border-top">
+                <div class="title">{{ product.product_name }}</div>
+                <div class="price">¥{{ product.price|floatformat:"-2" }}</div>
+              </figcaption>
+            </figure>
+          </a>
+        </div>
+        {% endfor %}
 
-      {% endfor %} {% elif query %}
-      <div class="col-md-12">
-        <p>No products found.</p>
+      {% elif query %}
+      <div class="col-12">
+        <div class="no-result">
+          <i class="fa fa-search-minus"></i>
+          <p>没有找到与 "<strong>{{ query }}</strong>" 相关的商品</p>
+        </div>
       </div>
       {% endif %}
-
     </div>
+
   </div>
 </section>
 {% endblock %}

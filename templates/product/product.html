@@ -3,25 +3,197 @@
 {% block start %} {% load crispy_forms_tags %}
 
 <style>
+  /* ── Color System ── */
+  :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --accent: #fbbf24;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --bg-light: #f8fafc;
+    --radius: 16px;
+  }
+
+  /* ── 卡片容器 ── */
+  .product-detail-card {
+    border: none;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 32px rgba(99,102,241,0.10);
+    overflow: hidden;
+    background: #fff;
+  }
+
+  /* ── 左侧图片区 ── */
+  .gallery-col {
+    background: var(--bg-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 24px;
+    min-height: 440px;
+  }
+
+  .img-big-wrap {
+    width: 100%;
+    max-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
+
   #mainImage {
-    transition: transform 0.25s ease;
+    height: 340px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
     cursor: zoom-in;
   }
 
-  .zoomed-in {
-    transform: scale(2);
-    cursor: zoom-out;
+  .zoomed-in { transform: scale(2); cursor: zoom-out; }
+
+  /* 缩略图条 — 隐藏（单图商品不需要） */
+  .thumbs-wrap {
+    display: none;
   }
 
-  /* Unified Color System */
-  :root {
-    --primary-color: #6366f1;
-    --accent-color: #fbbf24;
-    --text-dark: #1e293b;
+  .item-thumb img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s;
   }
 
-  .like-btn {
-    background-color: var(--primary-color);
+  .item-thumb img:hover { border-color: var(--primary); }
+
+  /* ── 右侧信息区 ── */
+  .info-col {
+    padding: 36px 36px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .product-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+
+  .product-category {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+
+  /* ── 星级 ── */
+  .rating-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .rating-stars {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 100px;
+    height: 20px;
+    overflow: hidden;
+  }
+
+  .rating-stars li {
+    display: flex;
+    gap: 3px;
+    font-size: 20px;
+    color: #d1d5db;
+    position: absolute;
+    white-space: nowrap;
+    top: 0; 
+    left: 0;
+    z-index: 0;
+  }
+
+  .rating-stars .stars-active {
+    color: var(--accent);
+    overflow: hidden;
+    position: absolute;
+    top: 0; 
+    left: 0;
+    z-index: 1; /* 确保高亮星星在上方 */
+  }
+
+  /* ── 价格 ── */
+  .price-block {
+    background: linear-gradient(135deg, #f0f0ff 0%, #fef9ec 100%);
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .price-block .price-currency { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+  .price-block .price-value   { font-size: 2rem;   font-weight: 800; color: var(--primary); line-height: 1; }
+
+
+  /* ── 描述 ── */
+  .product-desc {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+
+  /* ── 按钮 ── */
+  .btn-wishlist {
+    background: #fff;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 50px;
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+  }
+
+  .btn-wishlist:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-cart {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.6rem 1.8rem;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+  }
+
+  .btn-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+    color: #fff;
+  }
+
+  /* ── 评分按钮 ── */
+  .like-btn, .dislike-btn {
+    background-color: var(--primary);
     color: #fff;
     border: none;
     border-radius: 20px;
@@ -30,175 +202,127 @@
     font-weight: bold;
   }
 
-  .like-btn:hover {
-    background-color: var(--accent-color);
+  .like-btn:hover, .dislike-btn:hover {
+    background-color: var(--accent);
     color: var(--text-dark);
     transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
   }
 
-  .dislike-btn {
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    padding: 0.4rem 1rem;
-    transition: all 0.3s ease;
-    font-weight: bold;
-  }
+  .review-card-body { background: rgba(99, 102, 241, 0.06); border-radius: 10px; }
 
-  .dislike-btn:hover {
-    background-color: var(--accent-color);
-    color: var(--text-dark);
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
-  }
-
-  /* Review Card Background */
-  .review-card-body {
-    background: rgba(99, 102, 241, 0.1);
-  }
-
-  /* Delete Review Button */
-  .delete-review-btn {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    transition: all 0.3s ease;
-  }
-
-  .delete-review-btn:hover {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: var(--text-dark);
-  }
-
-  .delete-review-link {
-    color: var(--primary-color);
-    transition: all 0.3s ease;
-  }
-
-  .delete-review-link:hover {
-    color: var(--accent-color);
-  }
+  .delete-review-btn { border-color: var(--primary); color: var(--primary); transition: all 0.3s ease; }
+  .delete-review-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--text-dark); }
+  .delete-review-link { color: var(--primary); transition: all 0.3s ease; }
+  .delete-review-link:hover { color: var(--accent); }
 
   @media (max-width: 768px) {
-
-    .like-btn,
-    .dislike-btn {
-      padding: 0.3rem 0.8rem;
-      font-size: 0.9rem;
-    }
+    .info-col { padding: 24px 20px; }
+    .product-title { font-size: 1.5rem; }
+    .gallery-col { min-height: unset; padding: 20px; }
   }
 </style>
 
 <section class="section-content padding-y">
   <div class="container mt-3">
     {% include 'base/alert.html' %}
-    <!-- ============================ COMPONENT Product Details ================================= -->
-    <div class="card">
+    <div class="product-detail-card">
       <div class="row no-gutters">
-        <aside class="col-md-6">
-          <!-- Gallery-Wrap -->
-          <article class="gallery-wrap">
-            <div class="text-center mt-5 ml-3 mr-3 img-big-wrap">
-              <div class="carousel-inner">
-                {% for image in product.product_images.all %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                  <img id="mainImage" src="{{ image.image.url }}" alt="{{ product.product_name }}" />
-                </div>
-                {% endfor %}
+
+        <!-- 左侧：图片区 -->
+        <div class="col-md-5 gallery-col">
+          <div class="img-big-wrap">
+            <div class="carousel-inner" style="width:100%;">
+              {% for image in product.product_images.all %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img id="{% if forloop.first %}mainImage{% endif %}"
+                  src="{{ image.image.url }}" alt="{{ product.product_name }}" style="{% if not forloop.first %}display:none;{% endif %}" />
               </div>
-
-              <!-- Thumnbs-Wrap -->
-              <div class="form-row thumbs-wrap mt-5 d-flex justify-content-center">
-                {% for image in product.product_images.all %}
-                <p class="item-thumb mx-2">
-                  <img src="{{image.image.url}}" class="img-thumbnail" onclick="updateMainImage(this.src)" />
-                </p>
-                {% endfor %}
-              </div>
-              <!-- Thumnbs-Wrap End.// -->
+              {% endfor %}
             </div>
-          </article>
-          <!-- Gallery-Wrap End.// -->
-        </aside>
-        <main class="col-md-6 border-left">
-          <article class="content-body">
-            <h2 class="title">{{product.product_name}}</h2>
-            <h6 class="text-muted">{{product.category}}</h6>
-
-            <div class="rating-wrap my-3">
-              <small class="label-rating text-muted">{{ product.get_rating }}</small>
-              <ul class="rating-stars">
-                <li style="width: {{ rating_percentage }}%" class="stars-active">
-                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                </li>
-                <li>
-                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                </li>
-              </ul>
-              <small class="label-rating text-muted">{{ product.reviews.count }} 条评价</small>
-            </div>
-            <!-- rating-wrap.// -->
-
-            <div class="mb-3">
-              {% if updated_price %}
-              <var class="price h4">¥{{ updated_price }}.00</var>
-              {% else%}
-              <var class="price h4">¥{{ product.price }}.00</var>
-              {% endif %}
-            </div>
-            <!-- price-detail-wrap .// -->
-
-            <p style="line-height: 2rem; margin-top: revert; text-align: justify">
-              {{product.product_desription}}
+          </div>
+          <!-- 缩略图条 -->
+          <div class="thumbs-wrap">
+            {% for image in product.product_images.all %}
+            <p class="item-thumb mb-0">
+              <img src="{{image.image.url}}" onclick="updateMainImage(this.src)" />
             </p>
-            <hr />
-            <div class="form-row">
-              {% if sorted_size_variants %}
-              <div class="form-group col-md">
-                <label>Select size</label>
-                <div class="mt-1">
-                  {% for size in sorted_size_variants %}
+            {% endfor %}
+          </div>
+        </div>
 
-                  <label class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" name="selected_size" value="{{ size.size_name }}"
-                      onchange="get_correct_price('{{ size.size_name }}'); updateCartUrl();"
-                      id="size-{{ size.size_name }}" {% if selected_size == size.size_name %} checked {% endif %}
-                      class="custom-control-input" />
-                    <div class="custom-control-label">{{ size.size_name }}</div>
-                  </label>
+        <!-- 右侧：信息区 -->
+        <div class="col-md-7 info-col">
 
-                  {% endfor %}
-                </div>
-              </div>
-              {% endif %}
+          <!-- 标题 + 类别 -->
+          <h1 class="product-title">{{ product.product_name }}</h1>
+          <div class="product-category">{{ product.category }}</div>
+
+          <!-- 评分 -->
+          <div class="rating-wrap">
+            <ul class="rating-stars">
+              <li style="width: {{ rating_percentage }}%" class="stars-active">
+                <i class="fa fa-star"></i><i class="fa fa-star"></i>
+                <i class="fa fa-star"></i><i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </li>
+              <li>
+                <i class="fa fa-star"></i><i class="fa fa-star"></i>
+                <i class="fa fa-star"></i><i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </li>
+            </ul>
+            <small class="text-muted">{{ product.get_rating }} &nbsp;({{ product.reviews.count }} 条评价)</small>
+          </div>
+
+          <!-- 价格 -->
+          <div class="price-block mb-4">
+            {% if updated_price %}
+            <span class="price-currency">&yen;</span>
+            <span class="price-value">{{ updated_price|floatformat:"-2" }}</span>
+            {% else %}
+            <span class="price-currency">&yen;</span>
+            <span class="price-value">{{ product.price|floatformat:"-2" }}</span>
+            {% endif %}
+          </div>
+
+          <!-- 描述 -->
+          <p class="product-desc">{{ product.product_desription }}</p>
+
+          <hr style="border-color:#e2e8f0;" />
+
+          <!-- 尺码选择（如有） -->
+          {% if sorted_size_variants %}
+          <div class="form-group">
+            <label class="text-muted" style="font-size:0.85rem;">Select size</label>
+            <div class="mt-1">
+              {% for size in sorted_size_variants %}
+              <label class="custom-control custom-radio custom-control-inline">
+                <input type="radio" name="selected_size" value="{{ size.size_name }}"
+                  onchange="get_correct_price('{{ size.size_name }}'); updateCartUrl();"
+                  id="size-{{ size.size_name }}" {% if selected_size == size.size_name %} checked {% endif %}
+                  class="custom-control-input" />
+                <div class="custom-control-label">{{ size.size_name }}</div>
+              </label>
+              {% endfor %}
             </div>
+          </div>
+          {% endif %}
 
-            <!-- Add to Wishlist Button -->
-            <div class="form-group d-flex justify-content-start">
-              <div class="d-sm-flex mr-2">
-                <div class="mb-2 mb-sm-0 mr-0 mr-sm-3">
-                  <form method="POST" action="{% url 'add_to_wishlist' product.uid %}?size={{ selected_size }}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-primary">
-                      <i class="fas fa-heart"></i> 加入收藏
-                    </button>
-                  </form>
-                </div>
-                <a href="{% url 'add_to_cart' product.uid %}?size={{ selected_size }}" id="add-to-cart-btn"
-                  class="btn btn-primary">
-                  <i class="fas fa-shopping-bag mr-1"></i>
-                  <span>加入购物车</span>
-                </a>
-              </div>
-            </div>
-          </article>
-        </main>
+          <!-- 按钮区 -->
+          <div class="d-flex align-items-center" style="gap: 12px; flex-wrap: wrap;">
+            <form method="POST" action="{% url 'add_to_wishlist' product.uid %}?size={{ selected_size }}">
+              {% csrf_token %}
+              <button type="submit" class="btn-wishlist">
+                <i class="fas fa-heart"></i> 加入收藏
+              </button>
+            </form>
+            <a href="{% url 'add_to_cart' product.uid %}?size={{ selected_size }}" id="add-to-cart-btn"
+               class="btn-cart">
+              <i class="fas fa-shopping-bag mr-1"></i> 加入购物车
+            </a>
+          </div>
+
+        </div>
       </div>
     </div>
 
