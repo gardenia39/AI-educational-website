@@ -1,0 +1,114 @@
+{% extends "base/base.html"%} {% block start %}
+<style>
+  .filter-section {
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      scale: 0.5;
+    }
+
+    to {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  .card {
+    animation: appear linear;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+</style>
+<div class="container mt-3 pt-3">
+  {% include 'base/alert.html' %}
+  <!-- Filter Section -->
+  <div class="filter-section mb-3">
+    <form method="GET" class="row">
+      <div class="form-group col-md-6">
+        <label for="category">种类：</label>
+        <select id="category" name="category" class="form-control" onchange="this.form.submit()">
+          <option value="">全部</option>
+          {% for category in categories %}
+          <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>
+            {{ category.category_name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Sort Section -->
+      <div class="form-group col-md-6">
+        <label for="sort">排序：</label>
+        <select id="sort" name="sort" class="form-control" onchange="this.form.submit()">
+          <option value="">请选择</option>
+          <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>最新</option>
+          <option value="priceAsc" {% if selected_sort == 'priceAsc' %}selected{% endif %}>价格：从低到高</option>
+          <option value="priceDesc" {% if selected_sort == 'priceDesc' %}selected{% endif %}>价格：从高到低</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <!-- Product List -->
+  <div class="row">
+    {% for product in products %}
+    <div class="col-md-3">
+      <figure class="card card-product-grid">
+        <div class="img-wrap">
+          <img src="{{product.product_images.first.image_url}}" />
+        </div>
+        <figcaption class="info-wrap border-top">
+          <a href="{% url 'get_product' product.slug %}" class="title">
+            <b>{{ product.product_name }}</b></a>
+          <div class="price mt-2">₹{{product.price}}.00</div>
+        </figcaption>
+      </figure>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Section -->
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center mb-4">
+      {% if products.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo; 上一页</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link">上一页</a>
+      </li>
+      {% endif %}
+
+      {% for num in products.paginator.page_range %}
+      <li class="page-item {% if products.number == num %}active{% endif %}">
+        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+      </li>
+      {% endfor %}
+
+      {% if products.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">下一页 &raquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link">下一页</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+</div>
+
+{% endblock %}

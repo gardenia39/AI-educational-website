@@ -1,0 +1,695 @@
+{% extends "base/base.html" %}
+{% block title %}服务条款 - AI+{% endblock %}
+{% load static %}
+{% block start %}
+
+<!-- Hero Section -->
+<section class="terms-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <div class="hero-content">
+                    <div class="hero-icon mb-4">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h1 class="hero-title mb-3">服务条款</h1>
+                    <p class="hero-subtitle">
+                        在使用我们的服务之前，请仔细阅读以下服务条款。
+                    </p>
+                    <div class="last-updated mt-4">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        最后更新：2025年1月
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Terms Content -->
+<section class="terms-content py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <!-- Introduction -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3 class="terms-title">1. 简介与接受条款</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            欢迎来到 <strong>AI+</strong>！本服务条款规范您对我们网站及服务的使用。访问或使用我们的网站即表示您同意受本条款约束。
+                        </p>
+                        <div class="important-note mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>重要提示：</strong>如果您不同意本条款的任何部分，请勿使用我们的网站或服务。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Registration -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3 class="terms-title">2. 账号注册</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>要访问某些功能，您可能需要创建账号。您同意：</p>
+                        <ul class="terms-list">
+                            <li>在注册时提供准确、最新且完整的信息</li>
+                            <li>维护您账号凭据的安全</li>
+                            <li>如发现账号被未授权使用，立即通知我们</li>
+                            <li>对您账号下发生的所有活动承担责任</li>
+                        </ul>
+                        <div class="highlight-box mt-3">
+                            <h6><i class="fas fa-key me-2"></i>密码安全</h6>
+                            <p>您有责任保管好您的密码及账号信息的保密性。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use of Cookies -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-cookie-bite"></i>
+                        </div>
+                        <h3 class="terms-title">3. Cookie 与追踪技术</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            我们使用 Cookie 及类似追踪技术来提升您的浏览体验、分析网站流量并了解访客来源。
+                        </p>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <div class="cookie-type">
+                                    <i class="fas fa-cog"></i>
+                                    <h6>必要 Cookie</h6>
+                                    <p>维持网站基本功能所必需</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="cookie-type">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <h6>分析 Cookie</h6>
+                                    <p>帮助我们了解用户行为</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3">
+                            使用我们的网站即表示您同意我们依据<a href="{% url 'privacy-policy' %}">隐私政策</a>使用 Cookie。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Intellectual Property -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-copyright"></i>
+                        </div>
+                        <h3 class="terms-title">4. 知识产权</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            除非另有说明，AI+ 及其许可方拥有本网站所有内容的知识产权，所有知识产权均予以保留。
+                        </p>
+                        <div class="permissions-grid mt-3">
+                            <div class="permission-item allowed">
+                                <i class="fas fa-check-circle"></i>
+                                <span>允许浏览和查看内容供个人使用</span>
+                            </div>
+                            <div class="permission-item allowed">
+                                <i class="fas fa-check-circle"></i>
+                                <span>允许打印页面供个人参考</span>
+                            </div>
+                            <div class="permission-item restricted">
+                                <i class="fas fa-times-circle"></i>
+                                <span>禁止转载或复制内容</span>
+                            </div>
+                            <div class="permission-item restricted">
+                                <i class="fas fa-times-circle"></i>
+                                <span>禁止出售或商业化任何内容</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User-Generated Content -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="terms-title">5. 用户评论与评价</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            我们网站的某些部分允许用户发布评价、评论及其他内容。发布内容即表示您授予我们非独家、免版税的使用、复制和展示该内容的许可。
+                        </p>
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>内容准则：</strong>我们保留删除任何违反社区标准或本条款内容的权利。
+                        </div>
+                        <p class="mt-3"><strong>您同意不发布以下内容：</strong></p>
+                        <ul class="terms-list">
+                            <li>诽谤、淫秽或冒犯性内容</li>
+                            <li>侵犯知识产权的内容</li>
+                            <li>垃圾信息或推广材料</li>
+                            <li>违反任何适用法律法规的内容</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Orders & Payments -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="terms-title">6. 订单与支付</h3>
+                    </div>
+                    <div class="terms-content">
+                        <div class="order-info-grid">
+                            <div class="order-info-item">
+                                <i class="fas fa-credit-card"></i>
+                                <h6>支付处理</h6>
+                                <p>所有付款均通过可信支付通道安全处理。</p>
+                            </div>
+                            <div class="order-info-item">
+                                <i class="fas fa-undo"></i>
+                                <h6>订单取消</h6>
+                                <p>订单可在下单后24小时内取消。</p>
+                            </div>
+                            <div class="order-info-item">
+                                <i class="fas fa-truck"></i>
+                                <h6>发货</h6>
+                                <p>发货时间可能因地区和商品库存情况而有所不同。</p>
+                            </div>
+                            <div class="order-info-item">
+                                <i class="fas fa-exchange-alt"></i>
+                                <h6>退货</h6>
+                                <p>商品可在原始状态下3天内退货。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Limitation of Liability -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h3 class="terms-title">7. 责任限制</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            在法律允许的最大范围内，AI+ 对因以下原因造成的任何间接、附带、特殊、后果性或惩罚性损失不承担责任：
+                        </p>
+                        <ul class="terms-list">
+                            <li>您使用或无法使用我们的服务</li>
+                            <li>对您数据的未授权访问或篡改</li>
+                            <li>网站上任何第三方内容或行为</li>
+                            <li>我们服务的任何中断或停止</li>
+                        </ul>
+                        <div class="disclaimer-box mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            我们的总责任不超过您为相关产品或服务实际支付的金额。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy & Data Protection -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3 class="terms-title">8. 隐私与数据保护</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            您的隐私对我们非常重要。我们收集和使用个人信息受我们的<a href="{% url 'privacy-policy' %}">隐私政策</a>约束。
+                        </p>
+                        <div class="privacy-highlights mt-3">
+                            <div class="privacy-item">
+                                <i class="fas fa-lock"></i>
+                                <span>安全数据加密</span>
+                            </div>
+                            <div class="privacy-item">
+                                <i class="fas fa-eye-slash"></i>
+                                <span>不出售个人信息</span>
+                            </div>
+                            <div class="privacy-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>遵守数据保护法律法规</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Changes to Terms -->
+                <div class="terms-card mb-4">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3 class="terms-title">9. 条款变更</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            我们保留随时修改本服务条款的权利。变更将在发布到我们网站后立即生效。
+                        </p>
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-bell me-2"></i>
+                            我们建议您定期查看本条款，以了解任何更新内容。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="terms-card contact-card">
+                    <div class="terms-header">
+                        <div class="terms-icon">
+                            <i class="fas fa-envelope-open-text"></i>
+                        </div>
+                        <h3 class="terms-title">10. 联系我们</h3>
+                    </div>
+                    <div class="terms-content">
+                        <p>
+                            如果您对本服务条款有任何疑问、意见或建议，欢迎随时联系我们：
+                        </p>
+                        <div class="contact-cta mt-4">
+                            <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>立即联系
+                            </a>
+                        </div>
+                        <p class="mt-4 text-center text-muted">
+                            我们的团队随时为您提供帮助，将尽快回复您的咨询。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Unified Color System */
+    :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #a5b4fc;
+        --accent-color: #fbbf24;
+        --accent-dark: #f59e0b;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --bg-light: #f8fafc;
+        --border-color: #e2e8f0;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    /* Hero Section */
+    .terms-hero {
+        background: var(--primary-color);
+        color: white;
+        padding: 80px 0 60px;
+        position: relative;
+    }
+
+    .hero-icon {
+        font-size: 4rem;
+        opacity: 0.9;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .last-updated {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Terms Content */
+    .terms-content {
+        background: var(--bg-light);
+    }
+
+    .terms-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .terms-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+
+    .terms-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .terms-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--primary-color);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .terms-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .terms-content {
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .terms-content p {
+        margin-bottom: 1rem;
+    }
+
+    .terms-content a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .terms-content a:hover {
+        color: var(--accent-color);
+    }
+
+    .terms-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .terms-list li {
+        position: relative;
+        padding-left: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .terms-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    /* Important Note */
+    .important-note {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid var(--danger-color);
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        color: var(--text-dark);
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+        background: rgba(99, 102, 241, 0.1);
+        border-left: 4px solid var(--primary-color);
+        padding: 1.25rem;
+        border-radius: 8px;
+    }
+
+    .highlight-box h6 {
+        color: var(--text-dark);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .highlight-box p {
+        margin: 0;
+    }
+
+    /* Cookie Types */
+    .cookie-type {
+        background: var(--bg-light);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .cookie-type:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-4px);
+    }
+
+    .cookie-type i {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+        transition: color 0.3s ease;
+    }
+
+    .cookie-type:hover i {
+        color: var(--accent-color);
+    }
+
+    .cookie-type h6 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .cookie-type p {
+        margin: 0;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    /* Permissions Grid */
+    .permissions-grid {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .permission-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+    }
+
+    .permission-item.allowed {
+        background: rgba(16, 185, 129, 0.1);
+    }
+
+    .permission-item.allowed i {
+        color: var(--success-color);
+    }
+
+    .permission-item.restricted {
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    .permission-item.restricted i {
+        color: var(--danger-color);
+    }
+
+    /* Alert Styles */
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+
+    .alert-warning {
+        background: rgba(251, 191, 36, 0.1);
+        color: var(--text-dark);
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .alert-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--text-dark);
+        border-left: 4px solid var(--info-color);
+    }
+
+    /* Order Info Grid */
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .order-info-item {
+        background: var(--bg-light);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .order-info-item:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-4px);
+    }
+
+    .order-info-item i {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+        transition: color 0.3s ease;
+    }
+
+    .order-info-item:hover i {
+        color: var(--accent-color);
+    }
+
+    .order-info-item h6 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .order-info-item p {
+        margin: 0;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    /* Disclaimer Box */
+    .disclaimer-box {
+        background: rgba(251, 191, 36, 0.1);
+        border-left: 4px solid var(--accent-color);
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    /* Privacy Highlights */
+    .privacy-highlights {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .privacy-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: var(--bg-light);
+        border-radius: 8px;
+    }
+
+    .privacy-item i {
+        color: var(--success-color);
+        font-size: 1.25rem;
+    }
+
+    /* Contact Card */
+    .contact-card {
+        border: 2px solid var(--primary-color);
+    }
+
+    .contact-cta {
+        text-align: center;
+    }
+
+    .contact-cta .btn-primary {
+        background: var(--primary-color);
+        border: none;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white !important;
+    }
+
+    .contact-cta .btn-primary:hover {
+        background: var(--accent-color);
+        color: var(--text-dark) !important;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-icon {
+            font-size: 3rem;
+        }
+
+        .terms-card {
+            padding: 1.5rem;
+        }
+
+        .terms-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .terms-title {
+            font-size: 1.25rem;
+        }
+
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% endblock %}

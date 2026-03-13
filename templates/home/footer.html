@@ -1,0 +1,240 @@
+{% load static %} {% block start %}
+<footer class="bg-dark text-white">
+  <div class="container py-5">
+    <!-- Main Footer Content -->
+    <div class="row g-4">
+
+      <!-- Brand Section -->
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="footer-brand">
+          <h3 class="brand-title fw-bold mb-3">AI+</h3>
+          <p class="text-light opacity-75 mb-4">您的一站式学习平台，汇聚最新AI+技术。我们致力于为您提供优质的AI技术和无缝的学习体验。</p>
+
+          <!-- Social Media Icons -->
+          <div class="social-links">
+            <a href="https://github.com/gardenia39" class="social-link github" aria-label="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="javascript:void(0)" class="social-link weixin" aria-label="weixin"
+              onclick="alert('微信号:19712266320')">
+              <i class="fab fa-weixin"></i>
+            </a>
+            <a href="javascript:void(0)" class="social-link qq" aria-label="qq" onclick="alert('QQ号:1246423858')">
+              <i class="fab fa-qq"></i>
+            </a>
+            <a href="https://space.bilibili.com/26315978" class="social-link bilibili" aria-label="bilibili">
+              <i class="fab fa-bilibili"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="section-heading fw-semibold mb-3">快速链接</h5>
+        <ul class="list-unstyled footer-links">
+          <li class="mb-2"><a href="{% url 'index' %}" class="footer-link">首页</a></li>
+          <li class="mb-2"><a href="{% url 'order_history' %}" class="footer-link">我的订单</a></li>
+          <li class="mb-2"><a href="{% url 'wishlist' %}" class="footer-link">收藏夹</a></li>
+          <li class="mb-2"><a href="{% url 'contact' %}" class="footer-link">联系我们</a></li>
+          <li class="mb-2"><a href="{% url 'about' %}" class="footer-link">关于我们</a></li>
+        </ul>
+      </div>
+
+      <!-- Categories -->
+      <div class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="section-heading fw-semibold mb-3">课程分类</h5>
+        <ul class="list-unstyled footer-links">
+          <li class="mb-2"><a href="#" class="footer-link">Python</a></li>
+          <li class="mb-2"><a href="#" class="footer-link">Skills</a></li>
+          <li class="mb-2"><a href="#" class="footer-link">Openclaw</a></li>
+          <li class="mb-2"><a href="#" class="footer-link">Prompts</a></li>
+          <li class="mb-2"><a href="#" class="footer-link">AI+实战</a></li>
+        </ul>
+      </div>
+
+      <!-- Account & Support -->
+      <div class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="section-heading fw-semibold mb-3">账号</h5>
+        <ul class="list-unstyled footer-links">
+          {% if user.is_authenticated %}
+          <li class="mb-2"><a href="{% url 'profile' username=user.username %}" class="footer-link">我的资料</a></li>
+          {% else %}
+          <li class="mb-2"><a href="{% url 'login' %}" class="footer-link">登录</a></li>
+          <li class="mb-2"><a href="{% url 'register' %}" class="footer-link">注册</a></li>
+          {% endif %}
+          <li class="mb-2"><a href="{% url 'product_reviews' %}" class="footer-link">我的评价</a></li>
+
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="section-heading fw-semibold mb-3">联系方式</h5>
+        <div class="contact-info">
+          <div class="contact-item mb-2">
+            <i class="fas fa-map-marker-alt contact-icon me-2"></i>
+            <small class="text-light opacity-75">中国-安徽-淮南市</small>
+          </div>
+          <div class="contact-item mb-2">
+            <i class="fas fa-envelope contact-icon me-2"></i>
+            <small><a href="mailto:atulguptag111@gmail.com" class="footer-link">1246423858@qq.com</a></small>
+          </div>
+          <div class="contact-item mb-2">
+            <i class="fas fa-phone contact-icon me-2"></i>
+            <small><a href="#" class="footer-link">19712266320</a></small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <hr class="border-secondary my-4">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <p class="mb-0 text-light opacity-75">
+          © 2026 <span class="brand-highlight fw-semibold">AI+</span>. 版权所有。
+        </p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <div class="footer-links d-inline-flex gap-3">
+          <a href="{% url 'privacy-policy' %}" class="footer-link small">隐私政策</a>
+          <a href="{% url 'terms-and-conditions' %}" class="footer-link small">服务条款</a>
+          <a href="{% url 'contact' %}" class="footer-link small">客服支持</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Unified Color System */
+  :root {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --accent-color: #fbbf24;
+    --accent-dark: #f59e0b;
+    --text-light: rgba(255, 255, 255, 0.75);
+    --text-white: #ffffff;
+  }
+
+  /* Modern Footer Styles */
+  .footer-brand .brand-title {
+    font-size: 1.75rem;
+    letter-spacing: -0.5px;
+    color: var(--primary-color);
+  }
+
+  .section-heading {
+    color: var(--primary-color);
+  }
+
+  .footer-links {
+    line-height: 1.8;
+  }
+
+  .footer-link {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .footer-link:hover {
+    color: var(--accent-color);
+    transform: translateX(3px);
+  }
+
+  .contact-icon {
+    color: var(--primary-color);
+  }
+
+  .brand-highlight {
+    color: var(--primary-color);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-color);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+  }
+
+  .social-link:hover {
+    background: var(--accent-color);
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.85rem;
+  }
+
+  .contact-item i {
+    margin-top: 2px;
+    font-size: 0.8rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .footer-brand {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .social-links {
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .contact-info {
+      text-align: center;
+    }
+
+    .contact-item {
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+
+    footer .col-6 {
+      margin-bottom: 2rem;
+    }
+
+    .footer-links.d-inline-flex {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .footer-brand h3 {
+      font-size: 1.5rem;
+    }
+
+    .social-link {
+      width: 36px;
+      height: 36px;
+      font-size: 1rem;
+    }
+
+    .contact-item {
+      font-size: 0.8rem;
+    }
+  }
+</style>
+{% endblock %}

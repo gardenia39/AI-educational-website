@@ -1,0 +1,78 @@
+{% extends "base/base.html" %} {% load static %} {% load socialaccount %}
+{% block title %}注册{% endblock %}
+{% block start %}
+
+<!-- ============================ COMPONENT Sign-Up ================================= -->
+<section class="section-content padding-bottom">
+  <div class="container-xl d-flex justify-content-center align-items-center mt-5">
+    <div class="row justify-content-center w-100">
+      <div class="col-xl-4">
+        <div class="card mb-4">
+          <div class="card-header" style="text-align: center; font-size: 25px;">注册</div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %} {% include "base/alert.html" %}
+
+              <!-- form-group// -->
+              <div class="form-group">
+                <input class="form-control" required placeholder="用户名" name="username" type="text"
+                  autocomplete="username" />
+              </div>
+
+              <div class="form-group">
+                <input class="form-control" required placeholder="名" name="first_name" type="text"
+                  autocomplete="given-name" />
+              </div>
+
+              <div class="form-group">
+                <input class="form-control" required placeholder="姓" name="last_name" type="text"
+                  autocomplete="family-name" />
+              </div>
+
+              <div class="form-group">
+                <input class="form-control" required placeholder="邮箱" name="email" type="text" autocomplete="email" />
+              </div>
+
+              <div class="form-group">
+                <input class="form-control" required placeholder="密码" name="password" type="password" />
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">
+                  注册
+                </button>
+
+                <!-- form-group end -->
+
+                <p class="text-center mt-4">
+                  已有账号？ <a href="{% url 'login' %}">登录</a>
+                </p>
+
+                <div class="line"></div>
+
+                {% comment "第三方登录未配置，暂时隐藏" %}
+                <div class="media-options">
+                  <a href="{% provider_login_url 'facebook' %}" class="field facebook">
+                    <i class="bx bxl-facebook facebook-icon"></i>
+                    <span>Login with Facebook</span>
+                  </a>
+                </div>
+
+                <div class="media-options">
+                  <a href="{% provider_login_url 'google' %}?next=/" class="field google">
+                    <img src="{% static 'images/google.png' %}" alt="" class="google-img" />
+                    <span>Login with Google</span>
+                  </a>
+                </div>
+                {% endcomment %}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ COMPONENT Sign-Up END ================================= -->
+
+{% endblock %}
