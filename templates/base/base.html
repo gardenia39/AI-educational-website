@@ -89,24 +89,284 @@
 </style>
 
 <body>
-  <!-- Slider Header Banner -->
-  <div class="header-banner slide-up" aria-hidden="false">
+  <!-- Announcement Banner -->
+  <div class="announcement-banner">
+    <div class="banner-glow"></div>
     <div class="container">
-      <div class="d-flex justify-content-center">
-        <div class="html-slot-container">
-          <input type="hidden" id="endTime" value="null" />
-          <div class="content">
-            <marquee direction="left" width="100%" scrollamount="10" onmouseover="this.stop();"
-              onmouseout="this.start();">
-              <span class="header-promotion marquee-span">
-                欢迎来到AI+学习平台 祝大家学习进步!
-              </span>
-            </marquee>
+      <div class="announcement-wrapper">
+        <div class="announcement-icon">
+          <i class="fas fa-bullhorn"></i>
+        </div>
+        <div class="announcement-content">
+          <div class="announcement-track">
+            <span class="announcement-text">
+              <i class="fas fa-sparkles"></i>
+              欢迎来到AI+学习平台 祝大家学习进步!
+              <span class="divider"></span>
+              <i class="fas fa-graduation-cap"></i>
+              探索人工智能的无限可能
+              <span class="divider"></span>
+              <i class="fas fa-rocket"></i>
+              开启智慧学习新纪元
+              <span class="divider"></span>
+              <i class="fas fa-star"></i>
+              专业课程 · 实战项目 · 职业发展
+              <span class="divider"></span>
+            </span>
+            <span class="announcement-text">
+              <i class="fas fa-sparkles"></i>
+              欢迎来到AI+学习平台 祝大家学习进步!
+              <span class="divider"></span>
+              <i class="fas fa-graduation-cap"></i>
+              探索人工智能的无限可能
+              <span class="divider"></span>
+              <i class="fas fa-rocket"></i>
+              开启智慧学习新纪元
+              <span class="divider"></span>
+              <i class="fas fa-star"></i>
+              专业课程 · 实战项目 · 职业发展
+              <span class="divider"></span>
+            </span>
           </div>
         </div>
+        <button class="announcement-close" onclick="closeBanner()">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
   </div>
+
+  <style>
+    /* Announcement Banner */
+    .announcement-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 2px solid transparent;
+      border-image: linear-gradient(90deg, transparent, #d4af37, transparent) 1;
+    }
+
+    .banner-glow {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(212, 175, 55, 0.1) 50%,
+          transparent 100%);
+      animation: glow-slide 3s ease-in-out infinite;
+    }
+
+    @keyframes glow-slide {
+      0% {
+        left: -100%;
+      }
+
+      100% {
+        left: 100%;
+      }
+    }
+
+    .announcement-wrapper {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .announcement-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+      flex-shrink: 0;
+    }
+
+    .announcement-icon i {
+      font-size: 1.2rem;
+      color: #0f172a;
+      animation: bell-shake 2s ease-in-out infinite;
+    }
+
+    @keyframes bell-shake {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      10% {
+        transform: rotate(15deg);
+      }
+
+      20% {
+        transform: rotate(-15deg);
+      }
+
+      30% {
+        transform: rotate(10deg);
+      }
+
+      40% {
+        transform: rotate(-10deg);
+      }
+
+      50% {
+        transform: rotate(5deg);
+      }
+
+      60% {
+        transform: rotate(-5deg);
+      }
+
+      70% {
+        transform: rotate(0deg);
+      }
+    }
+
+    .announcement-content {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      padding: 0 20px;
+    }
+
+    .announcement-content::before,
+    .announcement-content::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 60px;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .announcement-content::before {
+      left: 0;
+      background: linear-gradient(90deg, #0f172a, transparent);
+    }
+
+    .announcement-content::after {
+      right: 0;
+      background: linear-gradient(-90deg, #0f172a, transparent);
+    }
+
+    .announcement-track {
+      display: flex;
+      animation: scroll 25s linear infinite;
+      white-space: nowrap;
+    }
+
+    .announcement-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .announcement-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding-right: 40px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .announcement-text i {
+      color: #d4af37;
+      font-size: 0.9rem;
+    }
+
+    .divider {
+      width: 6px;
+      height: 6px;
+      background: #d4af37;
+      border-radius: 50%;
+      margin: 0 8px;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+
+    .announcement-close {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .announcement-close:hover {
+      color: #d4af37;
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .announcement-close i {
+      font-size: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .announcement-wrapper {
+        height: 42px;
+      }
+
+      .announcement-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      .announcement-icon i {
+        font-size: 1rem;
+      }
+
+      .announcement-text {
+        font-size: 0.85rem;
+      }
+
+      .announcement-close {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+
+  <script>
+    function closeBanner() {
+      const banner = document.querySelector('.announcement-banner');
+      banner.style.height = banner.offsetHeight + 'px';
+      banner.offsetHeight;
+      banner.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      banner.style.height = '0';
+      banner.style.opacity = '0';
+      banner.style.overflow = 'hidden';
+
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 400);
+    }
+  </script>
   {% include 'home/navbar.html' %}
   {% block start %} {% endblock %}
 

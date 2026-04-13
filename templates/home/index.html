@@ -1,178 +1,969 @@
-{% extends "base/base.html"%} {% block start %}
-<style>
-  .filter-section {
-    margin-bottom: 20px;
-  }
+{% extends "base/base.html" %}
 
-  .form-group {
-    margin-bottom: 10px;
-  }
+{% block start %}
 
-  /* ── 商品卡片 ── */
-  .card-product-grid {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-bottom: 1.2rem;
-    height: 100%;
-    border: none;
-  }
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-pattern">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="rgba(212,175,55,0.1)"/>
+          <circle cx="30" cy="30" r="1.5" fill="rgba(212,175,55,0.08)"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid-pattern)"/>
+    </svg>
+  </div>
+  <div class="container">
+    <div class="hero-content" data-aos="fade-up">
+      <div class="hero-badge">
+        <i class="fas fa-sparkles"></i>
+        <span>AI 智能教育平台</span>
+      </div>
+      <h1 class="hero-title">
+        探索人工智能的<br/>
+        <span class="gradient-text">无限可能</span>
+      </h1>
+      <p class="hero-subtitle">
+        汇聚顶尖AI课程，实战项目驱动，助您成为人工智能领域的专业人才
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="stat-num">100+</span>
+          <span class="stat-label">精品课程</span>
+        </div>
+        <div class="hero-stat">
+          <span class="stat-num">50+</span>
+          <span class="stat-label">实战项目</span>
+        </div>
+        <div class="hero-stat">
+          <span class="stat-num">10万+</span>
+          <span class="stat-label">学员选择</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-glow"></div>
+</section>
 
-  .card-product-grid:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(99,102,241,0.18);
-  }
-
-  /* 图片区域固定高度 */
-  .card-product-grid .img-wrap {
-    height: 220px;
-    overflow: hidden;
-    background: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card-product-grid .img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .card-product-grid:hover .img-wrap img {
-    transform: scale(1.04);
-  }
-
-  .card-product-grid .info-wrap {
-    padding: 0.8rem 1rem;
-  }
-
-  .card-product-grid .title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1e293b;
-    text-decoration: none;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .card-product-grid .price {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #6366f1;
-    margin-top: 0.4rem;
-  }
-
-  @keyframes appear {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-product-grid {
-    animation: appear 0.4s ease both;
-  }
-
-  /* 整个 card 可点击，但不影响外观 */
-  .card-product-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    height: 100%;
-  }
-
-  .card-product-link:hover {
-    text-decoration: none;
-    color: inherit;
-  }
-</style>
-<div class="container mt-3 pt-3">
+<div class="container main-container">
   {% include 'base/alert.html' %}
-  <!-- Filter Section -->
-  <div class="filter-section mb-3">
-    <form method="GET" class="row">
-      <div class="form-group col-md-6">
-        <label for="category">种类：</label>
-        <select id="category" name="category" class="form-control" onchange="this.form.submit()">
-          <option value="">全部</option>
-          {% for category in categories %}
-          <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>
-            {{ category.category_name }}
-          </option>
-          {% endfor %}
-        </select>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar" data-aos="fade-up" data-aos-delay="100">
+    <div class="filter-header">
+      <div class="filter-title">
+        <i class="fas fa-filter"></i>
+        <span>筛选课程</span>
+      </div>
+      <span class="filter-count">共 {{ products.paginator.count }} 门课程</span>
+    </div>
+
+    <form method="GET" class="filter-form">
+      <div class="filter-group">
+        <label for="category">
+          <i class="fas fa-th-large"></i>
+          课程分类
+        </label>
+        <div class="custom-select">
+          <select id="category" name="category" onchange="this.form.submit()">
+            <option value="">全部课程</option>
+            {% for category in categories %}
+            <option value="{{ category.category_name }}" {% if selected_category == category.category_name %}selected{% endif %}>
+              {{ category.category_name }}
+            </option>
+            {% endfor %}
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
 
-      <!-- Sort Section -->
-      <div class="form-group col-md-6">
-        <label for="sort">排序：</label>
-        <select id="sort" name="sort" class="form-control" onchange="this.form.submit()">
-          <option value="">请选择</option>
-          <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>时间：由新到旧</option>
-          <option value="priceAsc" {% if selected_sort == 'priceAsc' %}selected{% endif %}>价格：从低到高</option>
-          <option value="priceDesc" {% if selected_sort == 'priceDesc' %}selected{% endif %}>价格：从高到低</option>
-        </select>
+      <div class="filter-group">
+        <label for="sort">
+          <i class="fas fa-sort-amount-down"></i>
+          排序方式
+        </label>
+        <div class="custom-select">
+          <select id="sort" name="sort" onchange="this.form.submit()">
+            <option value="">默认排序</option>
+            <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>最新发布</option>
+            <option value="priceAsc" {% if selected_sort == 'priceAsc' %}selected{% endif %}>价格从低到高</option>
+            <option value="priceDesc" {% if selected_sort == 'priceDesc' %}selected{% endif %}>价格从高到低</option>
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
+
+      {% if selected_category or selected_sort %}
+      <a href="{% url 'index' %}" class="btn-reset">
+        <i class="fas fa-undo"></i>
+        重置筛选
+      </a>
+      {% endif %}
     </form>
   </div>
 
-  <!-- Product List -->
-  <div class="row">
-    {% for product in products %}
-    <div class="col-md-3">
-      <a href="{% url 'get_product' product.slug %}" class="card-product-link">
-        <figure class="card card-product-grid">
-          <div class="img-wrap">
-            <img src="{{product.product_images.first.image.url}}" />
-          </div>
-          <figcaption class="info-wrap border-top text-center">
-            <div class="title"><b>{{ product.product_name }}</b></div>
-            <div class="price mt-2">¥{{product.price|floatformat:"-2"}}</div>
-          </figcaption>
-        </figure>
-      </a>
+  <!-- Product Grid -->
+  <div class="products-section">
+    <div class="section-header" data-aos="fade-up">
+      <h2 class="section-title">
+        <i class="fas fa-graduation-cap"></i>
+        热门课程
+      </h2>
+      <div class="section-line"></div>
     </div>
-    {% endfor %}
+
+    <div class="product-grid">
+      {% for product in products %}
+      <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:0 }}50">
+        <a href="{% url 'get_product' product.slug %}" class="product-link">
+          <div class="product-image">
+            <img src="{{ product.product_images.first.image.url }}" alt="{{ product.product_name }}" loading="lazy"/>
+            <div class="product-overlay">
+              <div class="overlay-content">
+                <span class="view-btn">
+                  <i class="fas fa-eye"></i>
+                  查看详情
+                </span>
+              </div>
+            </div>
+            <div class="product-badge">
+              <i class="fas fa-fire"></i>
+              热门
+            </div>
+          </div>
+          <div class="product-info">
+            <h3 class="product-name">{{ product.product_name }}</h3>
+            <div class="product-meta">
+              <span class="product-category">
+                <i class="fas fa-tag"></i>
+                {{ product.category.category_name }}
+              </span>
+            </div>
+            <div class="product-footer">
+              <div class="product-price">
+                <span class="price-symbol">¥</span>
+                <span class="price-value">{{ product.price|floatformat:"-2" }}</span>
+              </div>
+              <div class="product-rating">
+                <i class="fas fa-star"></i>
+                <span>4.9</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <div class="empty-state" data-aos="fade-up">
+        <div class="empty-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3>暂无符合条件的课程</h3>
+        <p>请尝试调整筛选条件</p>
+        <a href="{% url 'index' %}" class="btn-browse">查看全部课程</a>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 
-  <!-- Pagination Section -->
-  <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center mb-4">
+  <!-- Pagination -->
+  {% if products.paginator.num_pages > 1 %}
+  <nav class="pagination-nav" aria-label="分页导航" data-aos="fade-up">
+    <ul class="pagination">
       {% if products.has_previous %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
-          <span aria-hidden="true">&laquo; 上一页</span>
+        <a class="page-link" href="?page={{ products.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" aria-label="上一页">
+          <i class="fas fa-chevron-left"></i>
         </a>
       </li>
       {% else %}
       <li class="page-item disabled">
-        <a class="page-link">上一页</a>
+        <span class="page-link"><i class="fas fa-chevron-left"></i></span>
       </li>
       {% endif %}
 
       {% for num in products.paginator.page_range %}
-      <li class="page-item {% if products.number == num %}active{% endif %}">
-        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+      {% if num == products.number %}
+      <li class="page-item active">
+        <span class="page-link">{{ num }}</span>
       </li>
+      {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">{{ num }}</a>
+      </li>
+      {% elif num == 1 or num == products.paginator.num_pages %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">{{ num }}</a>
+      </li>
+      {% elif num == products.number|add:'-3' or num == products.number|add:'3' %}
+      <li class="page-item ellipsis">
+        <span class="page-link">...</span>
+      </li>
+      {% endif %}
       {% endfor %}
 
       {% if products.has_next %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
-          <span aria-hidden="true">下一页 &raquo;</span>
+        <a class="page-link" href="?page={{ products.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" aria-label="下一页">
+          <i class="fas fa-chevron-right"></i>
         </a>
       </li>
       {% else %}
       <li class="page-item disabled">
-        <a class="page-link">下一页</a>
+        <span class="page-link"><i class="fas fa-chevron-right"></i></span>
       </li>
       {% endif %}
     </ul>
   </nav>
-
+  {% endif %}
 </div>
+
+<style>
+  /* Color System */
+  :root {
+    --primary-color: #0f172a;
+    --primary-light: #1e293b;
+    --primary-lighter: #334155;
+    --accent-color: #d4af37;
+    --accent-light: #e5c158;
+    --accent-gradient: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+    --bg-warm: #faf9f6;
+    --bg-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --shadow-soft: 0 4px 20px rgba(15, 23, 42, 0.08);
+    --shadow-medium: 0 8px 30px rgba(15, 23, 42, 0.12);
+    --shadow-hover: 0 12px 40px rgba(15, 23, 42, 0.15);
+  }
+
+  body {
+    background-color: var(--bg-warm);
+  }
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, #1a365d 100%);
+    padding: 60px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.6;
+  }
+
+  .hero-glow {
+    position: absolute;
+    bottom: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 50px;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .hero-badge i {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* Main Container */
+  .main-container {
+    padding-top: 40px;
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(212, 175, 55, 0.08);
+  }
+
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  }
+
+  .filter-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .filter-title i {
+    color: var(--accent-color);
+    font-size: 1rem;
+  }
+
+  .filter-count {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .filter-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .filter-group label i {
+    color: var(--accent-color);
+    font-size: 0.85rem;
+  }
+
+  .custom-select {
+    position: relative;
+  }
+
+  .custom-select select {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: white;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .custom-select select:hover,
+  .custom-select select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+    outline: none;
+  }
+
+  .custom-select i {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 0.8rem;
+  }
+
+  .btn-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-reset:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.05);
+  }
+
+  /* Section Header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .section-title i {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(212,175,55,0.3) 0%, transparent 100%);
+  }
+
+  /* Product Grid */
+  .products-section {
+    margin-bottom: 40px;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .product-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(212, 175, 55, 0.05);
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(212, 175, 55, 0.15);
+  }
+
+  .product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .product-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .product-card:hover .product-image img {
+    transform: scale(1.08);
+  }
+
+  .product-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-card:hover .product-overlay {
+    opacity: 1;
+  }
+
+  .view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--accent-gradient);
+    color: var(--primary-color);
+    font-weight: 600;
+    border-radius: 50px;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease 0.1s;
+  }
+
+  .product-card:hover .view-btn {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+
+  .product-badge i {
+    font-size: 0.7rem;
+  }
+
+  .product-info {
+    padding: 20px;
+  }
+
+  .product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 48px;
+  }
+
+  .product-meta {
+    margin-bottom: 16px;
+  }
+
+  .product-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 50px;
+  }
+
+  .product-category i {
+    font-size: 0.7rem;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+  }
+
+  .product-price {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+
+  .price-symbol {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    font-weight: 600;
+  }
+
+  .price-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 50px;
+  }
+
+  .product-rating i {
+    color: #ffc107;
+    font-size: 0.8rem;
+  }
+
+  .product-rating span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* Empty State */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--bg-card);
+    border-radius: 24px;
+  }
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--bg-warm) 0%, #f1f5f9 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    border: 3px dashed rgba(212, 175, 55, 0.3);
+  }
+
+  .empty-icon i {
+    font-size: 40px;
+    color: var(--accent-color);
+    opacity: 0.6;
+  }
+
+  .empty-state h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .btn-browse {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-browse:hover {
+    background: var(--accent-gradient);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+  }
+
+  /* Pagination */
+  .pagination-nav {
+    margin-top: 40px;
+    margin-bottom: 60px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .page-item {
+    display: flex;
+  }
+
+  .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 16px;
+    background: var(--bg-card);
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .page-link:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.05);
+  }
+
+  .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    border-color: var(--primary-color);
+    color: white;
+  }
+
+  .page-item.disabled .page-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .page-item.ellipsis .page-link {
+    border: none;
+    background: transparent;
+    cursor: default;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .hero-stats {
+      gap: 40px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 50px 0;
+    }
+
+    .hero-section {
+      padding: 60px 0 80px;
+    }
+
+    .hero-title {
+      font-size: 2.2rem;
+    }
+
+    .hero-stats {
+      gap: 30px;
+    }
+
+    .stat-num {
+      font-size: 1.8rem;
+    }
+
+    .stat-num {
+      font-size: 1.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+    }
+
+    .filter-bar {
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .filter-header {
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .filter-form {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .filter-group {
+      min-width: 100%;
+    }
+
+    .section-header {
+      justify-content: center;
+    }
+
+    .section-line {
+      display: none;
+    }
+
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .product-image {
+      height: 140px;
+    }
+
+    .product-info {
+      padding: 12px;
+    }
+
+    .product-name {
+      font-size: 0.85rem;
+      min-height: 38px;
+      margin-bottom: 8px;
+    }
+
+    .product-meta {
+      margin-bottom: 10px;
+    }
+
+    .product-category {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+    }
+
+    .product-footer {
+      padding-top: 10px;
+    }
+
+    .price-value {
+      font-size: 1rem;
+    }
+
+    .product-rating {
+      padding: 4px 8px;
+    }
+
+    .product-rating span {
+      font-size: 0.75rem;
+    }
+
+    .pagination {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .page-link {
+      min-width: 38px;
+      height: 38px;
+      font-size: 0.85rem;
+      padding: 0 12px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .product-image {
+      height: 200px;
+    }
+  }
+</style>
+
+<script>
+  // Initialize AOS animations
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 50
+      });
+    }
+  });
+</script>
 
 {% endblock %}

@@ -322,12 +322,12 @@
 <style>
   /* Unified Color System */
   :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #a5b4fc;
-    --accent-color: #fbbf24;
-    --accent-dark: #f59e0b;
-    --secondary-color: #f1f5f9;
+    --primary-color: #0f172a;
+    --primary-dark: #020617;
+    --primary-light: #1e293b;
+    --accent-color: #d4af37;
+    --accent-dark: #b8941f;
+    --secondary-color: #faf9f6;
     --text-dark: #1e293b;
     --text-muted: #64748b;
     --border-color: #e2e8f0;
@@ -437,12 +437,12 @@
   }
 
   .hero-wave .shape-fill {
-    fill: #f8fafc;
+    fill: #faf9f6;
   }
 
   /* Contact Methods Section */
   .contact-methods-section {
-    background: #f8fafc;
+    background: #faf9f6;
     padding: 80px 0;
   }
 
@@ -495,7 +495,7 @@
   .contact-method-card h4 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--primary-color);
     margin-bottom: 1rem;
   }
 
@@ -518,13 +518,13 @@
   }
 
   .bg-primary-soft {
-    background-color: rgba(99, 102, 241, 0.1) !important;
+    background-color: rgba(15, 23, 42, 0.08) !important;
   }
 
   .section-title {
     font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 800;
-    color: var(--text-dark);
+    color: var(--primary-color);
     line-height: 1.2;
     margin-bottom: 1.5rem;
   }
@@ -567,7 +567,7 @@
   .detail-content h5 {
     font-size: 1.125rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
   }
 
@@ -634,7 +634,7 @@
   .form-title {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
   }
 
@@ -649,7 +649,7 @@
 
   .modern-contact-form .form-label {
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
     text-transform: uppercase;
@@ -687,7 +687,7 @@
 
   .modern-contact-form .btn-primary:hover {
     background: var(--accent-color);
-    color: var(--text-dark);
+    color: var(--primary-color);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
   }
@@ -722,7 +722,7 @@
     border: none;
     padding: 1.5rem 2rem;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--primary-color);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -730,14 +730,14 @@
   }
 
   .modern-accordion .accordion-button:not(.collapsed) {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
     color: white;
     box-shadow: none;
   }
 
   .modern-accordion .accordion-button:hover {
     background: var(--accent-color);
-    color: var(--text-dark);
+    color: var(--primary-color);
   }
 
   .modern-accordion .accordion-button:not(.collapsed):hover {
@@ -765,7 +765,7 @@
   .accordion-icon {
     width: 40px;
     height: 40px;
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(15, 23, 42, 0.08);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -785,7 +785,7 @@
 
   .modern-accordion .accordion-body {
     padding: 2rem;
-    background: #fafafa;
+    background: #faf9f6;
     border-top: 1px solid var(--border-color);
   }
 
@@ -988,12 +988,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: var(--primary-light);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
+    background: var(--primary-color);
   }
 </style>
 

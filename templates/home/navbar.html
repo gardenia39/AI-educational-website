@@ -36,25 +36,25 @@
 </style>
 
 <header class="section-header">
-  <nav class="navbar navbar-dark navbar-expand-md bg-dark">
+  <nav class="navbar navbar-dark navbar-expand-md" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
     <div class="container">
       <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarCollapse"
         aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-auto" style="gap: 20px;">
-          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">首页</a></li>
+        <ul class="navbar-nav w-100">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}"><i class="fas fa-home mr-1"></i>首页</a></li>
           {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'wishlist' %}">收藏夹 ({{request.user.wishlist.count}})</a>
+          <li class="nav-item"><a class="nav-link" href="{% url 'wishlist' %}"><i class="fas fa-heart mr-1"></i>收藏夹 ({{request.user.wishlist.count}})</a>
           </li>
           {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'wishlist' %}">收藏夹</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'wishlist' %}"><i class="fas fa-heart mr-1"></i>收藏夹</a></li>
           {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'order_history' %}">我的订单</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'product_reviews' %}">我的评价</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">联系我们</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">关于我们</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'order_history' %}"><i class="fas fa-shopping-bag mr-1"></i>我的订单</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'product_reviews' %}"><i class="fas fa-star mr-1"></i>我的评价</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fas fa-envelope mr-1"></i>联系我们</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle mr-1"></i>关于我们</a></li>
         </ul>
       </div>
     </div>
@@ -63,31 +63,11 @@
   <section class="header-main border-bottom">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-lg-2 col-4">
-          <div class="brand-wrap">
-            <a href="{% url 'index' %}" class="brand-link" style="text-decoration: none;">
-              <h2 class="logo-text">AI+</h2>
-            </a>
-          </div>
-        </div>
-        <div class="col-lg-6 col-sm-12">
-          <form method="GET" action="{% url 'product_search' %}" class="search">
-            <div class="input-group w-100">
-              <input type="text" class="form-control" name="q" placeholder="搜索商品" value="{{ query|default:"" }}" />
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <div class="col-lg-4 col-sm-6 col-8">
-          <div class="widgets-wrap float-md-right d-flex align-items-center" style="gap: 20px;">
-
+        <!-- User Actions (Left) -->
+        <div class="col-lg-3 col-md-4 col-sm-6 col-8 order-lg-1">
+          <div class="widgets-wrap d-flex align-items-center" style="gap: 20px;">
             <!-- Cart Icon with badge -->
-            <div class="widget-header" style="position:relative; margin-right: 24px;">
+            <div class="widget-header" style="position:relative; margin-right: 15px;">
               <a href="{% url 'cart' %}" class="icon icon-sm rounded-circle border">
                 <i class="fa fa-shopping-cart"></i>
               </a>
@@ -137,6 +117,29 @@
             </div>
           </div>
         </div>
+
+        <!-- Search Bar (Center) -->
+        <div class="col-lg-7 col-md-6 col-sm-12 order-lg-2 order-3 mt-3 mt-lg-0">
+          <form method="GET" action="{% url 'product_search' %}" class="search">
+            <div class="input-group">
+              <input type="text" class="form-control search-input" name="q" placeholder="搜索课程..." value="{{ query|default:"" }}" />
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Logo (Right) -->
+        <div class="col-lg-2 col-4 order-lg-3 order-1 text-right">
+          <div class="brand-wrap">
+            <a href="{% url 'index' %}" class="brand-link" style="text-decoration: none;">
+              <h2 class="logo-text">AI+</h2>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -145,102 +148,226 @@
 <style>
   /* Unified Color System for Navbar */
   :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
-    --accent-color: #fbbf24;
-    --accent-dark: #f59e0b;
+    --primary-color: #0f172a;
+    --primary-light: #1e293b;
+    --accent-color: #d4af37;
+    --accent-light: #e5c158;
     --text-dark: #1e293b;
     --white: #ffffff;
   }
 
   /* Brand Styling */
+  .brand-wrap {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .brand-link .logo-text {
-    color: var(--primary-color);
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-weight: 800;
-    font-size: 1.75rem;
+    font-size: 2rem;
     margin: 0;
     transition: all 0.3s ease;
   }
 
   .brand-link:hover .logo-text {
-    color: var(--accent-color);
-    transform: scale(1.05);
+    transform: scale(1.08);
+    filter: brightness(1.2);
   }
 
-  /* Search Button */
+  /* Search */
+  .search .input-group {
+    width: 100%;
+  }
+
+  .search-input {
+    height: 44px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px 0 0 10px !important;
+    padding: 0 18px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    outline: none;
+  }
+
   .search .btn-primary {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+    height: 44px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+    border: none;
+    border-radius: 0 10px 10px 0 !important;
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
   }
 
   .search .btn-primary:hover {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: var(--text-dark);
-    transform: scale(1.05);
+    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
   }
 
   /* Navigation Links — white on dark navbar */
+  .navbar-nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar-nav .nav-item {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
   .navbar-nav .nav-link {
-    color: rgba(255,255,255,0.85) !important;
+    color: rgba(255,255,255,0.9) !important;
     font-weight: 500;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
     position: relative;
+    padding: 15px 30px !important;
+    white-space: nowrap;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
 
   .navbar-nav .nav-link:hover {
     color: var(--accent-color) !important;
+    background: rgba(212, 175, 55, 0.1);
   }
 
   .navbar-nav .nav-link::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: 0;
     left: 50%;
     width: 0;
-    height: 2px;
+    height: 3px;
     background: var(--accent-color);
     transition: all 0.3s ease;
     transform: translateX(-50%);
   }
 
   .navbar-nav .nav-link:hover::after {
-    width: 100%;
+    width: 80%;
   }
 
   /* Cart and Profile Icons */
   .icon {
-    color: var(--primary-color);
+    color: var(--primary-light);
+    border-color: #d4af37 !important;
     transition: all 0.3s ease;
   }
 
   .icon:hover {
     color: var(--accent-color);
+    border-color: var(--accent-color) !important;
     transform: scale(1.1);
   }
 
   /* Badge */
-  .badge {
-    background-color: var(--accent-color);
-    color: var(--text-dark);
+  .badge.notify {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: white;
+    font-weight: 600;
+    font-size: 0.7rem;
+    padding: 4px 7px;
   }
 
   /* Welcome text links */
   .text a {
-    color: var(--primary-color);
+    color: var(--accent-color);
     text-decoration: none;
+    font-weight: 500;
     transition: all 0.3s ease;
   }
 
   .text a:hover {
-    color: var(--accent-color);
+    color: #f4d03f;
+    text-decoration: underline;
+  }
+
+  /* Widgets wrap adjustments */
+  .widgets-wrap {
+    justify-content: flex-start;
   }
 
   /* Responsive adjustments */
+  @media (max-width: 991px) {
+    .widgets-wrap {
+      justify-content: flex-start;
+    }
+
+    .search .input-group {
+      max-width: 100%;
+    }
+
+    .brand-wrap {
+      justify-content: flex-end;
+    }
+    .navbar-nav {
+      flex-direction: column !important;
+      gap: 0;
+    }
+
+    .navbar-nav .nav-item {
+      flex: none;
+      width: 100%;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .navbar-nav .nav-item:last-child {
+      border-bottom: none;
+    }
+
+    .navbar-nav .nav-link {
+      padding: 15px 20px !important;
+    }
+
+    .navbar-nav .nav-link:hover {
+      background: rgba(212, 175, 55, 0.15);
+    }
+
+    .navbar-nav .nav-link::after {
+      display: none;
+    }
+  }
+
   @media (max-width: 768px) {
     .brand-link .logo-text {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+    }
+
+    .brand-wrap {
+      justify-content: flex-end;
+    }
+
+    .widgets-wrap {
+      justify-content: flex-start;
+    }
+
+    .search-input {
+      height: 40px;
+      font-size: 0.9rem;
+    }
+
+    .search .btn-primary {
+      height: 40px;
+      padding: 0 16px;
     }
   }
 </style>

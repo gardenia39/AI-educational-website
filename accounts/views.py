@@ -258,11 +258,11 @@ def remove_cart(request, uid):
     try:
         cart_item = get_object_or_404(CartItem, uid=uid)
         cart_item.delete()
-        messages.success(request, 'Item removed from cart.')
+        messages.success(request, '商品已从购物车中移除。')
 
     except Exception as e:
         print(e)
-        messages.warning(request, 'Error removing item from cart.')
+        messages.warning(request, '移除商品失败。')
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -272,7 +272,7 @@ def remove_coupon(request, cart_id):
     cart.coupon = None
     cart.save()
 
-    messages.success(request, 'Coupon Removed.')
+    messages.success(request, '优惠券已移除。')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 

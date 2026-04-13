@@ -4,58 +4,191 @@
 
 <style>
   :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --accent: #fbbf24;
+    --primary-color: #0f172a;
+    --primary-light: #1e293b;
+    --primary-dark: #020617;
+    --accent-color: #d4af37;
+    --accent-dark: #b8941f;
     --text-dark: #1e293b;
     --text-muted: #64748b;
-    --radius: 14px;
+    --border-color: #e2e8f0;
+    --bg-warm: #faf9f6;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
-  .page-header {
-    padding: 24px 0 16px;
-    border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 24px;
+  .wishlist-page {
+    background: var(--bg-warm);
+    min-height: 100vh;
+    padding-bottom: 4rem;
   }
 
-  .page-header h2 {
-    font-size: 1.6rem;
-    font-weight: 800;
+  /* 页面头部 */
+  .wishlist-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .wishlist-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" width="30" height="30" patternUnits="userSpaceOnUse"><text x="5" y="20" font-size="12" fill="rgba(212,175,55,0.15)">❤</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+  }
+
+  .wishlist-header .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-title i {
+    color: var(--accent-color);
+    margin-right: 1rem;
+  }
+
+  .page-subtitle {
+    opacity: 0.9;
+    font-size: 1.1rem;
+  }
+
+  /* 统计栏 */
+  .stats-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 200px;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .stat-icon.heart {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+  }
+
+  .stat-icon.money {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: white;
+  }
+
+  .stat-icon.cart {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+  }
+
+  .stat-info h4 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-info span {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  /* 收藏列表卡片 */
+  .wishlist-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+  }
+
+  .wishlist-header-bar {
+    padding: 1.5rem 2rem;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .wishlist-header-bar h5 {
+    font-weight: 700;
     color: var(--text-dark);
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
-  .page-header .item-count {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-top: 4px;
+  .wishlist-header-bar h5 i {
+    color: var(--accent-color);
   }
 
   /* 收藏卡片 */
   .wishlist-card {
     border: none;
-    border-radius: var(--radius);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    overflow: hidden;
-    transition: box-shadow 0.25s, transform 0.25s;
-    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    padding: 0;
+    padding: 1.5rem 2rem;
+    transition: all 0.3s ease;
+    background: white;
+  }
+
+  .wishlist-card:last-child {
+    border-bottom: none;
   }
 
   .wishlist-card:hover {
-    box-shadow: 0 6px 24px rgba(99,102,241,0.14);
-    transform: translateY(-2px);
+    background: rgba(212, 175, 55, 0.02);
   }
 
   /* 图片 */
   .wishlist-img-wrap {
     flex-shrink: 0;
-    width: 130px;
-    height: 130px;
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
     overflow: hidden;
-    background: #f1f5f9;
+    background: var(--bg-warm);
+    box-shadow: var(--shadow-sm);
   }
 
   .wishlist-img-wrap img {
@@ -71,117 +204,298 @@
 
   /* 信息区 */
   .wishlist-info {
-    padding: 16px 20px;
+    padding: 0 1.5rem;
     flex: 1;
     min-width: 0;
   }
 
   .wishlist-info .product-link {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-dark);
     text-decoration: none;
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 0.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.3s;
   }
 
-  .wishlist-info .product-link:hover { color: var(--primary); }
+  .wishlist-info .product-link:hover {
+    color: var(--accent-dark);
+  }
+
+  .wishlist-info .product-meta {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
 
   .wishlist-info .product-price {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 800;
-    color: var(--primary);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .wishlist-info .product-price .original {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-weight: 500;
   }
 
   /* 操作按钮 */
   .wishlist-actions {
-    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.75rem;
     flex-shrink: 0;
-  }
-
-  .btn-remove {
-    background: #fff;
-    color: var(--text-muted);
-    border: 1.5px solid #e2e8f0;
-    border-radius: 50px;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.88rem;
-    white-space: nowrap;
-    transition: all 0.25s;
-    width: 100%;
+    min-width: 160px;
   }
 
   .btn-move-cart {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
     border: none;
-    border-radius: 50px;
-    padding: 0.5rem 1.2rem;
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
     font-weight: 600;
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     white-space: nowrap;
-    transition: all 0.25s;
-    box-shadow: 0 3px 10px rgba(99,102,241,0.25);
-    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-move-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: white;
+  }
+
+  .btn-move-cart i {
+    font-size: 0.9rem;
+  }
+
+  .btn-remove {
+    background: white;
+    color: var(--text-muted);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
   .btn-remove:hover {
-    border-color: #f87171;
-    color: #ef4444;
-    background: #fff5f5;
+    border-color: #ef4444;
+    color: #dc2626;
+    background: #fef2f2;
   }
 
   /* 空收藏 */
   .empty-wishlist {
     text-align: center;
-    padding: 80px 20px;
+    padding: 5rem 2rem;
   }
 
-  .empty-wishlist i {
+  .empty-state-icon {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, var(--bg-warm) 0%, white 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .empty-state-icon i {
     font-size: 3.5rem;
-    color: #e2e8f0;
-    margin-bottom: 20px;
+    color: var(--border-color);
   }
 
-  .empty-wishlist h4 { color: var(--text-dark); font-weight: 700; margin-bottom: 8px; }
-  .empty-wishlist p  { color: var(--text-muted); margin-bottom: 24px; }
+  .empty-wishlist h3 {
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+  }
+
+  .empty-wishlist p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+  }
 
   .btn-go-shop {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
     border: none;
-    border-radius: 50px;
-    padding: 0.7rem 2rem;
-    font-weight: 700;
-    transition: all 0.25s;
-    box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+    border-radius: 12px;
+    padding: 1rem 2.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .btn-go-shop:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(99,102,241,0.4);
-    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    color: white;
+  }
+
+  /* 响应式 */
+  @media (max-width: 992px) {
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .wishlist-card {
+      padding: 1.25rem;
+    }
+
+    .wishlist-img-wrap {
+      width: 100px;
+      height: 100px;
+    }
+
+    .wishlist-info {
+      padding: 0 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .wishlist-header {
+      padding: 2rem 0;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+    }
+
+    .wishlist-card {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .wishlist-img-wrap {
+      width: 80px;
+      height: 80px;
+    }
+
+    .wishlist-info {
+      flex: 1;
+      min-width: 200px;
+      padding: 0;
+    }
+
+    .wishlist-actions {
+      flex-direction: row;
+      width: 100%;
+      min-width: auto;
+    }
+
+    .btn-move-cart,
+    .btn-remove {
+      flex: 1;
+    }
+
+    .stat-card {
+      min-width: 150px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .wishlist-header-bar {
+      padding: 1.25rem;
+    }
+
+    .wishlist-card {
+      padding: 1rem;
+    }
+
+    .wishlist-info .product-link {
+      font-size: 1rem;
+    }
+
+    .wishlist-info .product-price {
+      font-size: 1.1rem;
+    }
   }
 </style>
 
-<section class="section-content padding-y">
+<div class="wishlist-page">
+  <!-- 页面头部 -->
+  <div class="wishlist-header">
+    <div class="container">
+      <h1 class="page-title">
+        <i class="fas fa-heart"></i>我的收藏
+      </h1>
+      <p class="page-subtitle">您心仪的商品都在这，随时购买或分享</p>
+    </div>
+  </div>
+
   <div class="container">
     {% include 'base/alert.html' %}
 
-    <div class="page-header">
-      <h2><i class="fas fa-heart mr-2" style="color:var(--primary);"></i>我的收藏</h2>
-      {% if wishlist_items %}
-      <p class="item-count">共 {{ wishlist_items|length }} 件收藏商品</p>
-      {% endif %}
+    {% if wishlist_items %}
+    <!-- 统计栏 -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon heart">
+          <i class="fas fa-heart"></i>
+        </div>
+        <div class="stat-info">
+          <h4>{{ wishlist_items|length }}</h4>
+          <span>收藏商品</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon money">
+          <i class="fas fa-yen-sign"></i>
+        </div>
+        <div class="stat-info">
+          <h4>{% with total=0 %}{% for item in wishlist_items %}{% with total=total|add:item.product.price %}{% endwith %}{% endfor %}{{ total|floatformat:"-2" }}{% endwith %}</h4>
+          <span>商品总价值</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon cart">
+          <i class="fas fa-shopping-cart"></i>
+        </div>
+        <div class="stat-info">
+          <h4>一键购买</h4>
+          <span>快速加购</span>
+        </div>
+      </div>
     </div>
 
-    {% if wishlist_items %}
+    <!-- 收藏列表 -->
+    <div class="wishlist-container">
+      <div class="wishlist-header-bar">
+        <h5><i class="fas fa-list"></i>收藏列表</h5>
+        <span class="text-muted" style="font-size: 0.875rem;">共 {{ wishlist_items|length }} 件商品</span>
+      </div>
+
       {% for item in wishlist_items %}
       <div class="wishlist-card">
         <!-- 商品图片 -->
@@ -196,7 +510,16 @@
           <a href="{% url 'get_product' item.product.slug %}" class="product-link">
             {{ item.product.product_name }}
           </a>
-          <div class="product-price">¥{{ item.product.price|floatformat:"-2" }}</div>
+          <div class="product-meta">
+            <i class="fas fa-tag me-1" style="color: var(--accent-color);"></i>
+            {{ item.product.category|default:"课程" }}
+          </div>
+          <div class="product-price">
+            <span>¥{{ item.product.price|floatformat:"-2" }}</span>
+            {% if item.product.original_price %}
+            <span class="original">¥{{ item.product.original_price|floatformat:"-2" }}</span>
+            {% endif %}
+          </div>
         </div>
 
         <!-- 操作按钮 -->
@@ -204,33 +527,39 @@
           <form method="POST" action="{% url 'move_to_cart' item.product.uid %}">
             {% csrf_token %}
             <button type="submit" class="btn-move-cart">
-              <i class="fas fa-shopping-cart mr-1"></i>加入购物车
+              <i class="fas fa-shopping-cart"></i>加入购物车
             </button>
           </form>
 
           <form method="POST" action="{% url 'remove_from_wishlist' item.product.uid %}?size={{ item.size_variant.size_name }}">
             {% csrf_token %}
             <button type="submit" class="btn-remove">
-              <i class="fas fa-trash-alt mr-1"></i>删除
+              <i class="fas fa-trash-alt"></i>移除
             </button>
           </form>
         </div>
       </div>
       {% endfor %}
+    </div>
 
     {% else %}
-    <div class="empty-wishlist">
-      <i class="fas fa-heart-broken"></i>
-      <h4>收藏夹还是空的</h4>
-      <p>发现心仪的商品，点击收藏以便之后购买</p>
-      <a href="{% url 'index' %}" class="btn-go-shop">
-        <i class="fas fa-shopping-bag mr-2"></i>去逛逛
-      </a>
+    <!-- 空状态 -->
+    <div class="wishlist-container">
+      <div class="empty-wishlist">
+        <div class="empty-state-icon">
+          <i class="fas fa-heart-broken"></i>
+        </div>
+        <h3>收藏夹还是空的</h3>
+        <p>发现心仪的商品，点击 ❤️ 收藏以便之后购买</p>
+        <a href="{% url 'index' %}" class="btn-go-shop">
+          <i class="fas fa-shopping-bag"></i>去逛逛
+        </a>
+      </div>
     </div>
     {% endif %}
 
   </div>
-</section>
+</div>
 
 {% endblock %}
 {% block footer %}{% endblock %}

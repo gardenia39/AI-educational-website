@@ -6,142 +6,239 @@
 
 {% block start %} {% load static %}
 
-<div class="container mt-4">
-  <h3 class="form-group mb-4">商品评价</h3>
+<!-- Header Section -->
+<div class="reviews-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <h1 class="header-title">我的评价</h1>
+      <p class="header-subtitle">分享您的使用体验，帮助其他用户做出更好的选择</p>
+    </div>
+  </div>
+  <!-- Decorative Pattern -->
+  <div class="header-pattern">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="star-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M30 5 L35 20 L50 20 L38 30 L43 45 L30 35 L17 45 L22 30 L10 20 L25 20 Z" fill="rgba(212,175,55,0.08)"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#star-pattern)"/>
+    </svg>
+  </div>
 </div>
 
-<div class="container my-3 p-4 rounded">
+<!-- Stats Bar -->
+{% if reviews %}
+<div class="stats-bar">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-comment-dots"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-value">{{ reviews|length }}</span>
+            <span class="stat-label">评价总数</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-value" id="avgRating">-</span>
+            <span class="stat-label">平均评分</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-thumbs-up"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">好评率</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="container my-4">
   {% include 'base/alert.html' %}
+
   {% if reviews %}
-  <div class="row">
+  <div class="reviews-grid">
     {% for review in reviews %}
-    <div class="col-md-6 col-lg-4 mb-4">
-      <div class="card h-100 shadow-sm rounded">
-        <div class="row g-0 align-items-center">
-          <!-- Product Image -->
-          <div class="col-4">
-            <img src="{{ review.product.product_images.first.image.url }}" class="img-fluid rounded-start"
-              alt="{{ review.product.product_name }}" style="width: 100%; height: auto; object-fit: cover" />
-          </div>
+    <div class="review-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:0 }}00">
+      <!-- Product Section -->
+      <div class="product-section">
+        <div class="product-image">
+          <img src="{{ review.product.product_images.first.image.url }}" alt="{{ review.product.product_name }}" />
+        </div>
+        <div class="product-info">
+          <h5 class="product-name">
+            <a href="{% url 'get_product' review.product.slug %}">{{ review.product.product_name }}</a>
+          </h5>
+          <span class="review-date">
+            <i class="far fa-calendar-alt me-1"></i>{{ review.date_added|date:"Y年n月j日" }}
+          </span>
+        </div>
+      </div>
 
-          <!-- Review Details -->
-          <div class="col-8">
-            <div class="card-body">
-              <h5 class="card-title">
-                <a href="{% url 'get_product' review.product.slug %}" class="text-decoration-none">
-                  {{ review.product.product_name }}
-                </a>
-              </h5>
-              <small class="text-muted">发布于 {{ review.date_added|date:"Y年n月j日" }}</small>
-              <p class="mt-2"><strong>评分：</strong>{{ review.stars }}/5</p>
-              <p class="card-text" title="{{ review.content }}">
-                <strong>评论：</strong>{{ review.content|truncatechars:50 }}
-              </p>
-            </div>
+      <!-- Divider -->
+      <div class="review-divider"></div>
+
+      <!-- Review Content -->
+      <div class="review-content-section">
+        <div class="rating-display">
+          <span class="rating-value">{{ review.stars }}</span>
+          <span class="rating-max">/5</span>
+          <div class="rating-stars">
+            {% for i in "12345"|make_list %}
+              {% if forloop.counter <= review.stars %}
+                <i class="fas fa-star star-filled"></i>
+              {% else %}
+                <i class="far fa-star star-empty"></i>
+              {% endif %}
+            {% endfor %}
           </div>
         </div>
+        <p class="review-text">{{ review.content }}</p>
+      </div>
 
-        <!-- Buttons -->
-        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
-          <button class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-            style="width: 45%; border-radius: 30px; font-weight: 500" data-bs-toggle="modal"
-            data-bs-target="#editReviewModal" data-review-id="{{ review.uid }}" data-review-stars="{{ review.stars }}"
-            data-review-content="{{ review.content }}">
-            <i class="bi bi-pencil-square me-1"></i> 编辑
-          </button>
-          <form method="POST" action="{% url 'delete_review' review.product.slug review.uid %}"
-            style="display: inline; width: 45%">
-            {% csrf_token %}
-            <button class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-              style="width: 100%; border-radius: 30px; font-weight: 500" data-bs-toggle="modal"
-              data-bs-target="#deleteReviewModal"
-              onclick="setDeleteAction('{% url 'delete_review' review.product.slug review.uid %}')" type="button">
-              <i class="bi bi-trash-fill me-1"></i> 删除
-            </button>
-          </form>
-        </div>
+      <!-- Action Buttons -->
+      <div class="review-actions">
+        <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editReviewModal"
+          data-review-id="{{ review.uid }}" data-review-stars="{{ review.stars }}" data-review-content="{{ review.content }}">
+          <i class="fas fa-pen"></i>
+          <span>编辑</span>
+        </button>
+        <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteReviewModal"
+          onclick="setDeleteAction('{% url 'delete_review' review.product.slug review.uid %}')">
+          <i class="fas fa-trash-alt"></i>
+          <span>删除</span>
+        </button>
       </div>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <div class="text-center py-5">
-    <div class="empty-state-container">
-      <div class="empty-state-icon mb-4">
-        <i class="fas fa-star" style="font-size: 4rem; color: #e2e8f0;"></i>
+  <!-- Empty State -->
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <div class="icon-circle">
+        <i class="fas fa-star"></i>
       </div>
-      <h3 class="empty-state-title mb-3" style="color: #64748b; font-weight: 600;">暂无评价</h3>
-      <p class="empty-state-subtitle mb-4" style="color: #94a3b8; font-size: 1.1rem;">
-        您还没有写过任何商品评价
-      </p>
-      <a href="{% url 'index' %}" class="btn btn-primary btn-lg px-4 py-2 start-shopping-btn">
-        <i class="fas fa-book me-2"></i>去逛逛
-      </a>
     </div>
+    <h3 class="empty-state-title">暂无评价</h3>
+    <p class="empty-state-subtitle">您还没有对任何商品进行过评价</p>
+    <a href="{% url 'index' %}" class="btn-browse">
+      <i class="fas fa-shopping-bag me-2"></i>去选购商品
+    </a>
   </div>
   {% endif %}
+</div>
 
-  <!-- Delete Review Confirmation Modal -->
-  <div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteReviewModalLabel">
-            确认删除
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Delete Review Confirmation Modal -->
+<div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-modal">
+      <div class="modal-header">
+        <div class="modal-icon warning">
+          <i class="fas fa-exclamation-triangle"></i>
         </div>
-        <div class="modal-body">
-          您确定要删除这条商品评价吗？
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            取消
-          </button>
-          <form id="deleteReviewForm" method="POST" style="display: inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-primary delete-review-btn">确认删除</button>
-          </form>
-        </div>
+        <h5 class="modal-title" id="deleteReviewModalLabel">确认删除评价</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    </div>
-  </div>
-
-  <!-- Edit Review Modal -->
-  <div class="modal fade" id="editReviewModal" tabindex="-1" aria-labelledby="editReviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editReviewModalLabel">编辑评价</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="editReviewForm" method="POST">
+      <div class="modal-body">
+        <p class="modal-text">您确定要删除这条商品评价吗？此操作不可恢复。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">取消</button>
+        <form id="deleteReviewForm" method="POST" style="display: inline">
           {% csrf_token %}
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="editStars" class="form-label">评分</label>
-              <input type="number" class="form-control" id="editStars" name="stars" min="1" max="5" required />
-            </div>
-            <div class="mb-3">
-              <label for="editContent" class="form-label">评论内容</label>
-              <textarea class="form-control" id="editContent" name="content" rows="4" required></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              取消
-            </button>
-            <button type="submit" class="btn btn-primary">保存修改</button>
-          </div>
+          <button type="submit" class="btn-modal-danger">确认删除</button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Edit Review Modal -->
+<div class="modal fade" id="editReviewModal" tabindex="-1" aria-labelledby="editReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-modal">
+      <div class="modal-header">
+        <div class="modal-icon edit">
+          <i class="fas fa-pen"></i>
+        </div>
+        <h5 class="modal-title" id="editReviewModalLabel">编辑评价</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editReviewForm" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group mb-4">
+            <label for="editStars" class="form-label custom-label">
+              <i class="fas fa-star me-2"></i>评分
+            </label>
+            <div class="rating-input">
+              <input type="range" class="form-range" id="editStars" name="stars" min="1" max="5" step="1" value="5" required>
+              <div class="rating-labels">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+              </div>
+              <div class="rating-preview" id="ratingPreview">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="editContent" class="form-label custom-label">
+              <i class="fas fa-comment me-2"></i>评价内容
+            </label>
+            <textarea class="form-control custom-textarea" id="editContent" name="content" rows="4"
+              placeholder="分享您的使用体验..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="submit" class="btn-modal-primary">保存修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
+  // Calculate average rating
   document.addEventListener("DOMContentLoaded", function () {
+    const reviewCards = document.querySelectorAll('.review-card');
+    if (reviewCards.length > 0) {
+      let totalStars = 0;
+      let count = 0;
+      {% for review in reviews %}
+        totalStars += {{ review.stars }};
+        count++;
+      {% endfor %}
+      const avgRating = (totalStars / count).toFixed(1);
+      document.getElementById('avgRating').textContent = avgRating;
+    }
+
+    // Edit modal handler
     const editReviewModal = document.getElementById("editReviewModal");
     editReviewModal.addEventListener("show.bs.modal", function (event) {
       const button = event.relatedTarget;
@@ -156,7 +253,35 @@
       starsInput.value = reviewStars;
       contentTextarea.value = reviewContent;
       form.action = "/product/product-reviews/edit/" + reviewId + "/";
+      updateRatingPreview(reviewStars);
     });
+
+    // Rating preview updater
+    const starsInput = document.getElementById('editStars');
+    starsInput.addEventListener('input', function() {
+      updateRatingPreview(this.value);
+    });
+
+    function updateRatingPreview(value) {
+      const preview = document.getElementById('ratingPreview');
+      const stars = preview.querySelectorAll('i');
+      stars.forEach((star, index) => {
+        if (index < value) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    }
+
+    // Initialize AOS
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 50
+      });
+    }
   });
 
   function setDeleteAction(actionUrl) {
@@ -166,35 +291,624 @@
 </script>
 
 <style>
-  /* Unified Color System */
+  /* Color System */
   :root {
-    --primary-color: #6366f1;
-    --accent-color: #fbbf24;
-    --text-dark: #1e293b;
+    --primary-color: #0f172a;
+    --primary-light: #1e293b;
+    --primary-lighter: #334155;
+    --accent-color: #d4af37;
+    --accent-light: #e5c158;
+    --accent-gradient: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+    --bg-warm: #faf9f6;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --shadow-soft: 0 4px 20px rgba(15, 23, 42, 0.08);
+    --shadow-medium: 0 8px 30px rgba(15, 23, 42, 0.12);
+    --shadow-hover: 0 12px 40px rgba(15, 23, 42, 0.15);
   }
 
-  .delete-review-btn {
-    border-color: var(--primary-color);
+  body {
+    background-color: var(--bg-warm);
+  }
+
+  /* Header Section */
+  .reviews-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, #1a365d 100%);
+    padding: 60px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--accent-gradient);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+  }
+
+  .header-icon i {
+    font-size: 36px;
     color: var(--primary-color);
+  }
+
+  .header-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .header-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .header-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* Stats Bar */
+  .stats-bar {
+    background: white;
+    padding: 24px 0;
+    margin-top: -30px;
+    position: relative;
+    z-index: 10;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--bg-warm) 0%, white 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.1);
     transition: all 0.3s ease;
   }
 
-  .delete-review-btn:hover {
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--accent-gradient);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon i {
+    font-size: 22px;
+    color: var(--primary-color);
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* Reviews Grid */
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+  }
+
+  /* Review Card */
+  .review-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(212, 175, 55, 0.05);
+  }
+
+  .review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(212, 175, 55, 0.15);
+  }
+
+  .product-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--bg-warm) 0%, white 100%);
+  }
+
+  .product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .review-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+
+  .product-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+  }
+
+  .product-name a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-name a:hover {
+    color: var(--accent-color);
+  }
+
+  .review-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+  }
+
+  .review-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    margin: 0 20px;
+  }
+
+  .review-content-section {
+    padding: 20px;
+  }
+
+  .rating-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .rating-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1;
+  }
+
+  .rating-max {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-right: 12px;
+  }
+
+  .rating-stars {
+    display: flex;
+    gap: 3px;
+  }
+
+  .star-filled {
+    color: #ffc107;
+    font-size: 1.1rem;
+  }
+
+  .star-empty {
+    color: #e2e8f0;
+    font-size: 1.1rem;
+  }
+
+  .review-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .review-actions {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 20px;
+  }
+
+  .btn-edit, .btn-delete {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    color: white;
+  }
+
+  .btn-edit:hover {
+    background: var(--accent-gradient);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  }
+
+  .btn-delete {
+    background: transparent;
+    color: #ef4444;
+    border: 1.5px solid #ef4444;
+  }
+
+  .btn-delete:hover {
+    background: #ef4444;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: var(--shadow-soft);
+    margin: 40px 0;
+  }
+
+  .empty-state-icon {
+    margin-bottom: 24px;
+  }
+
+  .icon-circle {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--bg-warm) 0%, #f1f5f9 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 3px dashed rgba(212, 175, 55, 0.3);
+  }
+
+  .icon-circle i {
+    font-size: 48px;
+    color: var(--accent-color);
+    opacity: 0.6;
+  }
+
+  .empty-state-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .empty-state-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .btn-browse {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2);
+  }
+
+  .btn-browse:hover {
+    background: var(--accent-gradient);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+  }
+
+  /* Custom Modal */
+  .custom-modal {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .custom-modal .modal-header {
+    background: linear-gradient(135deg, var(--bg-warm) 0%, white 100%);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    padding: 24px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .modal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .modal-icon.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  }
+
+  .modal-icon.warning i {
+    color: #f59e0b;
+    font-size: 28px;
+  }
+
+  .modal-icon.edit {
+    background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
+  }
+
+  .modal-icon.edit i {
+    color: #3b82f6;
+    font-size: 24px;
+  }
+
+  .custom-modal .modal-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .custom-modal .modal-body {
+    padding: 24px;
+  }
+
+  .modal-text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .custom-modal .modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+    gap: 12px;
+  }
+
+  .btn-modal-secondary, .btn-modal-danger, .btn-modal-primary {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-modal-secondary {
+    background: #f1f5f9;
+    color: var(--text-secondary);
+  }
+
+  .btn-modal-secondary:hover {
+    background: #e2e8f0;
+  }
+
+  .btn-modal-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+  }
+
+  .btn-modal-danger:hover {
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-modal-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+  }
+
+  .btn-modal-primary:hover {
+    background: var(--accent-gradient);
+    color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  }
+
+  /* Form Styling */
+  .custom-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .custom-label i {
+    color: var(--accent-color);
+  }
+
+  .custom-textarea {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    resize: none;
+  }
+
+  .custom-textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+    outline: none;
+  }
+
+  .rating-input {
+    padding: 16px;
+    background: var(--bg-warm);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .form-range {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .form-range::-webkit-slider-thumb {
     background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: var(--text-dark);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
   }
 
-  .start-shopping-btn {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    transition: all 0.3s ease;
+  .form-range::-moz-range-thumb {
+    background: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
   }
 
-  .start-shopping-btn:hover {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: var(--text-dark);
+  .rating-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .rating-preview {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .rating-preview i {
+    font-size: 1.5rem;
+    color: #e2e8f0;
+    transition: color 0.2s ease;
+  }
+
+  .rating-preview i.active {
+    color: #ffc107;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .reviews-header {
+      padding: 40px 0;
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+    }
+
+    .header-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .header-icon i {
+      font-size: 28px;
+    }
+
+    .stats-bar {
+      margin-top: -20px;
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+
+    .stat-card {
+      padding: 16px;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+    }
+
+    .reviews-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .product-image {
+      width: 60px;
+      height: 60px;
+    }
+
+    .rating-value {
+      font-size: 1.6rem;
+    }
   }
 </style>
 
