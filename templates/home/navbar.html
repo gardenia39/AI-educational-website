@@ -1,373 +1,352 @@
 {% load static %}
 
-<style>
-  @media (max-width: 992px) {
-    .widgets-wrap {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      text-align: left;
-      flex-wrap: nowrap;
-    }
+<!-- Top Navigation Bar -->
+<nav class="top-navbar">
+  <div class="container">
+    <div class="top-nav-wrapper">
+      <!-- Logo -->
+      <a href="{% url 'index' %}" class="top-nav-logo">
+        <i class="fas fa-brain"></i>
+        <span>AI+</span>
+      </a>
 
-    .widget-header {
-      margin-right: 10px;
-    }
+      <!-- Navigation Links -->
+      <div class="top-nav-links">
+        <a href="{% url 'index' %}" class="top-nav-link {% if request.path == '/' %}active{% endif %}">
+          <i class="fas fa-home"></i>
+          <span>首页</span>
+        </a>
+        <a href="{% url 'wishlist' %}" class="top-nav-link {% if 'wishlist' in request.path %}active{% endif %}">
+          <i class="fas fa-heart"></i>
+          <span>收藏夹</span>
+        </a>
+        <a href="{% url 'order_history' %}" class="top-nav-link {% if 'order-history' in request.path %}active{% endif %}">
+          <i class="fas fa-shopping-bag"></i>
+          <span>我的订单</span>
+        </a>
+        <a href="{% url 'product_reviews' %}" class="top-nav-link {% if 'product-reviews' in request.path %}active{% endif %}">
+          <i class="fas fa-star"></i>
+          <span>我的评价</span>
+        </a>
+        <a href="{% url 'contact' %}" class="top-nav-link {% if 'contact' in request.path %}active{% endif %}">
+          <i class="fas fa-envelope"></i>
+          <span>联系我们</span>
+        </a>
+        <a href="{% url 'about' %}" class="top-nav-link {% if 'about' in request.path %}active{% endif %}">
+          <i class="fas fa-info-circle"></i>
+          <span>关于我们</span>
+        </a>
+      </div>
 
-    .icontext {
-      display: flex;
-      align-items: center;
-    }
-
-    .icontext .text {
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .text span {
-      display: block;
-    }
-
-    .text div {
-      display: inline;
-    }
-  }
-</style>
-
-<header class="section-header">
-  <nav class="navbar navbar-dark navbar-expand-md" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-    <div class="container">
-      <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      <!-- Mobile Menu Toggle -->
+      <button class="top-nav-toggle d-lg-none" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
       </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav w-100">
-          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}"><i class="fas fa-home mr-1"></i>首页</a></li>
-          {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'wishlist' %}"><i class="fas fa-heart mr-1"></i>收藏夹 ({{request.user.wishlist.count}})</a>
-          </li>
-          {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'wishlist' %}"><i class="fas fa-heart mr-1"></i>收藏夹</a></li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'order_history' %}"><i class="fas fa-shopping-bag mr-1"></i>我的订单</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'product_reviews' %}"><i class="fas fa-star mr-1"></i>我的评价</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fas fa-envelope mr-1"></i>联系我们</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle mr-1"></i>关于我们</a></li>
-        </ul>
-      </div>
     </div>
-  </nav>
+  </div>
 
-  <section class="header-main border-bottom">
-    <div class="container">
-      <div class="row align-items-center">
-        <!-- User Actions (Left) -->
-        <div class="col-lg-3 col-md-4 col-sm-6 col-8 order-lg-1">
-          <div class="widgets-wrap d-flex align-items-center" style="gap: 20px;">
-            <!-- Cart Icon with badge -->
-            <div class="widget-header" style="position:relative; margin-right: 15px;">
-              <a href="{% url 'cart' %}" class="icon icon-sm rounded-circle border">
-                <i class="fa fa-shopping-cart"></i>
-              </a>
-              {% if user.is_authenticated %}
-              <span class="badge badge-pill badge-danger notify">
-                {{request.user.profile.get_cart_count}}
-              </span>
-              {% else %}
-              <span class="badge badge-pill badge-danger notify"></span>
-              {% endif %}
-            </div>
-
-            <!-- Profile Icon -->
-            <div class="widget-header d-flex align-items-center" style="gap: 10px;">
-              {% if user.is_authenticated %}
-              {% if user.profile.profile_image %}
-              <a href="{% url 'profile' username=user.username %}" class="icon icon-sm rounded-circle border flex-shrink-0">
-                <img src="{{ user.profile.profile_image.url }}" alt="Profile Image" class="rounded-circle" width="42"
-                  height="42" />
-              </a>
-              {% else %}
-              <a href="{% url 'profile' username=user.username %}" class="icon icon-sm rounded-circle border flex-shrink-0">
-                <i class="fa fa-user"></i>
-              </a>
-              {% endif %}
-              {% else %}
-              <a href="{% url 'login' %}" class="icon icon-sm rounded-circle border flex-shrink-0">
-                <i class="fa fa-user"></i>
-              </a>
-              {% endif %}
-
-              <!-- Welcome Text and Logout Link -->
-              <div class="text">
-                {% if request.user.is_authenticated %}
-                <span class="text-muted" style="white-space:nowrap;">欢迎, {{ request.user }}!</span>
-                <div>
-                  <a href="{% url 'logout' %}">退出</a>
-                </div>
-                {% else %}
-                <span class="text-muted">欢迎</span>
-                <div>
-                  <a href="{% url 'login' %}">登录</a> |
-                  <a href="{% url 'register' %}">注册</a>
-                </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Search Bar (Center) -->
-        <div class="col-lg-7 col-md-6 col-sm-12 order-lg-2 order-3 mt-3 mt-lg-0">
-          <form method="GET" action="{% url 'product_search' %}" class="search">
-            <div class="input-group">
-              <input type="text" class="form-control search-input" name="q" placeholder="搜索课程..." value="{{ query|default:"" }}" />
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <!-- Logo (Right) -->
-        <div class="col-lg-2 col-4 order-lg-3 order-1 text-right">
-          <div class="brand-wrap">
-            <a href="{% url 'index' %}" class="brand-link" style="text-decoration: none;">
-              <h2 class="logo-text">AI+</h2>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</header>
+  <!-- Mobile Dropdown Menu -->
+  <div class="top-nav-mobile d-lg-none" id="topNavMobile">
+    <a href="{% url 'index' %}" class="{% if request.path == '/' %}active{% endif %}">
+      <i class="fas fa-home"></i> 首页
+    </a>
+    <a href="{% url 'wishlist' %}" class="{% if 'wishlist' in request.path %}active{% endif %}">
+      <i class="fas fa-heart"></i> 收藏夹
+    </a>
+    <a href="{% url 'order_history' %}" class="{% if 'order-history' in request.path %}active{% endif %}">
+      <i class="fas fa-shopping-bag"></i> 我的订单
+    </a>
+    <a href="{% url 'product_reviews' %}" class="{% if 'product-reviews' in request.path %}active{% endif %}">
+      <i class="fas fa-star"></i> 我的评价
+    </a>
+    <a href="{% url 'contact' %}" class="{% if 'contact' in request.path %}active{% endif %}">
+      <i class="fas fa-envelope"></i> 联系我们
+    </a>
+    <a href="{% url 'about' %}" class="{% if 'about' in request.path %}active{% endif %}">
+      <i class="fas fa-info-circle"></i> 关于我们
+    </a>
+  </div>
+</nav>
 
 <style>
-  /* Unified Color System for Navbar */
-  :root {
-    --primary-color: #0f172a;
-    --primary-light: #1e293b;
-    --accent-color: #d4af37;
-    --accent-light: #e5c158;
-    --text-dark: #1e293b;
-    --white: #ffffff;
+  /* ========== Top Navigation ========== */
+  .top-navbar {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, transparent, #d4af37, transparent) 1;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
 
-  /* Brand Styling */
-  .brand-wrap {
+  .top-nav-wrapper {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
   }
 
-  .brand-link .logo-text {
+  /* Logo */
+  .top-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none !important;
+    color: #d4af37;
+    font-size: 1.4rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .top-nav-logo i {
+    font-size: 1.6rem;
     background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-weight: 800;
-    font-size: 2rem;
-    margin: 0;
-    transition: all 0.3s ease;
   }
 
-  .brand-link:hover .logo-text {
-    transform: scale(1.08);
-    filter: brightness(1.2);
-  }
-
-  /* Search */
-  .search .input-group {
-    width: 100%;
-  }
-
-  .search-input {
-    height: 44px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px 0 0 10px !important;
-    padding: 0 18px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-  }
-
-  .search-input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
-    outline: none;
-  }
-
-  .search .btn-primary {
-    height: 44px;
-    padding: 0 20px;
+  .top-nav-logo span {
     background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
-    border: none;
-    border-radius: 0 10px 10px 0 !important;
-    color: #0f172a;
-    font-weight: 600;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+
+  /* Navigation Links */
+  .top-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .top-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none !important;
     font-size: 0.95rem;
-    transition: all 0.3s ease;
-  }
-
-  .search .btn-primary:hover {
-    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
-  }
-
-  /* Navigation Links — white on dark navbar */
-  .navbar-nav {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .navbar-nav .nav-item {
-    flex: 1;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-  }
-
-  .navbar-nav .nav-link {
-    color: rgba(255,255,255,0.9) !important;
     font-weight: 500;
-    font-size: 0.95rem;
+    border-radius: 8px;
     transition: all 0.3s ease;
     position: relative;
-    padding: 15px 30px !important;
-    white-space: nowrap;
-    width: 100%;
+  }
+
+  .top-nav-link i {
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .top-nav-link:hover {
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.08);
+  }
+
+  .top-nav-link.active {
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.12);
+  }
+
+  .top-nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 18px;
+    right: 18px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    border-radius: 2px;
+  }
+
+  /* Mobile Toggle */
+  .top-nav-toggle {
+    background: transparent;
+    border: 1.5px solid rgba(212, 175, 55, 0.4);
+    color: #d4af37;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
 
-  .navbar-nav .nav-link:hover {
-    color: var(--accent-color) !important;
+  .top-nav-toggle:hover {
     background: rgba(212, 175, 55, 0.1);
+    border-color: #d4af37;
   }
 
-  .navbar-nav .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 3px;
-    background: var(--accent-color);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
+  .top-nav-toggle i {
+    font-size: 1.2rem;
   }
 
-  .navbar-nav .nav-link:hover::after {
-    width: 80%;
+  /* Mobile Dropdown */
+  .top-nav-mobile {
+    display: none;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+    padding: 10px 0;
   }
 
-  /* Cart and Profile Icons */
-  .icon {
-    color: var(--primary-light);
-    border-color: #d4af37 !important;
-    transition: all 0.3s ease;
+  .top-nav-mobile.show {
+    display: block;
   }
 
-  .icon:hover {
-    color: var(--accent-color);
-    border-color: var(--accent-color) !important;
-    transform: scale(1.1);
-  }
-
-  /* Badge */
-  .badge.notify {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: white;
-    font-weight: 600;
-    font-size: 0.7rem;
-    padding: 4px 7px;
-  }
-
-  /* Welcome text links */
-  .text a {
-    color: var(--accent-color);
-    text-decoration: none;
+  .top-nav-mobile a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none !important;
+    font-size: 0.95rem;
     font-weight: 500;
     transition: all 0.3s ease;
   }
 
-  .text a:hover {
-    color: #f4d03f;
-    text-decoration: underline;
+  .top-nav-mobile a i {
+    width: 24px;
+    text-align: center;
+    color: #d4af37;
   }
 
-  /* Widgets wrap adjustments */
-  .widgets-wrap {
-    justify-content: flex-start;
+  .top-nav-mobile a:hover,
+  .top-nav-mobile a.active {
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.08);
   }
 
-  /* Responsive adjustments */
+  /* Responsive */
   @media (max-width: 991px) {
-    .widgets-wrap {
-      justify-content: flex-start;
-    }
-
-    .search .input-group {
-      max-width: 100%;
-    }
-
-    .brand-wrap {
-      justify-content: flex-end;
-    }
-    .navbar-nav {
-      flex-direction: column !important;
-      gap: 0;
-    }
-
-    .navbar-nav .nav-item {
-      flex: none;
-      width: 100%;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .navbar-nav .nav-item:last-child {
-      border-bottom: none;
-    }
-
-    .navbar-nav .nav-link {
-      padding: 15px 20px !important;
-    }
-
-    .navbar-nav .nav-link:hover {
-      background: rgba(212, 175, 55, 0.15);
-    }
-
-    .navbar-nav .nav-link::after {
+    .top-nav-links {
       display: none;
     }
   }
 
-  @media (max-width: 768px) {
-    .brand-link .logo-text {
-      font-size: 1.6rem;
+  @media (min-width: 992px) {
+    .top-nav-toggle,
+    .top-nav-mobile {
+      display: none !important;
     }
+  }
+</style>
 
-    .brand-wrap {
-      justify-content: flex-end;
+<script>
+  function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('topNavMobile');
+    mobileMenu.classList.toggle('show');
+  }
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', function (e) {
+    const mobileMenu = document.getElementById('topNavMobile');
+    const toggle = document.querySelector('.top-nav-toggle');
+    if (mobileMenu && toggle && !mobileMenu.contains(e.target) && !toggle.contains(e.target)) {
+      mobileMenu.classList.remove('show');
     }
+  });
+</script>
 
-    .widgets-wrap {
-      justify-content: flex-start;
+<header class="section-header">
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav d-lg-none">
+    <div class="mobile-nav-items">
+      <a href="{% url 'index' %}" class="{% if request.path == '/' %}active{% endif %}">
+        <i class="fas fa-home"></i><span>首页</span>
+      </a>
+      <a href="{% url 'wishlist' %}" class="{% if 'wishlist' in request.path %}active{% endif %}">
+        <i class="fas fa-heart"></i><span>收藏</span>
+      </a>
+      <a href="{% url 'cart' %}">
+        <i class="fas fa-shopping-cart"></i><span>购物车</span>
+      </a>
+      <a href="{% url 'order_history' %}" class="{% if 'order' in request.path %}active{% endif %}">
+        <i class="fas fa-shopping-bag"></i><span>订单</span>
+      </a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'profile' username=user.username %}" class="{% if 'profile' in request.path %}active{% endif %}">
+        <i class="fas fa-user"></i><span>我的</span>
+      </a>
+      {% else %}
+      <a href="{% url 'login' %}">
+        <i class="fas fa-user"></i><span>登录</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<style>
+  /* ========== Color System ========== */
+  :root {
+    --primary-dark: #0f172a;
+    --primary-light: #1e293b;
+    --accent-gold: #d4af37;
+    --accent-gold-light: #f4d03f;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+  }
+
+  /* ========== Mobile Navigation ========== */
+  .mobile-nav {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+  }
+
+  .mobile-nav-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .mobile-nav-items a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none !important;
+    color: rgba(255,255,255,0.6);
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-nav-items a i {
+    font-size: 1.2rem;
+    margin-bottom: 3px;
+  }
+
+  .mobile-nav-items a span {
+    font-size: 0.7rem;
+  }
+
+  .mobile-nav-items a.active,
+  .mobile-nav-items a:hover {
+    color: var(--accent-gold);
+  }
+
+  /* ========== Responsive ========== */
+  @media (max-width: 991px) {
+    body {
+      padding-bottom: 70px;
     }
+  }
 
-    .search-input {
-      height: 40px;
-      font-size: 0.9rem;
-    }
-
-    .search .btn-primary {
-      height: 40px;
-      padding: 0 16px;
+  @media (min-width: 992px) {
+    .mobile-nav {
+      display: none !important;
     }
   }
 </style>

@@ -2,6 +2,64 @@
 
 {% block start %}
 
+<!-- Header Search Section - Same style as navbar -->
+<section class="header-search-section">
+  <div class="container">
+    <div class="header-search-row">
+      <!-- Logo (Left) -->
+      <div class="header-logo">
+        <a href="{% url 'index' %}" class="header-brand-link">
+          <div class="header-logo-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div class="header-logo-text-group">
+            <h2 class="header-logo-text">AI+</h2>
+            <span class="header-logo-subtitle">智慧教育</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Search Bar (Center) -->
+      <div class="header-search">
+        <form method="GET" action="{% url 'product_search' %}">
+          <div class="header-search-box">
+            <input type="text" name="q" placeholder="搜索课程、教程、资源..." value="{{ query|default:"" }}" />
+            <button type="submit">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- User Actions (Right) -->
+      <div class="header-actions">
+        <a href="{% url 'cart' %}" class="header-action-item">
+          <i class="fa fa-shopping-cart"></i>
+          <span>购物车</span>
+          {% if user.is_authenticated and user.profile.get_cart_count > 0 %}
+          <span class="header-cart-badge">{{ user.profile.get_cart_count }}</span>
+          {% endif %}
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'profile' username=user.username %}" class="header-action-item">
+          {% if user.profile.profile_image %}
+          <img src="{{ user.profile.profile_image.url }}" alt="Profile" class="header-user-avatar" />
+          {% else %}
+          <i class="fa fa-user-circle"></i>
+          {% endif %}
+          <span>{{ user.username|truncatechars:5 }}</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="header-action-item">
+          <i class="fa fa-user-circle"></i>
+          <span>登录</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="hero-pattern">
@@ -236,6 +294,185 @@
     --shadow-soft: 0 4px 20px rgba(15, 23, 42, 0.08);
     --shadow-medium: 0 8px 30px rgba(15, 23, 42, 0.12);
     --shadow-hover: 0 12px 40px rgba(15, 23, 42, 0.15);
+  }
+
+  /* ========== Header Search Section (Same as navbar) ========== */
+  .header-search-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    padding: 20px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .header-search-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    min-height: 70px;
+  }
+
+  /* Logo */
+  .header-logo {
+    flex-shrink: 0;
+  }
+
+  .header-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none !important;
+  }
+
+  .header-logo-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--accent-gradient);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  }
+
+  .header-logo-text-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-logo-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    font-size: 2rem;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .header-logo-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Search Bar */
+  .header-search {
+    flex: 1;
+    max-width: 700px;
+  }
+
+  .header-search-box {
+    display: flex;
+    border: 2px solid var(--accent-color);
+    border-radius: 30px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .header-search-box:focus-within {
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.2);
+    border-color: var(--accent-light);
+  }
+
+  .header-search-box input {
+    flex: 1;
+    border: none;
+    padding: 14px 24px;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+  }
+
+  .header-search-box input::placeholder {
+    color: #94a3b8;
+  }
+
+  .header-search-box button {
+    background: var(--accent-gradient);
+    border: none;
+    padding: 0 28px;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .header-search-box button:hover {
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-color) 100%);
+    padding: 0 32px;
+  }
+
+  /* User Actions */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .header-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none !important;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 5px;
+  }
+
+  .header-action-item i {
+    font-size: 1.5rem;
+    margin-bottom: 3px;
+    color: #475569;
+    transition: all 0.3s ease;
+  }
+
+  .header-action-item span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .header-action-item:hover {
+    color: var(--accent-color);
+  }
+
+  .header-action-item:hover i {
+    color: var(--accent-color);
+    transform: translateY(-2px);
+  }
+
+  .header-cart-badge {
+    position: absolute;
+    top: -2px;
+    right: -5px;
+    background: linear-gradient(135deg, #ff4d4f 0%, #f5222d 100%);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .header-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+    margin-bottom: 3px;
   }
 
   body {
@@ -821,6 +1058,50 @@
   @media (max-width: 992px) {
     .product-grid {
       grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 991px) {
+    .header-search-row {
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-logo-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+    }
+
+    .header-logo-text {
+      font-size: 1.6rem;
+    }
+
+    .header-logo-subtitle {
+      font-size: 0.6rem;
+    }
+
+    .header-search {
+      order: 3;
+      flex-basis: 100%;
+      max-width: 100%;
+    }
+
+    .header-search-box input {
+      padding: 12px 18px;
+      font-size: 0.95rem;
+    }
+
+    .header-search-box button {
+      padding: 0 20px;
+    }
+
+    .header-actions {
+      gap: 15px;
+    }
+
+    .header-action-item i {
+      font-size: 1.3rem;
     }
   }
 
