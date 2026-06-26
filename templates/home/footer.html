@@ -1,106 +1,98 @@
 {% load static %} {% block start %}
-<footer class="bg-dark text-white">
+<footer class="page-end">
   <div class="container py-5">
-    <!-- Main Footer Content -->
     <div class="row g-4">
 
-      <!-- Brand Section -->
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="footer-brand">
-          <h3 class="brand-title fw-bold mb-3">AI+</h3>
-          <p class="text-light opacity-75 mb-4">您的一站式学习平台，汇聚最新AI+技术。我们致力于为您提供优质的AI技术和无缝的学习体验。</p>
+      <section class="col-lg-4 col-md-6 mb-4">
+        <div class="brand-info">
+          <h3 class="fw-bold mb-3 logo-text">AI+</h3>
+          <p class="text-light opacity-75 mb-4">一个汇聚前沿AI技术的学习空间，为你打造流畅高效的知识获取体验。</p>
 
-          <!-- Social Media Icons -->
-          <div class="social-links">
-            <a href="https://github.com/gardenia39" class="social-link github" aria-label="GitHub">
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="javascript:void(0)" class="social-link weixin" aria-label="weixin"
-              onclick="alert('微信号:19712266320')">
-              <i class="fab fa-weixin"></i>
-            </a>
-            <a href="javascript:void(0)" class="social-link qq" aria-label="qq" onclick="alert('QQ号:1246423858')">
-              <i class="fab fa-qq"></i>
-            </a>
-            <a href="https://space.bilibili.com/26315978" class="social-link bilibili" aria-label="bilibili">
-              <i class="fab fa-bilibili"></i>
-            </a>
+          <div class="media-bar">
+            <address>
+              <a aria-label="GitHub" href="https://github.com/gardenia39" class="media-btn git-repo">
+                <i class="fab fa-github"></i>
+              </a>
+              <a aria-label="wechat" class="media-btn wechat" href="javascript:void(0)"
+                onclick="alert('微信号:19712266320')">
+                <i class="fab fa-weixin"></i>
+              </a>
+              <a aria-label="qq" class="media-btn tencent" href="javascript:void(0)"
+                onclick="alert('QQ号:1246423858')">
+                <i class="fab fa-qq"></i>
+              </a>
+              <a aria-label="bilibili" href="https://space.bilibili.com/26315978" class="media-btn b-site">
+                <i class="fab fa-bilibili"></i>
+              </a>
+            </address>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Quick Links -->
-      <div class="col-lg-2 col-md-6 col-6 mb-4">
-        <h5 class="section-heading fw-semibold mb-3">快速链接</h5>
-        <ul class="list-unstyled footer-links">
-          <li class="mb-2"><a href="{% url 'index' %}" class="footer-link">首页</a></li>
-          <li class="mb-2"><a href="{% url 'order_history' %}" class="footer-link">我的订单</a></li>
-          <li class="mb-2"><a href="{% url 'wishlist' %}" class="footer-link">收藏夹</a></li>
-          <li class="mb-2"><a href="{% url 'contact' %}" class="footer-link">联系我们</a></li>
-          <li class="mb-2"><a href="{% url 'about' %}" class="footer-link">关于我们</a></li>
+      <nav class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="fw-semibold mb-3 group-title">快捷入口</h5>
+        <ul class="list-unstyled nav-list">
+          <li class="mb-2"><a href="{% url 'index' %}" class="nav-item">首页</a></li>
+          <li class="mb-2"><a href="{% url 'order_history' %}" class="nav-item">交易记录</a></li>
+          <li class="mb-2"><a href="{% url 'wishlist' %}" class="nav-item">我的收藏</a></li>
         </ul>
-      </div>
+      </nav>
 
-      <!-- Categories -->
-      <div class="col-lg-2 col-md-6 col-6 mb-4">
-        <h5 class="section-heading fw-semibold mb-3">课程分类</h5>
-        <ul class="list-unstyled footer-links">
-          <li class="mb-2"><a href="#" class="footer-link">Python</a></li>
-          <li class="mb-2"><a href="#" class="footer-link">Skills</a></li>
-          <li class="mb-2"><a href="#" class="footer-link">Openclaw</a></li>
-          <li class="mb-2"><a href="#" class="footer-link">Prompts</a></li>
-          <li class="mb-2"><a href="#" class="footer-link">AI+实战</a></li>
+      <nav class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="fw-semibold mb-3 group-title">学习方向</h5>
+        <ul class="list-unstyled nav-list">
+          <li class="mb-2"><a href="#" class="nav-item">Python编程</a></li>
+          <li class="mb-2"><a href="#" class="nav-item">技能提升</a></li>
+          <li class="mb-2"><a href="#" class="nav-item">OpenClaw</a></li>
+          <li class="mb-2"><a href="#" class="nav-item">提示工程</a></li>
+          <li class="mb-2"><a href="#" class="nav-item">实战案例</a></li>
         </ul>
-      </div>
+      </nav>
 
-      <!-- Account & Support -->
-      <div class="col-lg-2 col-md-6 col-6 mb-4">
-        <h5 class="section-heading fw-semibold mb-3">账号</h5>
-        <ul class="list-unstyled footer-links">
+      <nav class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="fw-semibold mb-3 group-title">用户中心</h5>
+        <ul class="list-unstyled nav-list">
           {% if user.is_authenticated %}
-          <li class="mb-2"><a href="{% url 'profile' username=user.username %}" class="footer-link">我的资料</a></li>
+          <li class="mb-2"><a href="{% url 'profile' username=user.username %}" class="nav-item">个人中心</a></li>
           {% else %}
-          <li class="mb-2"><a href="{% url 'login' %}" class="footer-link">登录</a></li>
-          <li class="mb-2"><a href="{% url 'register' %}" class="footer-link">注册</a></li>
+          <li class="mb-2"><a href="{% url 'login' %}" class="nav-item">账号登录</a></li>
+          <li class="mb-2"><a href="{% url 'register' %}" class="nav-item">创建账号</a></li>
           {% endif %}
-          <li class="mb-2"><a href="{% url 'product_reviews' %}" class="footer-link">我的评价</a></li>
-
+          <li class="mb-2"><a href="{% url 'product_reviews' %}" class="nav-item">我的点评</a></li>
         </ul>
-      </div>
+      </nav>
 
-      <!-- Contact Info -->
-      <div class="col-lg-2 col-md-6 col-6 mb-4">
-        <h5 class="section-heading fw-semibold mb-3">联系方式</h5>
-        <div class="contact-info">
-          <div class="contact-item mb-2">
-            <i class="fas fa-map-marker-alt contact-icon me-2"></i>
-            <small class="text-light opacity-75">中国-安徽-淮南市</small>
+      <aside class="col-lg-2 col-md-6 col-6 mb-4">
+        <h5 class="fw-semibold mb-3 group-title">联系信息</h5>
+        <div class="reach-us">
+          <div class="mb-2 reach-entry">
+            <i class="fas fa-map-marker-alt me-2 reach-icon"></i>
+            <small class="text-light opacity-75">安徽省淮南市</small>
           </div>
-          <div class="contact-item mb-2">
-            <i class="fas fa-envelope contact-icon me-2"></i>
-            <small><a href="mailto:atulguptag111@gmail.com" class="footer-link">1246423858@qq.com</a></small>
+          <div class="mb-2 reach-entry">
+            <i class="fas fa-envelope me-2 reach-icon"></i>
+            <small><a href="mailto:1246423858@qq.com" class="nav-item">联系邮箱</a></small>
           </div>
-          <div class="contact-item mb-2">
-            <i class="fas fa-phone contact-icon me-2"></i>
-            <small><a href="#" class="footer-link">19712266320</a></small>
+          <div class="mb-2 reach-entry">
+            <i class="fas fa-phone me-2 reach-icon"></i>
+            <small><a href="#" class="nav-item">联系电话</a></small>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
 
-    <!-- Footer Bottom -->
     <hr class="border-secondary my-4">
     <div class="row align-items-center">
       <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
         <p class="mb-0 text-light opacity-75">
-          © 2026 <span class="brand-highlight fw-semibold">AI+</span>. 版权所有。
+          © 2026 <span class="fw-semibold logo-accent">AI+</span>. 保留所有权利。
         </p>
       </div>
       <div class="col-md-6 text-center text-md-end">
-        <div class="footer-links d-inline-flex gap-3">
-          <a href="{% url 'privacy-policy' %}" class="footer-link small">隐私政策</a>
-          <a href="{% url 'terms-and-conditions' %}" class="footer-link small">服务条款</a>
-          <a href="{% url 'contact' %}" class="footer-link small">客服支持</a>
+        <div class="d-inline-flex gap-3 bottom-links">
+          <a href="{% url 'privacy-policy' %}" class="small nav-item">隐私协议</a>
+          <a href="{% url 'terms-and-conditions' %}" class="small nav-item">用户协议</a>
+          <a href="{% url 'contact' %}" class="small nav-item">帮助中心</a>
         </div>
       </div>
     </div>
@@ -108,131 +100,148 @@
 </footer>
 
 <style>
-  /* Unified Color System */
-  :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
-    --accent-color: #fbbf24;
-    --accent-dark: #f59e0b;
-    --text-light: rgba(255, 255, 255, 0.75);
-    --text-white: #ffffff;
+  .page-end {
+    background-color: #18181B;
+    color: #A1A1AA;
+    border-top: none;
   }
 
-  /* Modern Footer Styles */
-  .footer-brand .brand-title {
+  .page-end .logo-text {
     font-size: 1.75rem;
     letter-spacing: -0.5px;
-    color: var(--primary-color);
+    color: #FAFAFA;
   }
 
-  .section-heading {
-    color: var(--primary-color);
+  .page-end .group-title {
+    color: #FAFAFA;
+    font-weight: 700;
   }
 
-  .footer-links {
-    line-height: 1.8;
+  .page-end .brand-info > p {
+    color: #71717A !important;
+    opacity: 1 !important;
   }
 
-  .footer-link {
-    color: var(--text-light);
+  .page-end .nav-item {
+    color: #A1A1AA;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: color 0.25s ease;
     font-size: 0.9rem;
   }
 
-  .footer-link:hover {
-    color: var(--accent-color);
-    transform: translateX(3px);
+  .page-end .nav-item:hover {
+    color: #F97316;
+    transform: none;
   }
 
-  .contact-icon {
-    color: var(--primary-color);
+  .page-end .reach-icon {
+    color: #F97316;
   }
 
-  .brand-highlight {
-    color: var(--primary-color);
+  .page-end .reach-entry small,
+  .page-end .reach-entry small.text-light {
+    color: #71717A !important;
+    opacity: 1 !important;
   }
 
-  .social-links {
+  .page-end .logo-accent {
+    color: #F97316;
+  }
+
+  .page-end .media-bar {
     display: flex;
     gap: 0.75rem;
   }
 
-  .social-link {
+  .page-end .media-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(99, 102, 241, 0.1);
-    color: var(--primary-color);
+    background: transparent;
+    color: #52525B;
+    border: 1px solid #27272A;
     border-radius: 50%;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     font-size: 1.1rem;
   }
 
-  .social-link:hover {
-    background: var(--accent-color);
-    color: var(--text-white);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  .page-end .media-btn:hover {
+    background: transparent;
+    color: #F97316;
+    border-color: #F97316;
+    transform: none;
+    box-shadow: none;
   }
 
-  .contact-item {
+  .page-end .reach-entry {
     display: flex;
     align-items: flex-start;
     font-size: 0.85rem;
   }
 
-  .contact-item i {
+  .page-end .reach-entry i {
     margin-top: 2px;
     font-size: 0.8rem;
   }
 
-  /* Responsive Design */
+  .page-end hr {
+    border-color: #27272A !important;
+    border-width: 1px;
+    opacity: 1;
+    margin: 1.5rem 0;
+  }
+
+  .page-end .row:last-child p,
+  .page-end .row:last-child p.text-light {
+    color: #52525B !important;
+    opacity: 1 !important;
+  }
+
   @media (max-width: 768px) {
-    .footer-brand {
+    .page-end .brand-info {
       text-align: center;
       margin-bottom: 2rem;
     }
 
-    .social-links {
+    .page-end .media-bar {
       justify-content: center;
       margin-top: 1rem;
     }
 
-    .contact-info {
+    .page-end .reach-us {
       text-align: center;
     }
 
-    .contact-item {
+    .page-end .reach-entry {
       justify-content: center;
       margin-bottom: 0.75rem;
     }
 
-    footer .col-6 {
+    .page-end .col-6 {
       margin-bottom: 2rem;
     }
 
-    .footer-links.d-inline-flex {
+    .page-end .bottom-links.d-inline-flex {
       flex-direction: column;
       gap: 0.5rem;
     }
   }
 
   @media (max-width: 576px) {
-    .footer-brand h3 {
+    .page-end .brand-info h3 {
       font-size: 1.5rem;
     }
 
-    .social-link {
+    .page-end .media-btn {
       width: 36px;
       height: 36px;
       font-size: 1rem;
     }
 
-    .contact-item {
+    .page-end .reach-entry {
       font-size: 0.8rem;
     }
   }

@@ -1,47 +1,46 @@
 {% extends "base/base.html" %}
-{% block title %}个人资料{% endblock title %}
+{% block title %}账号信息{% endblock title %}
 {% load crispy_forms_tags %} {% load static %} {% block start %}
 
 <style>
   :root {
-    --primary-color: #0f172a;
-    --primary-light: #1e293b;
-    --primary-dark: #020617;
-    --accent-color: #d4af37;
-    --accent-dark: #b8941f;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --bg-warm: #faf9f6;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --theme-dark: #0f172a;
+    --theme-mid: #1e293b;
+    --theme-deep: #020617;
+    --gold: #d4af37;
+    --gold-deep: #b8941f;
+    --ink: #1e293b;
+    --ink-fade: #64748b;
+    --line: #e2e8f0;
+    --paper: #faf9f6;
+    --shade-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shade-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shade-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shade-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
-  .profile-page {
-    background: var(--bg-warm);
+  .user-hub {
+    background: var(--paper);
     min-height: 100vh;
     padding: 2rem 0 4rem;
   }
 
-  /* 导航标签 */
-  .profile-nav {
+  .tab-container {
     background: white;
     border-radius: 16px;
     padding: 1rem 1.5rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shade-sm);
     margin-bottom: 2rem;
   }
 
-  .nav-tabs-custom {
+  .tab-items {
     display: flex;
     gap: 2rem;
     border-bottom: none;
   }
 
-  .nav-tabs-custom .nav-link {
-    color: var(--text-muted);
+  .tab-items .nav-link {
+    color: var(--ink-fade);
     font-weight: 500;
     padding: 0.75rem 0;
     border: none;
@@ -50,33 +49,32 @@
     position: relative;
   }
 
-  .nav-tabs-custom .nav-link:hover {
-    color: var(--primary-color);
+  .tab-items .nav-link:hover {
+    color: var(--theme-dark);
   }
 
-  .nav-tabs-custom .nav-link.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--accent-color);
+  .tab-items .nav-link.active {
+    color: var(--theme-dark);
+    border-bottom-color: var(--gold);
     background: transparent;
   }
 
-  /* 卡片样式 */
-  .profile-card {
+  .info-card {
     background: white;
     border-radius: 20px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shade-md);
+    border: 1px solid var(--line);
     overflow: hidden;
     transition: all 0.3s ease;
   }
 
-  .profile-card:hover {
-    box-shadow: var(--shadow-lg);
+  .info-card:hover {
+    box-shadow: var(--shade-lg);
   }
 
-  .card-header-custom {
+  .card-top {
     padding: 1.5rem;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    background: linear-gradient(135deg, var(--theme-dark) 0%, var(--theme-mid) 100%);
     color: white;
     font-weight: 600;
     font-size: 1.1rem;
@@ -85,20 +83,19 @@
     gap: 0.75rem;
   }
 
-  .card-header-custom i {
+  .card-top i {
     font-size: 1.25rem;
-    color: var(--accent-color);
+    color: var(--gold);
   }
 
-  .card-body-custom {
+  .card-inner {
     padding: 2rem;
     height: calc(100% - 70px);
     display: flex;
     flex-direction: column;
   }
 
-  /* 头像区域 */
-  .avatar-section {
+  .photo-area {
     text-align: center;
     flex: 1;
     display: flex;
@@ -106,134 +103,130 @@
     justify-content: center;
   }
 
-  .avatar-wrapper {
+  .photo-frame {
     position: relative;
     display: inline-block;
     margin-bottom: 1.5rem;
   }
 
-  .avatar-img {
+  .photo-img {
     width: 150px;
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
     border: 4px solid white;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shade-lg);
     transition: all 0.3s ease;
   }
 
-  .avatar-img:hover {
+  .photo-img:hover {
     transform: scale(1.02);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shade-xl);
   }
 
-  .avatar-overlay {
+  .photo-edit {
     position: absolute;
     bottom: 5px;
     right: 5px;
     width: 40px;
     height: 40px;
-    background: var(--accent-color);
+    background: var(--gold);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shade-md);
     transition: all 0.3s ease;
     border: 3px solid white;
   }
 
-  .avatar-overlay:hover {
+  .photo-edit:hover {
     transform: scale(1.1);
-    background: var(--accent-dark);
+    background: var(--gold-deep);
   }
 
-  .avatar-hint {
-    color: var(--text-muted);
+  .photo-tip {
+    color: var(--ink-fade);
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
 
-  /* 用户信息摘要 */
-  .user-summary {
+  .identity-snippet {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--line);
   }
 
-  .user-summary h5 {
-    color: var(--primary-color);
+  .identity-snippet h5 {
+    color: var(--theme-dark);
     font-weight: 700;
     margin-bottom: 0.25rem;
   }
 
-  .user-summary p {
-    color: var(--text-muted);
+  .identity-snippet p {
+    color: var(--ink-fade);
     font-size: 0.875rem;
     margin-bottom: 0;
   }
 
-  /* 统计信息 */
-  .stats-row {
+  .stats-flex {
     display: flex;
     justify-content: center;
     gap: 2rem;
     margin-top: 1.5rem;
   }
 
-  .stat-box {
+  .stat-unit {
     text-align: center;
   }
 
-  .stat-box h4 {
-    color: var(--primary-color);
+  .stat-unit h4 {
+    color: var(--theme-dark);
     font-weight: 700;
     font-size: 1.5rem;
     margin-bottom: 0.25rem;
   }
 
-  .stat-box span {
-    color: var(--text-muted);
+  .stat-unit span {
+    color: var(--ink-fade);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
-  /* 表单样式优化 */
-  .form-section-title {
+  .field-group-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--ink-fade);
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 2rem 0 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--line);
   }
 
-  .form-section-title:first-of-type {
+  .field-group-label:first-of-type {
     margin-top: 0;
   }
 
-  .form-control-custom {
-    border: 2px solid var(--border-color);
+  .custom-input {
+    border: 2px solid var(--line);
     border-radius: 12px;
     padding: 0.875rem 1rem;
     transition: all 0.3s ease;
-    background: var(--bg-warm);
+    background: var(--paper);
   }
 
-  .form-control-custom:focus {
-    border-color: var(--accent-color);
+  .custom-input:focus {
+    border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
     background: white;
   }
 
-  /* 按钮样式 */
-  .btn-save {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  .save-action {
+    background: linear-gradient(135deg, var(--theme-dark) 0%, var(--theme-mid) 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -245,14 +238,14 @@
     gap: 0.5rem;
   }
 
-  .btn-save:hover {
+  .save-action:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shade-lg);
     color: white;
   }
 
-  .btn-avatar {
-    background: var(--accent-color);
+  .upload-action {
+    background: var(--gold);
     color: white;
     border: none;
     border-radius: 50px;
@@ -262,201 +255,215 @@
     transition: all 0.3s ease;
   }
 
-  .btn-avatar:hover {
-    background: var(--accent-dark);
+  .upload-action:hover {
+    background: var(--gold-deep);
     color: white;
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shade-md);
   }
 
-  /* Crispy Forms 样式覆盖 */
-  .form-group {
+  .logout-action {
+    background: transparent;
+    color: #dc3545;
+    border: 1.5px solid rgba(220, 53, 69, 0.3);
+    border-radius: 12px;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logout-action:hover {
+    background: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+    color: #dc3545;
+  }
+
+  .field-wrapper {
     margin-bottom: 1.5rem;
   }
 
-  .form-group label {
+  .field-wrapper label {
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--ink);
     margin-bottom: 0.5rem;
   }
 
   .form-control {
-    border: 2px solid var(--border-color);
+    border: 2px solid var(--line);
     border-radius: 12px;
     padding: 0.875rem 1rem;
     transition: all 0.3s ease;
   }
 
   .form-control:focus {
-    border-color: var(--accent-color);
+    border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
   }
 
-  .textinput, .emailinput, .select {
-    border: 2px solid var(--border-color) !important;
+  .text-field, .email-field, .select-field {
+    border: 2px solid var(--line) !important;
     border-radius: 12px !important;
     padding: 0.875rem 1rem !important;
   }
 
-  .textinput:focus, .emailinput:focus, .select:focus {
-    border-color: var(--accent-color) !important;
+  .text-field:focus, .email-field:focus, .select-field:focus {
+    border-color: var(--gold) !important;
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
   }
 
-  /* 响应式 */
   @media (max-width: 992px) {
-    .profile-page {
+    .user-hub {
       padding: 1rem 0 2rem;
     }
 
-    .card-body-custom {
+    .card-inner {
       padding: 1.5rem;
     }
 
-    .avatar-img {
+    .photo-img {
       width: 120px;
       height: 120px;
     }
   }
 
   @media (max-width: 576px) {
-    .nav-tabs-custom {
+    .tab-items {
       gap: 1rem;
     }
 
-    .nav-tabs-custom .nav-link {
+    .tab-items .nav-link {
       font-size: 0.875rem;
       padding: 0.5rem 0;
     }
 
-    .stats-row {
+    .stats-flex {
       gap: 1rem;
     }
   }
 </style>
 
-<section class="profile-page">
+<main class="user-hub">
   <div class="container-xl px-4">
     {% include "base/alert.html" %}
 
-    <!-- 导航标签 -->
-    <div class="profile-nav">
-      <nav class="nav nav-tabs-custom">
-        <a class="nav-link active" href="{% url 'profile' username=user.username %}">
-          <i class="fas fa-user-circle me-2"></i>个人资料
+    <nav class="tab-container">
+      <div class="nav tab-items">
+        <a href="{% url 'profile' username=user.username %}" class="nav-link active">
+          <i class="fas fa-user-circle me-2"></i>账号信息
         </a>
-        <a class="nav-link" href="{% url 'change_password' %}">
-          <i class="fas fa-shield-alt me-2"></i>安全设置
+        <a href="{% url 'change_password' %}" class="nav-link">
+          <i class="fas fa-shield-alt me-2"></i>密码管理
         </a>
-      </nav>
-    </div>
+      </div>
+    </nav>
 
     <div class="row g-4">
-      <!-- 左侧：头像卡片 -->
-      <div class="col-xl-4 col-lg-5">
-        <div class="profile-card h-100">
-          <div class="card-header-custom">
+      <article class="col-xl-4 col-lg-5">
+        <section class="info-card h-100">
+          <header class="card-top">
             <i class="fas fa-id-card"></i>
-            个人头像
-          </div>
-          <div class="card-body-custom">
-            <!-- 头像上传表单（独立） -->
-            <form method="POST" enctype="multipart/form-data" id="avatarForm">
+            用户头像
+          </header>
+          <div class="card-inner">
+            <form enctype="multipart/form-data" method="POST" id="photoForm">
               {% csrf_token %}
-              <input type="hidden" name="avatar_upload" value="1">
-              <input type="file" id="avatarInput" name="profile_image" accept="image/*" style="display:none"
+              <input name="avatar_upload" type="hidden" value="1">
+              <input id="photoInput" name="profile_image" accept="image/*" type="file" style="display:none"
                 onchange="previewAndSubmit(this)">
             </form>
 
-            <div class="avatar-section">
-              <div class="avatar-wrapper">
+            <figure class="photo-area">
+              <div class="photo-frame">
                 {% if user.profile.profile_image %}
-                <img class="avatar-img" id="avatarPreview"
-                  src="{{ user.profile.profile_image.url }}" alt="Profile Picture" />
+                <img src="{{ user.profile.profile_image.url }}" alt="用户头像" class="photo-img" id="photoPreview" />
                 {% else %}
-                <img class="avatar-img" id="avatarPreview"
-                  src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture" />
+                <img src="{% static 'images/default-profile.png' %}" alt="默认头像" class="photo-img" id="photoPreview" />
                 {% endif %}
-                <div class="avatar-overlay" onclick="document.getElementById('avatarInput').click()">
+                <div onclick="document.getElementById('photoInput').click()" class="photo-edit">
                   <i class="fas fa-camera"></i>
                 </div>
               </div>
 
-              <button type="button" class="btn btn-avatar"
-                onclick="document.getElementById('avatarInput').click()">
-                <i class="fas fa-upload me-2"></i>更换头像
+              <button type="button" onclick="document.getElementById('photoInput').click()" class="btn upload-action">
+                <i class="fas fa-upload me-2"></i>更新头像
               </button>
 
-              <p class="avatar-hint">支持 JPG、PNG 格式，建议尺寸 300x300</p>
-            </div>
+              <p class="photo-tip">推荐 JPG/PNG，尺寸 300×300</p>
+            </figure>
 
-            <!-- 用户摘要信息 -->
-            <div class="user-summary text-center">
+            <div class="identity-snippet text-center">
               <h5>{{ user.get_full_name|default:user.username }}</h5>
               <p>@{{ user.username }}</p>
             </div>
 
-            <!-- 统计信息 -->
-            <div class="stats-row">
-              <div class="stat-box">
+            <div class="stats-flex">
+              <div class="stat-unit">
                 <h4>{{ user_orders_count|default:"0" }}</h4>
-                <span>订单</span>
+                <span>交易</span>
               </div>
-              <div class="stat-box">
+              <div class="stat-unit">
                 <h4>{{ user_courses_count|default:"0" }}</h4>
-                <span>课程</span>
+                <span>学习</span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- 右侧：账号信息表单 -->
-      <div class="col-xl-8 col-lg-7">
-        <div class="profile-card">
-          <div class="card-header-custom">
-            <i class="fas fa-user-edit"></i>
-            编辑资料
+            <div class="mt-4 pt-3 border-top">
+              <a class="btn logout-action w-100" href="{% url 'logout' %}">
+                <i class="fas fa-sign-out-alt me-2"></i>注销账号
+              </a>
+            </div>
           </div>
-          <div class="card-body-custom">
-            <form method="POST" enctype="multipart/form-data">
+        </section>
+      </article>
+
+      <article class="col-xl-8 col-lg-7">
+        <section class="info-card">
+          <header class="card-top">
+            <i class="fas fa-user-edit"></i>
+            资料管理
+          </header>
+          <div class="card-inner">
+            <form enctype="multipart/form-data" method="POST">
               {% csrf_token %}
 
-              <div class="form-section-title">
-                <i class="fas fa-user me-2"></i>基本信息
+              <div class="field-group-label">
+                <i class="fas fa-user me-2"></i>核心资料
               </div>
               {{ user_form|crispy }}
 
-              <div class="form-section-title">
-                <i class="fas fa-address-card me-2"></i>个人资料
+              <div class="field-group-label">
+                <i class="fas fa-address-card me-2"></i>详细资料
               </div>
               {{ profile_form|crispy }}
 
               <div class="d-flex justify-content-end mt-4">
-                <button class="btn btn-save" type="submit">
+                <button type="submit" class="btn save-action">
                   <i class="fas fa-check-circle"></i>
-                  保存修改
+                  确认保存
                 </button>
               </div>
             </form>
           </div>
-        </div>
-      </div>
+        </section>
+      </article>
     </div>
   </div>
-</section>
+</main>
 
 <script>
   function previewAndSubmit(input) {
     if (input.files && input.files[0]) {
-      // 实时预览
       var reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById('avatarPreview').src = e.target.result;
+        document.getElementById('photoPreview').src = e.target.result;
       };
       reader.readAsDataURL(input.files[0]);
-      // 自动提交
-      document.getElementById('avatarForm').submit();
+      document.getElementById('photoForm').submit();
     }
   }
 </script>

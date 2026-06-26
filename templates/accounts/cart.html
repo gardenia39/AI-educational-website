@@ -1,39 +1,37 @@
 {% extends "base/base.html" %}
-{% block title %}购物车{% endblock %}
+{% block title %}选购清单{% endblock %}
 
-<!-- Hide footer on cart page -->
 {% block footer %}{% endblock %}
 
 {% block start %} {% load static %}
 
 <style>
   :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --accent: #fbbf24;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --radius: 14px;
-    --bg-light: #f8fafc;
+    --main-tone: #6366f1;
+    --main-deep: #4f46e5;
+    --highlight: #fbbf24;
+    --ink: #1e293b;
+    --ink-dim: #64748b;
+    --corner: 14px;
+    --surface: #f8fafc;
   }
 
-  .page-header {
+  .section-top {
     padding: 24px 0 16px;
     border-bottom: 1px solid #e2e8f0;
     margin-bottom: 24px;
   }
 
-  .page-header h2 {
+  .section-top h2 {
     font-size: 1.6rem;
     font-weight: 800;
-    color: var(--text-dark);
+    color: var(--ink);
     margin: 0;
   }
 
-  /* 购物车商品卡片 */
-  .cart-item-card {
+  .purchase-row {
     background: #fff;
-    border-radius: var(--radius);
+    border-radius: var(--corner);
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     padding: 20px;
     margin-bottom: 16px;
@@ -43,34 +41,34 @@
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  .cart-item-card:hover {
+  .purchase-row:hover {
     box-shadow: 0 4px 16px rgba(99,102,241,0.12);
   }
 
-  .cart-img-wrap {
+  .product-thumb {
     width: 100px;
     height: 100px;
     border-radius: 10px;
     overflow: hidden;
-    background: var(--bg-light);
+    background: var(--surface);
     flex-shrink: 0;
   }
 
-  .cart-img-wrap img {
+  .product-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .cart-info {
+  .product-meta {
     flex: 1;
     min-width: 0;
   }
 
-  .cart-info .title {
+  .product-meta .name {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--ink);
     text-decoration: none;
     display: block;
     margin-bottom: 6px;
@@ -79,35 +77,35 @@
     text-overflow: ellipsis;
   }
 
-  .cart-info .title:hover { color: var(--primary); }
+  .product-meta .name:hover { color: var(--main-tone); }
 
-  .cart-qty {
+  .quantity-picker {
     width: 120px;
   }
 
-  .cart-qty select {
+  .quantity-picker select {
     border-radius: 8px;
     border: 1px solid #cbd5e1;
     padding: 0.4rem 0.8rem;
     font-weight: 600;
   }
 
-  .cart-price {
+  .amount-display {
     width: 120px;
     text-align: right;
     font-size: 1.25rem;
     font-weight: 800;
-    color: var(--primary);
+    color: var(--main-tone);
   }
 
-  .cart-action {
+  .item-action {
     width: 100px;
     text-align: right;
   }
 
-  .btn-remove {
+  .delete-btn {
     background: #fff;
-    color: var(--text-muted);
+    color: var(--ink-dim);
     border: 1.5px solid #e2e8f0;
     border-radius: 50px;
     padding: 0.4rem 1rem;
@@ -116,16 +114,15 @@
     transition: all 0.25s;
   }
 
-  .btn-remove:hover {
+  .delete-btn:hover {
     border-color: #f87171;
     color: #ef4444;
     background: #fff5f5;
   }
 
-  /* 底部操作区 */
-  .cart-footer {
+  .action-bar {
     background: #fff;
-    border-radius: var(--radius);
+    border-radius: var(--corner);
     padding: 20px;
     display: flex;
     justify-content: space-between;
@@ -134,8 +131,8 @@
     margin-bottom: 24px;
   }
 
-  .btn-checkout {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  .pay-action {
+    background: linear-gradient(135deg, var(--main-tone) 0%, var(--main-deep) 100%);
     color: #fff;
     border: none;
     border-radius: 50px;
@@ -146,15 +143,15 @@
     transition: all 0.25s;
   }
 
-  .btn-checkout:hover {
+  .pay-action:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(99,102,241,0.4);
     color: #fff;
   }
 
-  .btn-continue {
-    background: var(--bg-light);
-    color: var(--text-dark);
+  .browse-action {
+    background: var(--surface);
+    color: var(--ink);
     border: none;
     border-radius: 50px;
     padding: 0.7rem 1.5rem;
@@ -162,41 +159,39 @@
     transition: all 0.25s;
   }
 
-  .btn-continue:hover {
+  .browse-action:hover {
     background: #e2e8f0;
-    color: var(--text-dark);
+    color: var(--ink);
   }
 
-  /* 侧边信息栏 */
-  .summary-card {
+  .summary-box {
     background: #fff;
-    border-radius: var(--radius);
+    border-radius: var(--corner);
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     padding: 24px;
     margin-bottom: 24px;
   }
 
-  .summary-card dt { font-weight: 500; color: var(--text-muted); }
-  .summary-card dd { font-weight: 700; color: var(--text-dark); font-size: 1.1rem;}
-  .summary-total { font-size: 1.4rem !important; color: var(--primary) !important; font-weight: 800 !important;}
+  .summary-box dt { font-weight: 500; color: var(--ink-dim); }
+  .summary-box dd { font-weight: 700; color: var(--ink); font-size: 1.1rem;}
+  .grand-total { font-size: 1.4rem !important; color: var(--main-tone) !important; font-weight: 800 !important;}
 
-  /* 优惠券 */
-  .coupon-input {
+  .voucher-field {
     border-radius: 50px 0 0 50px !important;
     border-right: none;
     padding-left: 1rem;
   }
-  .coupon-btn {
+  .voucher-apply {
     border-radius: 0 50px 50px 0 !important;
-    background: var(--primary);
+    background: var(--main-tone);
     color: #fff;
     border: none;
     padding: 0 1.2rem;
     font-weight: 600;
   }
 
-  .coupon-applied-btn {
-    background: var(--primary);
+  .voucher-remove {
+    background: var(--main-tone);
     border: none;
     border-radius: 50px;
     padding: 0.5rem 1rem;
@@ -206,152 +201,147 @@
     margin-top: 10px;
   }
 
-  .delivery-alert {
+  .shipping-notice {
     background: rgba(99, 102, 241, 0.08);
-    border: 1px dashed var(--primary);
+    border: 1px dashed var(--main-tone);
     border-radius: 10px;
-    color: var(--primary-dark);
+    color: var(--main-deep);
     font-weight: 600;
     text-align: center;
   }
 
   @media (max-width: 768px) {
-    .cart-item-card { flex-wrap: wrap; }
-    .cart-qty, .cart-price, .cart-action { width: 100%; text-align: left; margin-top: 10px; }
-    .cart-footer { flex-direction: column; gap: 16px; }
-    .btn-checkout, .btn-continue { width: 100%; text-align: center; }
+    .purchase-row { flex-wrap: wrap; }
+    .quantity-picker, .amount-display, .item-action { width: 100%; text-align: left; margin-top: 10px; }
+    .action-bar { flex-direction: column; gap: 16px; }
+    .pay-action, .browse-action { width: 100%; text-align: center; }
   }
 </style>
 
-<section class="section-content padding-y">
+<main class="section-content padding-y">
   <div class="container">
     {% include 'base/alert.html' %}
 
-    <div class="page-header">
-      <h2><i class="fas fa-shopping-cart mr-2" style="color:var(--primary);"></i>购物车</h2>
+    <div class="section-top">
+      <h2><i class="fas fa-shopping-cart mr-2" style="color:var(--main-tone);"></i>选购清单</h2>
     </div>
 
     <div class="row">
-      <main class="col-lg-9">
-        
+      <section class="col-lg-9">
+
         {% if cart.cart_items.all %}
           {% for cart_item in cart.cart_items.all %}
-          <div class="cart-item-card">
-            <div class="cart-img-wrap">
-              <img src="{{ cart_item.product.product_images.first.image.url }}" alt="商品图片" />
+          <div class="purchase-row">
+            <div class="product-thumb">
+              <img alt="课程封面" src="{{ cart_item.product.product_images.first.image.url }}" />
             </div>
-            
-            <div class="cart-info">
-              <a href="{% url 'get_product' cart_item.product.slug %}" class="title">
+
+            <div class="product-meta">
+              <a href="{% url 'get_product' cart_item.product.slug %}" class="name">
                 {{ cart_item.product.product_name }}
               </a>
             </div>
 
-            <div class="cart-qty">
+            <div class="quantity-picker">
               <select class="form-control" onchange="updateCartItem(this, '{{ cart_item.uid }}')">
                 {% for i in quantity_range %}
-                <option value="{{ i }}" {% if cart_item.quantity == i %}selected{% endif %}>{{ i }}</option>
+                <option {% if cart_item.quantity == i %}selected{% endif %} value="{{ i }}">{{ i }}</option>
                 {% endfor %}
               </select>
             </div>
 
-            <div class="cart-price">
+            <div class="amount-display">
               ¥{{ cart_item.get_product_price|floatformat:"-2" }}
             </div>
 
-            <div class="cart-action">
-              <a href="{% url 'remove_cart' cart_item.uid %}" class="btn-remove">
-                <i class="fas fa-trash-alt mr-1"></i>删除
+            <div class="item-action">
+              <a href="{% url 'remove_cart' cart_item.uid %}" class="delete-btn">
+                <i class="fas fa-trash-alt mr-1"></i>移除
               </a>
             </div>
           </div>
           {% endfor %}
 
-          <!-- 卡片底部操作区 -->
-          <div class="cart-footer">
-            <a href="{% url 'index' %}" class="btn-continue">
-              <i class="fa fa-chevron-left mr-2"></i>继续学习
+          <div class="action-bar">
+            <a href="{% url 'index' %}" class="browse-action">
+              <i class="fa fa-chevron-left mr-2"></i>继续浏览
             </a>
-            <button type="button" class="btn-checkout" data-bs-toggle="modal" data-bs-target="#paymentModal">
-              去结算 <i class="fa fa-chevron-right ml-2"></i>
+            <button type="button" data-bs-target="#paymentModal" data-bs-toggle="modal" class="pay-action">
+              前往支付 <i class="fa fa-chevron-right ml-2"></i>
             </button>
           </div>
 
-          <div class="alert delivery-alert mt-4">
-            <i class="fas fa-bolt mr-2"></i>购买后自动发货
+          <div class="alert shipping-notice mt-4">
+            <i class="fas fa-bolt mr-2"></i>支付成功后立即开通
           </div>
 
         {% else %}
           <div class="text-center py-5" style="background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-            <i class="fas fa-shopping-basket mb-4" style="font-size:4rem; color:#e2e8f0;"></i>
-            <h4 style="color:#64748b; font-weight:700;">购物车为空</h4>
-            <p class="mb-4" style="color:#94a3b8;">去挑选一些好课吧</p>
-            <a href="{% url 'index' %}" class="btn-checkout" style="display:inline-block; text-decoration:none;">
-              <i class="fas fa-shopping-bag mr-2"></i>去逛逛
+            <i style="font-size:4rem; color:#e2e8f0;" class="fas fa-shopping-basket mb-4"></i>
+            <h4 style="color:#64748b; font-weight:700;">清单空空如也</h4>
+            <p class="mb-4" style="color:#94a3b8;">探索优质课程</p>
+            <a href="{% url 'index' %}" class="pay-action" style="display:inline-block; text-decoration:none;">
+              <i class="fas fa-shopping-bag mr-2"></i>开始探索
             </a>
           </div>
         {% endif %}
 
-      </main>
+      </section>
 
-      <!-- 侧边结算栏 -->
       <aside class="col-lg-3">
         {% if cart.cart_items.all %}
-        <div class="summary-card">
+        <div class="summary-box">
           <form method="POST">
             {% csrf_token %}
             <div class="form-group mb-0">
-              <label class="font-weight-bold" style="color:var(--text-dark); margin-bottom:10px;">使用优惠券</label>
+              <label style="color:var(--ink); margin-bottom:10px;" class="font-weight-bold">兑换优惠码</label>
               <div class="input-group">
-                <input type="text" class="form-control coupon-input" name="coupon" placeholder="在此输入" />
+                <input placeholder="输入优惠码" name="coupon" type="text" class="form-control voucher-field" />
                 <div class="input-group-append">
-                  <button type="submit" class="coupon-btn">兑换</button>
+                  <button type="submit" class="voucher-apply">应用</button>
                 </div>
               </div>
             </div>
 
             {% if cart.coupon %}
-            <a href="{% url 'remove_coupon' cart.uid %}" class="btn coupon-applied-btn">
-              已使用: {{ cart.coupon.coupon_code }} (点击取消)
+            <a href="{% url 'remove_coupon' cart.uid %}" class="btn voucher-remove">
+              已激活: {{ cart.coupon.coupon_code }} (点击移除)
             </a>
             {% endif %}
           </form>
         </div>
 
-        <div class="summary-card pb-1">
+        <div class="summary-box pb-1">
           <dl class="d-flex justify-content-between mb-3">
-            <dt>总金额：</dt>
+            <dt>小计：</dt>
             <dd>¥{{ cart.get_cart_total|floatformat:"-2" }}</dd>
           </dl>
           {% if cart.coupon %}
           <dl class="d-flex justify-content-between mb-3">
-            <dt>优惠抵扣：</dt>
+            <dt>减免金额：</dt>
             <dd style="color:#ef4444;">-¥{{ cart.coupon.discount_amount|floatformat:"-2" }}</dd>
           </dl>
           {% endif %}
           <hr />
           <dl class="d-flex justify-content-between align-items-center mb-4">
-            <dt>应付合计：</dt>
-            <dd class="summary-total mb-0">¥{{ cart.get_cart_total_price_after_coupon|floatformat:"-2" }}</dd>
+            <dt>实付总额：</dt>
+            <dd class="grand-total mb-0">¥{{ cart.get_cart_total_price_after_coupon|floatformat:"-2" }}</dd>
           </dl>
 
-          <!-- 支付图标 -->
           <div class="d-flex justify-content-center gap-2 flex-wrap mt-2">
-            <!-- 支付宝 -->
             <svg width="100" height="32" viewBox="0 0 110 36" xmlns="http://www.w3.org/2000/svg">
-              <rect width="110" height="36" rx="6" fill="#1677FF"/>
-              <path d="M14 26 L18 12 L22 26 M15.5 22 L20.5 22" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <text x="28" y="23" font-family="'PingFang SC',sans-serif" font-size="13" font-weight="600" fill="white">支付宝</text>
+              <rect fill="#1677FF" rx="6" width="110" height="36"/>
+              <path stroke-linecap="round" fill="none" stroke="white" stroke-width="2" d="M14 26 L18 12 L22 26 M15.5 22 L20.5 22"/>
+              <text font-family="'PingFang SC',sans-serif" fill="white" font-size="13" font-weight="600" x="28" y="23">支付宝</text>
             </svg>
-            <!-- 微信支付 -->
             <svg width="100" height="32" viewBox="0 0 118 36" xmlns="http://www.w3.org/2000/svg">
-              <rect width="118" height="36" rx="6" fill="#07C160"/>
-              <ellipse cx="13" cy="17" rx="8" ry="6.5" fill="white" opacity="0.95"/>
-              <ellipse cx="19" cy="21" rx="7" ry="5.5" fill="white" opacity="0.85"/>
-              <circle cx="10" cy="17" r="1.2" fill="#07C160"/>
-              <circle cx="13" cy="17" r="1.2" fill="#07C160"/>
-              <circle cx="16" cy="17" r="1.2" fill="#07C160"/>
-              <text x="30" y="23" font-family="'PingFang SC',sans-serif" font-size="13" font-weight="600" fill="white">微信支付</text>
+              <rect fill="#07C160" rx="6" width="118" height="36"/>
+              <ellipse opacity="0.95" fill="white" cx="13" cy="17" rx="8" ry="6.5"/>
+              <ellipse opacity="0.85" fill="white" cx="19" cy="21" rx="7" ry="5.5"/>
+              <circle fill="#07C160" cx="10" cy="17" r="1.2"/>
+              <circle fill="#07C160" cx="13" cy="17" r="1.2"/>
+              <circle fill="#07C160" cx="16" cy="17" r="1.2"/>
+              <text font-family="'PingFang SC',sans-serif" fill="white" font-size="13" font-weight="600" x="30" y="23">微信支付</text>
             </svg>
           </div>
         </div>
@@ -359,56 +349,55 @@
       </aside>
     </div>
   </div>
-</section>
+</main>
 
-<!-- 支付方式选择模态框 -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="paymentModal" aria-hidden="true" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="border-radius:16px; overflow:hidden;">
       <div class="modal-header" style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
         <h5 class="modal-title fw-bold">
-          <i class="fas fa-shield-alt me-2" style="color:#6366f1;"></i>选择支付方式
+          <i style="color:#6366f1;" class="fas fa-shield-alt me-2"></i>选择支付方式
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" data-bs-dismiss="modal" class="btn-close"></button>
       </div>
       <div class="modal-body p-4">
         <p class="text-muted mb-3">订单金额：<strong style="color:#1e293b; font-size:1.2rem;">¥{{ cart.get_cart_total_price_after_coupon|floatformat:"-2" }}</strong></p>
         <div class="d-flex flex-column gap-3">
-          
-          <button class="pay-option-btn" id="alipayBtn" onclick="selectPayment('alipay', this)">
-            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="me-3">
-              <rect width="32" height="32" rx="8" fill="#1677FF"/>
-              <path d="M11 24 L16 9 L21 24 M13 20 L19 20" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <button onclick="selectPayment('alipay', this)" class="gateway-option" id="aliGateway">
+            <svg class="me-3" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+              <rect fill="#1677FF" rx="8" width="32" height="32"/>
+              <path stroke-linejoin="round" fill="none" stroke-linecap="round" stroke="white" stroke-width="2.5" d="M11 24 L16 9 L21 24 M13 20 L19 20"/>
             </svg>
             <div class="text-start">
-              <div class="fw-bold" style="color:var(--text-dark);">支付宝</div>
-              <div class="small text-muted" style="margin-top:2px;">推荐 · 安全快捷</div>
+              <div class="fw-bold" style="color:var(--ink);">支付宝</div>
+              <div class="small text-muted" style="margin-top:2px;">首选 · 快捷安全</div>
             </div>
-            <i class="fas fa-check-circle ms-auto pay-check" style="display:none; color:#1677FF; font-size:1.2rem;"></i>
+            <i style="display:none; color:#1677FF; font-size:1.2rem;" class="fas fa-check-circle ms-auto gateway-check"></i>
           </button>
 
-          <button class="pay-option-btn" id="wechatBtn" onclick="selectPayment('wechat', this)">
-            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="me-3">
-              <rect width="32" height="32" rx="8" fill="#07C160"/>
-              <ellipse cx="12" cy="15" rx="7" ry="5.5" fill="white" opacity="0.95"/>
-              <ellipse cx="20" cy="19" rx="6" ry="4.5" fill="white" opacity="0.85"/>
-              <circle cx="9.5" cy="15" r="1.2" fill="#07C160"/>
-              <circle cx="12" cy="15" r="1.2" fill="#07C160"/>
-              <circle cx="14.5" cy="15" r="1.2" fill="#07C160"/>
+          <button onclick="selectPayment('wechat', this)" class="gateway-option" id="wxGateway">
+            <svg class="me-3" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+              <rect fill="#07C160" rx="8" width="32" height="32"/>
+              <ellipse opacity="0.95" fill="white" cx="12" cy="15" rx="7" ry="5.5"/>
+              <ellipse opacity="0.85" fill="white" cx="20" cy="19" rx="6" ry="4.5"/>
+              <circle fill="#07C160" cx="9.5" cy="15" r="1.2"/>
+              <circle fill="#07C160" cx="12" cy="15" r="1.2"/>
+              <circle fill="#07C160" cx="14.5" cy="15" r="1.2"/>
             </svg>
             <div class="text-start">
-              <div class="fw-bold" style="color:var(--text-dark);">微信支付</div>
-              <div class="small text-muted" style="margin-top:2px;">微信扫码支付</div>
+              <div class="fw-bold" style="color:var(--ink);">微信支付</div>
+              <div class="small text-muted" style="margin-top:2px;">扫码完成支付</div>
             </div>
-            <i class="fas fa-check-circle ms-auto pay-check" style="display:none; color:#07C160; font-size:1.2rem;"></i>
+            <i style="display:none; color:#07C160; font-size:1.2rem;" class="fas fa-check-circle ms-auto gateway-check"></i>
           </button>
 
         </div>
       </div>
       <div class="modal-footer" style="background:#f8fafc; border-top:1px solid #e2e8f0;">
-        <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius:50px; font-weight:600; padding:0.5rem 1.5rem;">取消</button>
-        <button type="button" class="btn-checkout py-2" id="confirmPayBtn" onclick="confirmPayment()" disabled>
-          <i class="fas fa-lock me-1"></i>确认支付
+        <button type="button" style="border-radius:50px; font-weight:600; padding:0.5rem 1.5rem;" data-bs-dismiss="modal" class="btn btn-light">放弃</button>
+        <button type="button" disabled onclick="confirmPayment()" class="pay-action py-2" id="submitPay">
+          <i class="fas fa-lock me-1"></i>立即付款
         </button>
       </div>
     </div>
@@ -416,7 +405,7 @@
 </div>
 
 <style>
-.pay-option-btn {
+.gateway-option {
   display: flex !important;
   align-items: center;
   padding: 1rem 1.2rem;
@@ -427,11 +416,11 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.pay-option-btn:hover {
+.gateway-option:hover {
   border-color: #6366f1;
   background: rgba(99, 102, 241, 0.04);
 }
-.pay-option-btn.selected {
+.gateway-option.selected {
   border-color: #6366f1;
   background: rgba(99, 102, 241, 0.06);
   box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
@@ -443,20 +432,20 @@
 
   function selectPayment(method, btn) {
     selectedPayment = method;
-    document.querySelectorAll('.pay-option-btn').forEach(el => {
+    document.querySelectorAll('.gateway-option').forEach(el => {
       el.classList.remove('selected');
-      el.querySelector('.pay-check').style.display = 'none';
+      el.querySelector('.gateway-check').style.display = 'none';
     });
     btn.classList.add('selected');
-    btn.querySelector('.pay-check').style.display = 'inline-block';
-    document.getElementById('confirmPayBtn').disabled = false;
+    btn.querySelector('.gateway-check').style.display = 'inline-block';
+    document.getElementById('submitPay').disabled = false;
   }
 
   function confirmPayment() {
     if (!selectedPayment) return;
-    const btn = document.getElementById('confirmPayBtn');
+    const btn = document.getElementById('submitPay');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>支付中...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>正在处理...';
 
     const formData = new FormData();
     formData.append('payment_method', selectedPayment);
@@ -472,15 +461,15 @@
       if (data.success) {
         window.location.href = data.redirect_url;
       } else {
-        alert('支付失败：' + data.message);
+        alert('付款失败：' + data.message);
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-lock me-1"></i>确认支付';
+        btn.innerHTML = '<i class="fas fa-lock me-1"></i>立即付款';
       }
     })
     .catch(() => {
-      alert('网络错误，请重试。');
+      alert('连接异常，请稍后重试。');
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-lock me-1"></i>确认支付';
+      btn.innerHTML = '<i class="fas fa-lock me-1"></i>立即付款';
     });
   }
 
@@ -497,7 +486,7 @@
     .then(response => response.json())
     .then(data => {
       if (data.success) { window.location.reload(); }
-      else { alert("更新失败，请刷新重试"); }
+      else { alert("同步异常，请刷新页面"); }
     });
   }
 </script>

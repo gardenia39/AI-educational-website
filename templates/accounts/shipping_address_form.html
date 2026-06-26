@@ -1,11 +1,11 @@
 {% extends "base/base.html" %}
-{% block title %}Shipping Address{% endblock title %}
+{% block title %}配送信息{% endblock title %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block start %}
 
 <style>
-  .img-account-profile {
+  .avatar-img {
     height: 10rem;
   }
 
@@ -13,31 +13,31 @@
     border-radius: 50% !important;
   }
 
-  .card {
+  .form-card {
     box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
   }
 
-  .card .card-header {
+  .form-card .form-card-top {
     font-weight: 500;
   }
 
-  .card-header:first-child {
+  .form-card-top:first-child {
     border-radius: 0.35rem 0.35rem 0 0;
   }
 
-  .card-header {
+  .form-card-top {
     padding: 1rem 1.35rem;
     margin-bottom: 0;
     background-color: rgba(33, 40, 50, 0.03);
     border-bottom: 1px solid rgba(33, 40, 50, 0.125);
   }
 
-  .nav-borders .nav-link.active {
+  .tab-strip .nav-link.active {
     color: #0061f2;
     border-bottom-color: #0061f2;
   }
 
-  .nav-borders .nav-link {
+  .tab-strip .nav-link {
     color: #69707a;
     border-bottom-width: 0.125rem;
     border-bottom-style: solid;
@@ -51,22 +51,21 @@
   }
 </style>
 
-<section class="section-content padding-bottom">
+<main class="section-content padding-bottom">
   <div class="container-xl px-4 mt-4">
 
     {% include "base/alert.html" %}
-    <nav class="nav nav-borders">
-      <a class="nav-link ms-0" href="{% url 'profile' username=user.username %}">个人资料</a>
-      <a class="nav-link ms-0" href="{% url 'change_password' %}">安全设置</a>
+    <nav class="nav tab-strip">
+      <a class="nav-link ms-0" href="{% url 'profile' username=user.username %}">账号信息</a>
+      <a class="nav-link ms-0" href="{% url 'change_password' %}">密码管理</a>
     </nav>
 
 
     <hr class="mt-0 mb-4" />
-    <!--Change Password Detail Section -->
     <div class="row">
       <div class="col-xl-20">
-        <div class="card mb-4">
-          <div class="card-header">Shipping Address</div>
+        <article class="form-card mb-4">
+          <header class="form-card-top">配送信息</header>
           <div class="card-body">
 
             <form method="POST">
@@ -92,38 +91,37 @@
 
               <div class="form-group d-flex justify-content-end">
                 <div class="d-sm-flex">
-                  <a class="mb-2 mb-sm-0 mr-0 mr-sm-3 btn btn-outline-primary back-btn"
-                    href="{% url 'index' %}">返回主页</a>
-                  <button class="btn btn-primary" type="submit">更新地址信息</button>
+                  <a class="mb-2 mb-sm-0 mr-0 mr-sm-3 btn btn-outline-primary return-btn"
+                    href="{% url 'index' %}">回到首页</a>
+                  <button class="btn btn-primary" type="submit">保存地址</button>
                 </div>
               </div>
 
             </form>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </div>
-</section>
+</main>
 
 <style>
-  /* Unified Color System */
   :root {
-    --primary-color: #6366f1;
-    --accent-color: #fbbf24;
-    --text-dark: #1e293b;
+    --main-tone: #6366f1;
+    --highlight: #fbbf24;
+    --ink: #1e293b;
   }
 
-  .back-btn {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+  .return-btn {
+    border-color: var(--main-tone);
+    color: var(--main-tone);
     transition: all 0.3s ease;
   }
 
-  .back-btn:hover {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: var(--text-dark);
+  .return-btn:hover {
+    background: var(--highlight);
+    border-color: var(--highlight);
+    color: var(--ink);
   }
 </style>
 

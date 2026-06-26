@@ -1,76 +1,56 @@
 {% load static %}
 
-<!-- Top Navigation Bar -->
-<nav class="top-navbar">
+<nav class="header-bar">
   <div class="container">
-    <div class="top-nav-wrapper">
-      <!-- Logo -->
-      <a href="{% url 'index' %}" class="top-nav-logo">
+    <div class="header-inner">
+      <a href="{% url 'index' %}" class="brand-mark">
         <i class="fas fa-brain"></i>
         <span>AI+</span>
       </a>
 
-      <!-- Navigation Links -->
-      <div class="top-nav-links">
-        <a href="{% url 'index' %}" class="top-nav-link {% if request.path == '/' %}active{% endif %}">
+      <menu class="main-menu">
+        <a href="{% url 'index' %}" class="{% if request.path == '/' %}active{% endif %} menu-item">
           <i class="fas fa-home"></i>
-          <span>首页</span>
+          <span>主页</span>
         </a>
-        <a href="{% url 'wishlist' %}" class="top-nav-link {% if 'wishlist' in request.path %}active{% endif %}">
+        <a href="{% url 'wishlist' %}" class="{% if 'wishlist' in request.path %}active{% endif %} menu-item">
           <i class="fas fa-heart"></i>
-          <span>收藏夹</span>
+          <span>心愿单</span>
         </a>
-        <a href="{% url 'order_history' %}" class="top-nav-link {% if 'order-history' in request.path %}active{% endif %}">
+        <a href="{% url 'order_history' %}" class="{% if 'order-history' in request.path %}active{% endif %} menu-item">
           <i class="fas fa-shopping-bag"></i>
-          <span>我的订单</span>
+          <span>交易记录</span>
         </a>
-        <a href="{% url 'product_reviews' %}" class="top-nav-link {% if 'product-reviews' in request.path %}active{% endif %}">
+        <a href="{% url 'product_reviews' %}" class="{% if 'product-reviews' in request.path %}active{% endif %} menu-item">
           <i class="fas fa-star"></i>
-          <span>我的评价</span>
+          <span>我的点评</span>
         </a>
-        <a href="{% url 'contact' %}" class="top-nav-link {% if 'contact' in request.path %}active{% endif %}">
-          <i class="fas fa-envelope"></i>
-          <span>联系我们</span>
-        </a>
-        <a href="{% url 'about' %}" class="top-nav-link {% if 'about' in request.path %}active{% endif %}">
-          <i class="fas fa-info-circle"></i>
-          <span>关于我们</span>
-        </a>
-      </div>
+      </menu>
 
-      <!-- Mobile Menu Toggle -->
-      <button class="top-nav-toggle d-lg-none" onclick="toggleMobileMenu()">
+      <button onclick="toggleMobileMenu()" class="d-lg-none menu-trigger">
         <i class="fas fa-bars"></i>
       </button>
     </div>
   </div>
 
-  <!-- Mobile Dropdown Menu -->
-  <div class="top-nav-mobile d-lg-none" id="topNavMobile">
+  <section id="mobilePanel" class="d-lg-none mobile-dropdown">
     <a href="{% url 'index' %}" class="{% if request.path == '/' %}active{% endif %}">
-      <i class="fas fa-home"></i> 首页
+      <i class="fas fa-home"></i> 主页
     </a>
     <a href="{% url 'wishlist' %}" class="{% if 'wishlist' in request.path %}active{% endif %}">
-      <i class="fas fa-heart"></i> 收藏夹
+      <i class="fas fa-heart"></i> 心愿单
     </a>
     <a href="{% url 'order_history' %}" class="{% if 'order-history' in request.path %}active{% endif %}">
-      <i class="fas fa-shopping-bag"></i> 我的订单
+      <i class="fas fa-shopping-bag"></i> 交易记录
     </a>
     <a href="{% url 'product_reviews' %}" class="{% if 'product-reviews' in request.path %}active{% endif %}">
-      <i class="fas fa-star"></i> 我的评价
+      <i class="fas fa-star"></i> 我的点评
     </a>
-    <a href="{% url 'contact' %}" class="{% if 'contact' in request.path %}active{% endif %}">
-      <i class="fas fa-envelope"></i> 联系我们
-    </a>
-    <a href="{% url 'about' %}" class="{% if 'about' in request.path %}active{% endif %}">
-      <i class="fas fa-info-circle"></i> 关于我们
-    </a>
-  </div>
+  </section>
 </nav>
 
 <style>
-  /* ========== Top Navigation ========== */
-  .top-navbar {
+  .header-bar {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     border-bottom: 2px solid transparent;
     border-image: linear-gradient(90deg, transparent, #d4af37, transparent) 1;
@@ -80,15 +60,14 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
 
-  .top-nav-wrapper {
+  .header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 64px;
   }
 
-  /* Logo */
-  .top-nav-logo {
+  .brand-mark {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -99,7 +78,7 @@
     flex-shrink: 0;
   }
 
-  .top-nav-logo i {
+  .brand-mark i {
     font-size: 1.6rem;
     background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
     -webkit-background-clip: text;
@@ -107,7 +86,7 @@
     background-clip: text;
   }
 
-  .top-nav-logo span {
+  .brand-mark span {
     background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -115,14 +94,16 @@
     letter-spacing: -1px;
   }
 
-  /* Navigation Links */
-  .top-nav-links {
+  .main-menu {
     display: flex;
     align-items: center;
     gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
-  .top-nav-link {
+  .menu-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -136,22 +117,22 @@
     position: relative;
   }
 
-  .top-nav-link i {
+  .menu-item i {
     font-size: 0.9rem;
     transition: all 0.3s ease;
   }
 
-  .top-nav-link:hover {
+  .menu-item:hover {
     color: #d4af37;
     background: rgba(212, 175, 55, 0.08);
   }
 
-  .top-nav-link.active {
+  .menu-item.active {
     color: #d4af37;
     background: rgba(212, 175, 55, 0.12);
   }
 
-  .top-nav-link.active::after {
+  .menu-item.active::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -162,8 +143,7 @@
     border-radius: 2px;
   }
 
-  /* Mobile Toggle */
-  .top-nav-toggle {
+  .menu-trigger {
     background: transparent;
     border: 1.5px solid rgba(212, 175, 55, 0.4);
     color: #d4af37;
@@ -177,28 +157,27 @@
     transition: all 0.3s ease;
   }
 
-  .top-nav-toggle:hover {
+  .menu-trigger:hover {
     background: rgba(212, 175, 55, 0.1);
     border-color: #d4af37;
   }
 
-  .top-nav-toggle i {
+  .menu-trigger i {
     font-size: 1.2rem;
   }
 
-  /* Mobile Dropdown */
-  .top-nav-mobile {
+  .mobile-dropdown {
     display: none;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     border-top: 1px solid rgba(212, 175, 55, 0.1);
     padding: 10px 0;
   }
 
-  .top-nav-mobile.show {
+  .mobile-dropdown.show {
     display: block;
   }
 
-  .top-nav-mobile a {
+  .mobile-dropdown a {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -210,28 +189,27 @@
     transition: all 0.3s ease;
   }
 
-  .top-nav-mobile a i {
+  .mobile-dropdown a i {
     width: 24px;
     text-align: center;
     color: #d4af37;
   }
 
-  .top-nav-mobile a:hover,
-  .top-nav-mobile a.active {
+  .mobile-dropdown a:hover,
+  .mobile-dropdown a.active {
     color: #d4af37;
     background: rgba(212, 175, 55, 0.08);
   }
 
-  /* Responsive */
   @media (max-width: 991px) {
-    .top-nav-links {
+    .main-menu {
       display: none;
     }
   }
 
   @media (min-width: 992px) {
-    .top-nav-toggle,
-    .top-nav-mobile {
+    .menu-trigger,
+    .mobile-dropdown {
       display: none !important;
     }
   }
@@ -239,65 +217,64 @@
 
 <script>
   function toggleMobileMenu() {
-    const mobileMenu = document.getElementById('topNavMobile');
-    mobileMenu.classList.toggle('show');
+    const panel = document.getElementById('mobilePanel');
+    panel.classList.toggle('show');
   }
 
-  // Close mobile menu when clicking outside
   document.addEventListener('click', function (e) {
-    const mobileMenu = document.getElementById('topNavMobile');
-    const toggle = document.querySelector('.top-nav-toggle');
-    if (mobileMenu && toggle && !mobileMenu.contains(e.target) && !toggle.contains(e.target)) {
-      mobileMenu.classList.remove('show');
+    const panel = document.getElementById('mobilePanel');
+    const trigger = document.querySelector('.menu-trigger');
+    if (panel && trigger && !panel.contains(e.target) && !trigger.contains(e.target)) {
+      panel.classList.remove('show');
     }
   });
 </script>
 
-<header class="section-header">
-  <!-- Mobile Navigation -->
-  <div class="mobile-nav d-lg-none">
-    <div class="mobile-nav-items">
+<footer class="bottom-bar">
+  <div class="d-lg-none dock-nav">
+    <nav class="dock-items">
       <a href="{% url 'index' %}" class="{% if request.path == '/' %}active{% endif %}">
-        <i class="fas fa-home"></i><span>首页</span>
+        <i class="fas fa-home"></i><span>主页</span>
       </a>
       <a href="{% url 'wishlist' %}" class="{% if 'wishlist' in request.path %}active{% endif %}">
-        <i class="fas fa-heart"></i><span>收藏</span>
+        <i class="fas fa-heart"></i><span>心愿</span>
       </a>
       <a href="{% url 'cart' %}">
-        <i class="fas fa-shopping-cart"></i><span>购物车</span>
+        <i class="fas fa-shopping-cart"></i><span>购物袋</span>
       </a>
       <a href="{% url 'order_history' %}" class="{% if 'order' in request.path %}active{% endif %}">
-        <i class="fas fa-shopping-bag"></i><span>订单</span>
+        <i class="fas fa-shopping-bag"></i><span>交易</span>
       </a>
       {% if user.is_authenticated %}
       <a href="{% url 'profile' username=user.username %}" class="{% if 'profile' in request.path %}active{% endif %}">
-        <i class="fas fa-user"></i><span>我的</span>
+        <i class="fas fa-user"></i><span>个人</span>
+      </a>
+      <a href="{% url 'logout' %}">
+        <i class="fas fa-sign-out-alt"></i><span>注销</span>
       </a>
       {% else %}
       <a href="{% url 'login' %}">
-        <i class="fas fa-user"></i><span>登录</span>
+        <i class="fas fa-user"></i><span>账号登录</span>
       </a>
       {% endif %}
-    </div>
+    </nav>
   </div>
-</header>
+</footer>
 
 <style>
-  /* ========== Color System ========== */
   :root {
-    --primary-dark: #0f172a;
-    --primary-light: #1e293b;
-    --accent-gold: #d4af37;
-    --accent-gold-light: #f4d03f;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --bg-light: #f8fafc;
-    --border-color: #e2e8f0;
+    --main-deep: #0f172a;
+    --main-mid: #1e293b;
+    --highlight: #d4af37;
+    --highlight-bright: #f4d03f;
+    --ink: #1e293b;
+    --ink-fade: #64748b;
+    --surface: #f8fafc;
+    --edge: #e2e8f0;
   }
 
-  /* ========== Mobile Navigation ========== */
-  .mobile-nav {
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+  .dock-nav {
+    background: linear-gradient(135deg, var(--main-deep) 0%, var(--main-mid) 100%);
     padding: 8px 0;
     position: fixed;
     bottom: 0;
@@ -307,13 +284,13 @@
     box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
   }
 
-  .mobile-nav-items {
+  .dock-items {
     display: flex;
     justify-content: space-around;
     align-items: center;
   }
 
-  .mobile-nav-items a {
+  .dock-items a {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -323,21 +300,20 @@
     transition: all 0.3s ease;
   }
 
-  .mobile-nav-items a i {
+  .dock-items a i {
     font-size: 1.2rem;
     margin-bottom: 3px;
   }
 
-  .mobile-nav-items a span {
+  .dock-items a span {
     font-size: 0.7rem;
   }
 
-  .mobile-nav-items a.active,
-  .mobile-nav-items a:hover {
-    color: var(--accent-gold);
+  .dock-items a.active,
+  .dock-items a:hover {
+    color: var(--highlight);
   }
 
-  /* ========== Responsive ========== */
   @media (max-width: 991px) {
     body {
       padding-bottom: 70px;
@@ -345,7 +321,7 @@
   }
 
   @media (min-width: 992px) {
-    .mobile-nav {
+    .dock-nav {
       display: none !important;
     }
   }

@@ -1,87 +1,84 @@
 {% extends "base/base.html"%}
-{% block title %}搜索商品{% endblock %}
+{% block title %}查找课程{% endblock %}
 {% block start %}
 
 <style>
   :root {
-    --primary: #6366f1;
-    --accent: #fbbf24;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --radius: 14px;
+    --main-tone: #6366f1;
+    --highlight: #fbbf24;
+    --ink: #1e293b;
+    --ink-fade: #64748b;
+    --corner: 14px;
   }
 
-  .search-header {
+  .query-banner {
     margin: 28px 0 20px;
   }
 
-  .search-header h2 {
+  .query-banner h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--ink);
   }
 
-  .search-header .query-word {
-    color: var(--primary);
+  .query-banner .query-highlight {
+    color: var(--main-tone);
   }
 
-  .search-count {
-    color: var(--text-muted);
+  .result-meta {
+    color: var(--ink-fade);
     font-size: 0.9rem;
     margin-top: 4px;
   }
 
-  /* 商品卡片 */
-  .card-product-grid {
+  .item-card {
     border: none;
-    border-radius: var(--radius);
+    border-radius: var(--corner);
     box-shadow: 0 2px 12px rgba(0,0,0,0.07);
     overflow: hidden;
     transition: box-shadow 0.25s ease, transform 0.25s ease;
     margin-bottom: 24px;
   }
 
-  .card-product-link {
+  .item-link {
     display: block;
     text-decoration: none;
     color: inherit;
   }
 
-  .card-product-link:hover .card-product-grid {
+  .item-link:hover .item-card {
     box-shadow: 0 8px 28px rgba(99,102,241,0.18);
     transform: translateY(-4px);
   }
 
-  /* 图片区域固定高度 */
-  .img-wrap {
+  .visual-box {
     width: 100%;
     height: 200px;
     overflow: hidden;
     background: #f1f5f9;
   }
 
-  .img-wrap img {
+  .visual-box img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
   }
 
-  .card-product-link:hover .img-wrap img {
+  .item-link:hover .visual-box img {
     transform: scale(1.04);
   }
 
-  /* 信息区 */
-  .info-wrap {
+  .detail-box {
     padding: 14px 16px 16px;
     background: #fff;
     text-align: center;
   }
 
-  .info-wrap .title {
+  .detail-box .item-name {
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--ink);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -89,40 +86,39 @@
     overflow: hidden;
   }
 
-  .info-wrap .price {
-    color: var(--primary);
+  .detail-box .item-value {
+    color: var(--main-tone);
     font-weight: 800;
     font-size: 1.05rem;
     margin-top: 6px;
   }
 
-  /* 空结果提示 */
-  .no-result {
+  .empty-state {
     text-align: center;
     padding: 80px 20px;
   }
 
-  .no-result i {
+  .empty-state i {
     font-size: 3rem;
     color: #cbd5e1;
     margin-bottom: 16px;
   }
 
-  .no-result p {
-    color: var(--text-muted);
+  .empty-state p {
+    color: var(--ink-fade);
     font-size: 1.1rem;
   }
 </style>
 
-<section class="section-content padding-y">
+<main class="section-content padding-y">
   <div class="container">
 
-    <div class="search-header">
+    <div class="query-banner">
       {% if query %}
-      <h2>搜索 "<span class="query-word">{{ query }}</span>" 的结果</h2>
-      <p class="search-count">共找到 {{ products|length }} 件商品</p>
+      <h2>查找 "<span class="query-highlight">{{ query }}</span>" 的匹配结果</h2>
+      <p class="result-meta">共发现 {{ products|length }} 门课程</p>
       {% else %}
-      <h2>请输入搜索关键词</h2>
+      <h2>请输入查询关键词</h2>
       {% endif %}
     </div>
 
@@ -130,30 +126,30 @@
       {% if products %}
         {% for product in products %}
         <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-          <a href="{% url 'get_product' product.slug %}" class="card-product-link">
-            <figure class="card card-product-grid">
-              <div class="img-wrap">
-                <img src="{{ product.product_images.first.image.url }}" alt="{{ product.product_name }}" />
+          <a href="{% url 'get_product' product.slug %}" class="item-link">
+            <article class="card item-card">
+              <div class="visual-box">
+                <img alt="{{ product.product_name }}" src="{{ product.product_images.first.image.url }}" />
               </div>
-              <figcaption class="info-wrap border-top">
-                <div class="title">{{ product.product_name }}</div>
-                <div class="price">¥{{ product.price|floatformat:"-2" }}</div>
-              </figcaption>
-            </figure>
+              <div class="detail-box border-top">
+                <div class="item-name">{{ product.product_name }}</div>
+                <div class="item-value">¥{{ product.price|floatformat:"-2" }}</div>
+              </div>
+            </article>
           </a>
         </div>
         {% endfor %}
 
       {% elif query %}
       <div class="col-12">
-        <div class="no-result">
+        <div class="empty-state">
           <i class="fa fa-search-minus"></i>
-          <p>没有找到与 "<strong>{{ query }}</strong>" 相关的商品</p>
+          <p>未找到与 "<strong>{{ query }}</strong>" 相关的课程</p>
         </div>
       </div>
       {% endif %}
     </div>
 
   </div>
-</section>
+</main>
 {% endblock %}

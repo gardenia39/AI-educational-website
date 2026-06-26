@@ -1,54 +1,52 @@
 {% extends 'base/base.html' %}
-{% block title %}Order Details{% endblock title%}
+{% block title %}交易明细{% endblock title%}
 {% load static %} {% block start %}
 
 {% block footer %}{% endblock %}
 
-<section class="section-content padding-y">
+<main class="section-content padding-y">
   <div class="container">
-    <!-- Header Section -->
     <div class="row mb-5">
       <div class="col-12">
-        <div class="order-header d-flex justify-content-between align-items-center p-4 rounded-lg shadow-sm">
+        <div class="detail-banner d-flex justify-content-between align-items-center p-4 rounded-lg shadow-sm">
           <div>
-            <h2 class="order-title mb-2">订单详情</h2>
-            <p class="order-subtitle mb-0">订单号 #{{ order.order_id }}</p>
+            <h2 class="detail-title mb-2">交易明细</h2>
+            <p class="detail-id mb-0">交易编号 #{{ order.order_id }}</p>
           </div>
-          <a href="{% url 'download_invoice' order.order_id %}" class="btn btn-primary download-invoice-btn">
-            <i class="fas fa-download me-2"></i>下载发票
+          <a href="{% url 'download_invoice' order.order_id %}" class="btn btn-primary get-receipt-btn">
+            <i class="fas fa-download me-2"></i>下载收据
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Order Items Section -->
     <div class="row mb-5">
       <div class="col-12">
-        <div class="card modern-card">
-          <div class="card-header">
-            <h4 class="card-title mb-0">
-              <i class="fas fa-shopping-bag me-2"></i>课程列表
+        <article class="content-card">
+          <div class="card-top">
+            <h4 class="card-heading mb-0">
+              <i class="fas fa-shopping-bag me-2"></i>购买项目
             </h4>
           </div>
-          <div class="card-main-body p-0">
+          <div class="card-core p-0">
             <div class="table-responsive">
               <table class="table table-hover mb-0">
-                <thead class="table-header">
+                <thead class="table-top">
                   <tr>
-                    <th class="border-0">商品</th>
-                    <th class="border-0 text-end">价格</th>
+                    <th class="border-0">项目</th>
+                    <th class="border-0 text-end">金额</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for item in order_items.all %}
-                  <tr class="order-item-row">
+                  <tr class="item-entry">
                     <td class="py-3">
-                      <a href="{% url 'get_product' item.product.slug %}" class="product-link">
+                      <a href="{% url 'get_product' item.product.slug %}" class="item-name">
                         {{ item.product.product_name }}
                       </a>
                     </td>
                     <td class="py-3 text-end">
-                      <span class="price-text">¥{{ item.product_price }}</span>
+                      <span class="item-price">¥{{ item.product_price }}</span>
                     </td>
                   </tr>
                   {% endfor %}
@@ -56,33 +54,31 @@
               </table>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </div>
 
-    <!-- Order Information and Payment Summary -->
     <div class="row">
-      <!-- Order Information -->
       <div class="col-lg-8 mb-4">
-        <div class="card modern-card">
-          <div class="card-header">
-            <h4 class="card-title mb-0">
-              <i class="fas fa-info-circle me-2"></i>订单信息
+        <article class="content-card">
+          <div class="card-top">
+            <h4 class="card-heading mb-0">
+              <i class="fas fa-info-circle me-2"></i>交易信息
             </h4>
           </div>
-          <div class="card-main-body">
-            <div class="order-info-grid">
-              <div class="info-item">
-                <div class="info-label">订单号</div>
-                <div class="info-value">{{ order.order_id }}</div>
+          <div class="card-core">
+            <div class="info-matrix">
+              <div class="info-cell">
+                <div class="info-key">交易编号</div>
+                <div class="info-val">{{ order.order_id }}</div>
               </div>
-              <div class="info-item">
-                <div class="info-label">下单时间</div>
-                <div class="info-value">{{ order.order_date|date:"Y-m-d" }}</div>
+              <div class="info-cell">
+                <div class="info-key">成交时间</div>
+                <div class="info-val">{{ order.order_date|date:"Y-m-d" }}</div>
               </div>
-              <div class="info-item">
-                <div class="info-label">用户</div>
-                <div class="info-value">
+              <div class="info-cell">
+                <div class="info-key">购买者</div>
+                <div class="info-val">
                   {% if order.user.first_name or order.user.last_name %}
                   {{ order.user.first_name }} {{ order.user.last_name }}
                   {% elif order.user.get_full_name %}
@@ -92,127 +88,122 @@
                   {% endif %}
                 </div>
               </div>
-              <div class="info-item">
-                <div class="info-label">支付状态</div>
-                <div class="info-value">
+              <div class="info-cell">
+                <div class="info-key">付款状态</div>
+                <div class="info-val">
                   <span
-                    class="status-badge {% if order.payment_status == 'Paid' %}status-success{% else %}status-warning{% endif %}">
-                    {% if order.payment_status == 'Paid' %}已付款{% else %}{{ order.payment_status }}{% endif %}
+                    class="state-tag {% if order.payment_status == 'Paid' %}tag-ok{% else %}tag-warn{% endif %}">
+                    {% if order.payment_status == 'Paid' %}已支付{% else %}{{ order.payment_status }}{% endif %}
                   </span>
                 </div>
               </div>
-              <div class="info-item">
-                <div class="info-label">支付方式</div>
-                <div class="info-value">{{ order.payment_mode }}</div>
+              <div class="info-cell">
+                <div class="info-key">付款方式</div>
+                <div class="info-val">{{ order.payment_mode }}</div>
               </div>
 
             </div>
           </div>
-        </div>
+        </article>
       </div>
 
-      <!-- Payment Summary -->
       <div class="col-lg-4 mb-4">
-        <div class="card modern-card payment-summary-card">
-          <div class="card-header">
-            <h4 class="card-title mb-0">
-              <i class="fas fa-receipt me-2"></i>支付汇总
+        <article class="content-card bill-card">
+          <div class="card-top">
+            <h4 class="card-heading mb-0">
+              <i class="fas fa-receipt me-2"></i>账单汇总
             </h4>
           </div>
-          <div class="card-main-body">
-            <div class="summary-item">
-              <span class="summary-label">小计</span>
-              <span class="summary-value">¥{{ order.order_total_price }}</span>
+          <div class="card-core">
+            <div class="bill-row">
+              <span class="bill-key">商品小计</span>
+              <span class="bill-val">¥{{ order.order_total_price }}</span>
             </div>
-            <div class="summary-item">
-              <span class="summary-label">优惠券折扣</span>
-              <span class="summary-value discount-value">-¥{{ order.coupon.discount_amount|default:"0" }}</span>
+            <div class="bill-row">
+              <span class="bill-key">优惠减免</span>
+              <span class="bill-val discount-amt">-¥{{ order.coupon.discount_amount|default:"0" }}</span>
             </div>
-            <hr class="summary-divider">
-            <div class="summary-item total-item">
-              <span class="summary-label">合计</span>
-              <span class="summary-value total-value">¥{{ order.grand_total }}</span>
+            <hr class="bill-sep">
+            <div class="bill-row bill-total">
+              <span class="bill-key">应付总额</span>
+              <span class="bill-val total-amt">¥{{ order.grand_total }}</span>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </div>
-</section>
+</main>
 
 <style>
-  /* Unified Color System */
   :root {
-    --primary-color: #6366f1;
-    --accent-color: #fbbf24;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --bg-light: #f8fafc;
-    --border-light: #e2e8f0;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --main-tone: #6366f1;
+    --highlight: #fbbf24;
+    --ink: #1e293b;
+    --ink-dim: #64748b;
+    --surface: #f8fafc;
+    --edge: #e2e8f0;
+    --ok: #10b981;
+    --warn: #f59e0b;
+    --shade-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shade-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shade-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
-  /* Header Styles */
-  .order-header {
-    background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  .detail-banner {
+    background: linear-gradient(135deg, var(--main-tone), #8b5cf6);
     color: white;
     border: none;
   }
 
-  .order-title {
+  .detail-title {
     font-size: 1.75rem;
     font-weight: 700;
     margin: 0;
   }
 
-  .order-subtitle {
+  .detail-id {
     font-size: 1rem;
     opacity: 0.9;
     font-weight: 500;
   }
 
-  /* Modern Card Styles */
-  .modern-card {
+  .content-card {
     border: none;
     border-radius: 16px;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shade-md);
     overflow: hidden;
     transition: all 0.3s ease;
   }
 
-  .modern-card:hover {
-    box-shadow: var(--shadow-lg);
+  .content-card:hover {
+    box-shadow: var(--shade-lg);
     transform: translateY(-2px);
   }
 
-  .modern-card .card-header {
-    background: var(--bg-light);
-    border-bottom: 2px solid var(--border-light);
+  .content-card .card-top {
+    background: var(--surface);
+    border-bottom: 2px solid var(--edge);
     padding: 1.5rem;
   }
 
-  .card-title {
-    color: var(--text-dark);
+  .card-heading {
+    color: var(--ink);
     font-weight: 600;
     font-size: 1.25rem;
   }
 
-  .card-title i {
-    color: var(--primary-color);
+  .card-heading i {
+    color: var(--main-tone);
   }
 
-  .card-main-body {
+  .card-core {
     padding: 1.5rem;
   }
 
-  /* Table Styles */
-  .table-header th {
-    background: var(--bg-light);
-    color: var(--text-dark);
+  .table-top th {
+    background: var(--surface);
+    color: var(--ink);
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.875rem;
@@ -220,30 +211,29 @@
     padding: 1rem;
   }
 
-  .order-item-row {
+  .item-entry {
     transition: all 0.2s ease;
   }
 
-  .order-item-row:hover {
-    background: var(--bg-light);
+  .item-entry:hover {
+    background: var(--surface);
   }
 
-  .product-link {
-    color: var(--text-dark);
+  .item-name {
+    color: var(--ink);
     font-weight: 600;
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
-  .product-link:hover {
-    color: var(--primary-color);
+  .item-name:hover {
+    color: var(--main-tone);
   }
 
-  /* Badge Styles */
-  .size-badge,
-  .color-badge,
-  .quantity-badge {
-    background: var(--primary-color);
+  .spec-tag,
+  .hue-tag,
+  .count-tag {
+    background: var(--main-tone);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
@@ -251,52 +241,50 @@
     font-weight: 500;
   }
 
-  .quantity-badge {
-    background: var(--accent-color);
-    color: var(--text-dark);
+  .count-tag {
+    background: var(--highlight);
+    color: var(--ink);
   }
 
-  .price-text {
+  .item-price {
     font-weight: 700;
     font-size: 1.1rem;
-    color: var(--text-dark);
+    color: var(--ink);
   }
 
-  /* Order Info Grid */
-  .order-info-grid {
+  .info-matrix {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
 
-  .info-item {
+  .info-cell {
     padding: 1rem;
-    background: var(--bg-light);
+    background: var(--surface);
     border-radius: 12px;
-    border-left: 4px solid var(--primary-color);
+    border-left: 4px solid var(--main-tone);
   }
 
-  .info-item.full-width {
+  .info-cell.full-width {
     grid-column: 1 / -1;
   }
 
-  .info-label {
+  .info-key {
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--ink-dim);
     font-weight: 500;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
-  .info-value {
+  .info-val {
     font-size: 1rem;
-    color: var(--text-dark);
+    color: var(--ink);
     font-weight: 600;
   }
 
-  /* Status Badge */
-  .status-badge {
+  .state-tag {
     padding: 0.375rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
@@ -305,71 +293,69 @@
     letter-spacing: 0.05em;
   }
 
-  .status-success {
+  .tag-ok {
     background: rgba(16, 185, 129, 0.1);
-    color: var(--success-color);
-    border: 1px solid var(--success-color);
+    color: var(--ok);
+    border: 1px solid var(--ok);
   }
 
-  .status-warning {
+  .tag-warn {
     background: rgba(245, 158, 11, 0.1);
-    color: var(--warning-color);
-    border: 1px solid var(--warning-color);
+    color: var(--warn);
+    border: 1px solid var(--warn);
   }
 
-  /* Payment Summary */
-  .payment-summary-card {
+  .bill-card {
     position: sticky;
     top: 2rem;
   }
 
-  .summary-item {
+  .bill-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 0;
   }
 
-  .summary-label {
-    color: var(--text-muted);
+  .bill-key {
+    color: var(--ink-dim);
     font-weight: 500;
   }
 
-  .summary-value {
-    color: var(--text-dark);
+  .bill-val {
+    color: var(--ink);
     font-weight: 600;
   }
 
-  .discount-value {
-    color: var(--success-color);
+  .discount-amt {
+    color: var(--ok);
   }
 
-  .summary-divider {
-    border-color: var(--border-light);
+  .bill-sep {
+    border-color: var(--edge);
     margin: 1rem 0;
   }
 
-  .total-item {
-    background: var(--bg-light);
+  .bill-total {
+    background: var(--surface);
     margin: 0 -1.5rem -1.5rem;
     padding: 1.5rem;
     border-radius: 0 0 16px 16px;
   }
 
-  .total-item .summary-label {
+  .bill-total .bill-key {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--ink);
   }
 
-  .total-value {
+  .total-amt {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--main-tone);
   }
 
-  /* Button Styles */
-  .download-invoice-btn {
+  .get-receipt-btn {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
@@ -380,44 +366,42 @@
     backdrop-filter: blur(10px);
   }
 
-  .download-invoice-btn:hover {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: var(--text-dark);
+  .get-receipt-btn:hover {
+    background: var(--highlight);
+    border-color: var(--highlight);
+    color: var(--ink);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shade-lg);
   }
 
-  /* Responsive Design */
   @media (max-width: 768px) {
-    .order-header {
+    .detail-banner {
       flex-direction: column;
       text-align: center;
       gap: 1rem;
     }
 
-    .order-title {
+    .detail-title {
       font-size: 1.5rem;
     }
 
-    .order-info-grid {
+    .info-matrix {
       grid-template-columns: 1fr;
     }
 
-    .payment-summary-card {
+    .bill-card {
       position: static;
     }
 
-    .modern-card .card-header {
+    .content-card .card-top {
       padding: 1rem;
     }
 
-    .card-title {
+    .card-heading {
       font-size: 1.1rem;
     }
   }
 
-  /* Utility Classes */
   .rounded-lg {
     border-radius: 16px !important;
   }

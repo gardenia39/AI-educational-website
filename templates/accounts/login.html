@@ -1,74 +1,82 @@
 {% extends "base/base.html" %} {% load static %} {% load socialaccount %}
-{% block title %}登录{% endblock %}
+{% block title %}账号登录{% endblock %}
 {% block start %}
 
-<!-- ============================ COMPONENT LOGIN   ================================= -->
-<section class="section-content padding-bottom">
+<style>
+  .auth-wrapper { padding: 2rem 0; }
+  .auth-spacing { padding-bottom: 2rem; }
+  .auth-card { position: relative; display: flex; flex-direction: column; min-width: 0; word-wrap: break-word; background-color: #fff; background-clip: border-box; border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; }
+  .auth-header { padding: 0.75rem 1.25rem; margin-bottom: 0; background-color: rgba(0,0,0,.03); border-bottom: 1px solid rgba(0,0,0,.125); }
+  .auth-body { flex: 1 1 auto; min-height: 1px; padding: 1.25rem; }
+  .input-wrap { margin-bottom: 1rem; }
+  .remember-box { position: relative; display: block; min-height: 1.5rem; padding-left: 1.5rem; }
+  .remember-input { width: 1rem; height: 1rem; margin-top: .25rem; vertical-align: top; background-color: #fff; background-repeat: no-repeat; background-position: center; background-size: contain; border: 1px solid rgba(0,0,0,.25); appearance: none; border-radius: .25em; }
+  .remember-input:checked { background-color: #0d6efd; border-color: #0d6efd; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e"); }
+  .remember-label { display: inline-block; margin-left: .5rem; }
+</style>
+
+<main class="auth-wrapper auth-spacing">
   <div class="container-xl d-flex justify-content-center align-items-center mt-5">
     <div class="row justify-content-center w-100">
       <div class="col-xl-4">
-        <div class="card mb-4">
-          <div class="card-header" style="text-align: center; font-size: 25px">
-            登录
-          </div>
-          <div class="card-body">
-            <form method="POST" action="{% url 'login' %}?next={{ request.GET.next }}">
+        <article class="auth-card mb-4">
+          <header class="auth-header" style="font-size: 25px; text-align: center;">
+            账号登录
+          </header>
+          <div class="auth-body">
+            <form action="{% url 'login' %}?next={{ request.GET.next }}" method="POST">
               {% csrf_token %} {% include "base/alert.html" %}
 
-              <div class="form-group">
-                <input class="form-control" required name="username" type="text" placeholder="用户名" />
+              <div class="input-wrap">
+                <input placeholder="账号名称" name="username" required type="text" class="form-control" />
               </div>
-              <!-- form-group// -->
-              <div class="form-group">
-                <input class="form-control" placeholder="密码" name="password" type="password" />
+              <div class="input-wrap">
+                <input placeholder="登录密码" name="password" type="password" class="form-control" />
               </div>
-              <!-- form-group// -->
 
-              <div class="form-group d-flex justify-content-between align-items-center mt-3 mb-3">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="rememberMeCheckbox" checked />
-                  <label class="custom-control-label" for="rememberMeCheckbox">记住我</label>
+              <div class="input-wrap d-flex justify-content-between align-items-center mt-3 mb-3">
+                <div class="remember-box">
+                  <input checked type="checkbox" class="remember-input" id="keepLogin" />
+                  <label for="keepLogin" class="remember-label">保持登录</label>
                 </div>
-                <a href="{% url 'password_reset' %}" class="text-primary">
-                  忘记密码？
+                <a class="text-primary" href="{% url 'password_reset' %}">
+                  找回密码？
                 </a>
               </div>
 
-              <!-- form-group// -->
-              <div class="form-group mb-4">
-                <button type="submit" class="btn btn-primary w-100" style="width: 100%;">
+              <div class="input-wrap mb-4">
+                <button style="width: 100%;" type="submit" class="btn btn-primary w-100">
                   登录
                 </button>
               </div>
 
               <p class="text-center mt-4">
-                还没有账号？ <a href="{% url 'register' %}">注册</a>
+                新用户？ <a href="{% url 'register' %}">立即注册</a>
               </p>
 
               <div class="line"></div>
 
               {% comment "第三方登录未配置，暂时隐藏" %}
-              <div class="media-options">
-                <a href="{% provider_login_url 'facebook' %}" class="field facebook">
-                  <i class="bx bxl-facebook facebook-icon"></i>
+              <div class="oauth-box">
+                <a href="{% provider_login_url 'facebook' %}" class="oauth-btn fb-connect">
+                  <i class="bx bxl-facebook fb-logo"></i>
                   <span>Login with Facebook</span>
                 </a>
               </div>
 
-              <div class="media-options">
-                <a href="{% provider_login_url 'google' %}?next=/" class="field google">
-                  <img src="{% static 'images/google.png' %}" alt="" class="google-img" />
+              <div class="oauth-box">
+                <a href="{% provider_login_url 'google' %}?next=/" class="oauth-btn gg-connect">
+                  <img alt="" class="gg-logo" src="{% static 'images/google.png' %}" />
                   <span>Login with Google</span>
                 </a>
               </div>
               {% endcomment %}
             </form>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </div>
-</section>
-<!-- ============================ COMPONENT LOGIN END ================================= -->
+</main>
 
 {% endblock %}

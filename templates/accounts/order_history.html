@@ -1,39 +1,37 @@
 {% extends 'base/base.html' %}
-{% block title %}我的订单{% endblock title %}
+{% block title %}交易记录{% endblock title %}
 
-<!-- Hide footer on order history page -->
 {% block footer %}{% endblock %}
 
 {% load static %} {% block start %}
 
 <style>
   :root {
-    --primary-color: #0f172a;
-    --primary-light: #1e293b;
-    --primary-dark: #020617;
-    --accent-color: #d4af37;
-    --accent-dark: #b8941f;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --bg-warm: #faf9f6;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --main-tone: #0f172a;
+    --main-light: #1e293b;
+    --main-deep: #020617;
+    --gold: #d4af37;
+    --gold-deep: #b8941f;
+    --ink: #1e293b;
+    --ink-dim: #64748b;
+    --edge: #e2e8f0;
+    --cream: #faf9f6;
+    --ok: #10b981;
+    --warn: #f59e0b;
+    --shade-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shade-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shade-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shade-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
-  .orders-page {
-    background: var(--bg-warm);
+  .transactions-hub {
+    background: var(--cream);
     min-height: 100vh;
     padding-bottom: 4rem;
   }
 
-  /* 页面头部 */
-  .orders-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  .hub-banner {
+    background: linear-gradient(135deg, var(--main-tone) 0%, var(--main-light) 100%);
     color: white;
     padding: 3rem 0;
     margin-bottom: 2rem;
@@ -41,7 +39,7 @@
     overflow: hidden;
   }
 
-  .orders-header::before {
+  .hub-banner::before {
     content: '';
     position: absolute;
     top: 0;
@@ -52,36 +50,35 @@
     opacity: 0.3;
   }
 
-  .orders-header .container {
+  .hub-banner .container {
     position: relative;
     z-index: 1;
   }
 
-  .page-title {
+  .hub-title {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
   }
 
-  .page-subtitle {
+  .hub-desc {
     opacity: 0.9;
     font-size: 1.1rem;
   }
 
-  /* 统计卡片 */
-  .stats-bar {
+  .metrics-strip {
     display: flex;
     gap: 1.5rem;
     margin-bottom: 2rem;
     flex-wrap: wrap;
   }
 
-  .stat-card {
+  .metric-card {
     background: white;
     border-radius: 16px;
     padding: 1.5rem 2rem;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shade-md);
+    border: 1px solid var(--edge);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -90,12 +87,12 @@
     transition: all 0.3s ease;
   }
 
-  .stat-card:hover {
+  .metric-card:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shade-lg);
   }
 
-  .stat-icon {
+  .metric-badge {
     width: 50px;
     height: 50px;
     border-radius: 12px;
@@ -105,112 +102,109 @@
     font-size: 1.25rem;
   }
 
-  .stat-icon.primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  .metric-badge.primary {
+    background: linear-gradient(135deg, var(--main-tone) 0%, var(--main-light) 100%);
     color: white;
   }
 
-  .stat-icon.success {
-    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+  .metric-badge.success {
+    background: linear-gradient(135deg, var(--ok) 0%, #059669 100%);
     color: white;
   }
 
-  .stat-icon.accent {
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+  .metric-badge.accent {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
     color: white;
   }
 
-  .stat-info h4 {
+  .metric-detail h4 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--ink);
     margin-bottom: 0.25rem;
   }
 
-  .stat-info span {
-    color: var(--text-muted);
+  .metric-detail span {
+    color: var(--ink-dim);
     font-size: 0.875rem;
   }
 
-  /* 订单表格卡片 */
-  .orders-card {
+  .record-panel {
     background: white;
     border-radius: 20px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shade-md);
+    border: 1px solid var(--edge);
     overflow: hidden;
   }
 
-  .orders-card-header {
+  .record-header {
     padding: 1.5rem 2rem;
     background: white;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--edge);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .orders-card-header h5 {
+  .record-header h5 {
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--ink);
     margin: 0;
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
 
-  .orders-card-header h5 i {
-    color: var(--accent-color);
+  .record-header h5 i {
+    color: var(--gold);
   }
 
-  /* 表格样式 */
-  .table-container {
+  .table-wrap {
     padding: 0;
   }
 
-  .orders-table {
+  .record-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
   }
 
-  .orders-table thead th {
-    background: var(--bg-warm);
-    color: var(--text-muted);
+  .record-table thead th {
+    background: var(--cream);
+    color: var(--ink-dim);
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1.25rem 1.5rem;
     border: none;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--edge);
   }
 
-  .orders-table tbody tr {
+  .record-table tbody tr {
     transition: all 0.3s ease;
   }
 
-  .orders-table tbody tr:hover {
+  .record-table tbody tr:hover {
     background: rgba(212, 175, 55, 0.03);
   }
 
-  .orders-table tbody td {
+  .record-table tbody td {
     padding: 1.5rem;
     border: none;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--edge);
     vertical-align: middle;
-    color: var(--text-dark);
+    color: var(--ink);
   }
 
-  .orders-table tbody tr:last-child td {
+  .record-table tbody tr:last-child td {
     border-bottom: none;
   }
 
-  /* 订单编号 */
-  .order-id {
+  .record-code {
     font-family: 'SF Mono', 'Monaco', monospace;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--main-tone);
     background: rgba(15, 23, 42, 0.05);
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -218,14 +212,12 @@
     display: inline-block;
   }
 
-  /* 日期 */
-  .order-date {
-    color: var(--text-muted);
+  .record-time {
+    color: var(--ink-dim);
     font-size: 0.9rem;
   }
 
-  /* 状态标签 */
-  .status-badge {
+  .state-label {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -235,53 +227,50 @@
     font-weight: 600;
   }
 
-  .status-paid {
+  .state-done {
     background: rgba(16, 185, 129, 0.1);
-    color: var(--success-color);
+    color: var(--ok);
   }
 
-  .status-paid::before {
+  .state-done::before {
     content: '';
     width: 6px;
     height: 6px;
-    background: var(--success-color);
+    background: var(--ok);
     border-radius: 50%;
   }
 
-  .status-pending {
+  .state-wait {
     background: rgba(245, 158, 11, 0.1);
-    color: var(--warning-color);
+    color: var(--warn);
   }
 
-  .status-pending::before {
+  .state-wait::before {
     content: '';
     width: 6px;
     height: 6px;
-    background: var(--warning-color);
+    background: var(--warn);
     border-radius: 50%;
   }
 
-  /* 金额 */
-  .order-amount {
+  .record-sum {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--ink);
   }
 
-  /* 支付方式 */
-  .payment-method {
+  .pay-channel {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-muted);
+    color: var(--ink-dim);
     font-size: 0.9rem;
   }
 
-  /* 操作按钮 */
-  .btn-view {
+  .detail-btn {
     background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    color: var(--main-tone);
+    border: 2px solid var(--main-tone);
     border-radius: 10px;
     padding: 0.5rem 1.25rem;
     font-weight: 600;
@@ -292,49 +281,48 @@
     gap: 0.5rem;
   }
 
-  .btn-view:hover {
-    background: var(--primary-color);
+  .detail-btn:hover {
+    background: var(--main-tone);
     color: white;
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shade-md);
   }
 
-  /* 空状态 */
-  .empty-state {
+  .no-data {
     text-align: center;
     padding: 4rem 2rem;
   }
 
-  .empty-state-icon {
+  .no-data-icon {
     width: 120px;
     height: 120px;
-    background: linear-gradient(135deg, var(--bg-warm) 0%, white 100%);
+    background: linear-gradient(135deg, var(--cream) 0%, white 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 2rem;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shade-md);
   }
 
-  .empty-state-icon i {
+  .no-data-icon i {
     font-size: 3rem;
-    color: var(--border-color);
+    color: var(--edge);
   }
 
-  .empty-state h3 {
-    color: var(--text-dark);
+  .no-data h3 {
+    color: var(--ink);
     font-weight: 700;
     margin-bottom: 0.75rem;
   }
 
-  .empty-state p {
-    color: var(--text-muted);
+  .no-data p {
+    color: var(--ink-dim);
     margin-bottom: 2rem;
   }
 
-  .btn-start {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  .explore-btn {
+    background: linear-gradient(135deg, var(--main-tone) 0%, var(--main-light) 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -346,196 +334,191 @@
     gap: 0.75rem;
   }
 
-  .btn-start:hover {
+  .explore-btn:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shade-lg);
     color: white;
   }
 
-  /* 响应式 */
   @media (max-width: 992px) {
-    .page-title {
+    .hub-title {
       font-size: 2rem;
     }
 
-    .orders-card-header {
+    .record-header {
       padding: 1.25rem;
     }
 
-    .orders-table thead th,
-    .orders-table tbody td {
+    .record-table thead th,
+    .record-table tbody td {
       padding: 1rem;
     }
 
-    .stat-card {
+    .metric-card {
       min-width: 150px;
     }
   }
 
   @media (max-width: 768px) {
-    .orders-header {
+    .hub-banner {
       padding: 2rem 0;
     }
 
-    .page-title {
+    .hub-title {
       font-size: 1.75rem;
     }
 
-    .orders-table {
+    .record-table {
       font-size: 0.875rem;
     }
 
-    .orders-table thead {
+    .record-table thead {
       display: none;
     }
 
-    .orders-table tbody tr {
+    .record-table tbody tr {
       display: block;
       margin-bottom: 1rem;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--edge);
       border-radius: 12px;
       padding: 1rem;
     }
 
-    .orders-table tbody td {
+    .record-table tbody td {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.75rem 0;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--edge);
     }
 
-    .orders-table tbody td::before {
+    .record-table tbody td::before {
       content: attr(data-label);
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--ink-dim);
       font-size: 0.75rem;
       text-transform: uppercase;
     }
 
-    .orders-table tbody tr:last-child {
+    .record-table tbody tr:last-child {
       margin-bottom: 0;
     }
   }
 </style>
 
-<div class="orders-page">
-  <!-- 页面头部 -->
-  <div class="orders-header">
+<main class="transactions-hub">
+  <header class="hub-banner">
     <div class="container">
-      <h1 class="page-title">
-        <i class="fas fa-shopping-bag me-3" style="color: var(--accent-color);"></i>我的订单
+      <h1 class="hub-title">
+        <i style="color: var(--gold);" class="fas fa-shopping-bag me-3"></i>交易记录
       </h1>
-      <p class="page-subtitle">查看和管理您的所有订单记录</p>
+      <p class="hub-desc">查看和管理您的全部交易</p>
     </div>
-  </div>
+  </header>
 
   <div class="container">
     {% if orders %}
-    <!-- 统计栏 -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-icon primary">
+    <div class="metrics-strip">
+      <div class="metric-card">
+        <div class="metric-badge primary">
           <i class="fas fa-shopping-bag"></i>
         </div>
-        <div class="stat-info">
+        <div class="metric-detail">
           <h4>{{ orders|length }}</h4>
-          <span>总订单数</span>
+          <span>交易总数</span>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon success">
+      <div class="metric-card">
+        <div class="metric-badge success">
           <i class="fas fa-check-circle"></i>
         </div>
-        <div class="stat-info">
+        <div class="metric-detail">
           <h4>{{ orders|length }}</h4>
-          <span>已完成</span>
+          <span>已成交</span>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon accent">
+      <div class="metric-card">
+        <div class="metric-badge accent">
           <i class="fas fa-wallet"></i>
         </div>
-        <div class="stat-info">
+        <div class="metric-detail">
           <h4>¥{% for order in orders %}{% if forloop.first %}{{ order.grand_total|floatformat:"-2" }}{% endif %}{% endfor %}</h4>
-          <span>最近订单金额</span>
+          <span>最新交易金额</span>
         </div>
       </div>
     </div>
 
-    <!-- 订单列表卡片 -->
-    <div class="orders-card">
-      <div class="orders-card-header">
-        <h5><i class="fas fa-list-alt"></i>订单列表</h5>
-        <span class="text-muted" style="font-size: 0.875rem;">共 {{ orders|length }} 个订单</span>
-      </div>
-      <div class="table-container">
-        <table class="orders-table">
+    <section class="record-panel">
+      <header class="record-header">
+        <h5><i class="fas fa-list-alt"></i>交易明细</h5>
+        <span style="font-size: 0.875rem;" class="text-muted">共 {{ orders|length }} 笔交易</span>
+      </header>
+      <figure class="table-wrap">
+        <table class="record-table">
           <thead>
             <tr>
-              <th>订单编号</th>
-              <th>下单日期</th>
-              <th>支付状态</th>
-              <th>订单金额</th>
-              <th>支付方式</th>
-              <th>操作</th>
+              <th>交易编号</th>
+              <th>成交日期</th>
+              <th>付款状态</th>
+              <th>交易金额</th>
+              <th>付款渠道</th>
+              <th>查看</th>
             </tr>
           </thead>
           <tbody>
             {% for order in orders %}
             <tr>
-              <td data-label="订单编号">
-                <span class="order-id">#{{ order.order_id|truncatechars:12 }}</span>
+              <td data-label="交易编号">
+                <span class="record-code">#{{ order.order_id|truncatechars:12 }}</span>
               </td>
-              <td data-label="下单日期">
-                <span class="order-date">
-                  <i class="far fa-calendar-alt me-2" style="color: var(--accent-color);"></i>
+              <td data-label="成交日期">
+                <span class="record-time">
+                  <i style="color: var(--gold);" class="far fa-calendar-alt me-2"></i>
                   {{ order.order_date|date:"Y-m-d" }}
                 </span>
               </td>
-              <td data-label="支付状态">
+              <td data-label="付款状态">
                 {% if order.payment_status == 'Paid' %}
-                  <span class="status-badge status-paid">已支付</span>
+                  <span class="state-label state-done">已付款</span>
                 {% else %}
-                  <span class="status-badge status-pending">{{ order.payment_status }}</span>
+                  <span class="state-label state-wait">{{ order.payment_status }}</span>
                 {% endif %}
               </td>
-              <td data-label="订单金额">
-                <span class="order-amount">¥{{ order.grand_total|floatformat:"-2" }}</span>
+              <td data-label="交易金额">
+                <span class="record-sum">¥{{ order.grand_total|floatformat:"-2" }}</span>
               </td>
-              <td data-label="支付方式">
-                <span class="payment-method">
+              <td data-label="付款渠道">
+                <span class="pay-channel">
                   <i class="fas fa-credit-card me-2"></i>
                   {{ order.payment_mode }}
                 </span>
               </td>
-              <td data-label="操作">
-                <a href="{% url 'order_details' order.order_id %}" class="btn-view">
-                  <i class="fas fa-eye"></i>查看详情
+              <td data-label="查看">
+                <a href="{% url 'order_details' order.order_id %}" class="detail-btn">
+                  <i class="fas fa-eye"></i>查看明细
                 </a>
               </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-      </div>
-    </div>
+      </figure>
+    </section>
     {% else %}
-    <!-- 空状态 -->
-    <div class="orders-card">
-      <div class="empty-state">
-        <div class="empty-state-icon">
+    <section class="record-panel">
+      <div class="no-data">
+        <div class="no-data-icon">
           <i class="fas fa-shopping-bag"></i>
         </div>
-        <h3>暂无订单记录</h3>
-        <p>您还没有购买任何课程，开始您的学习之旅吧</p>
-        <a href="{% url 'index' %}" class="btn-start">
-          <i class="fas fa-book"></i>浏览课程
+        <h3>暂无交易记录</h3>
+        <p>还没有购买任何课程，开启学习之旅</p>
+        <a href="{% url 'index' %}" class="explore-btn">
+          <i class="fas fa-book"></i>探索课程
         </a>
       </div>
-    </div>
+    </section>
     {% endif %}
   </div>
-</div>
+</main>
 
 {% endblock %}

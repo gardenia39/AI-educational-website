@@ -7,20 +7,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-  <title>{% block title %}Invoice - Order #{{ order.order_id }}{% endblock %}</title>
+  <title>{% block title %}Receipt - Order #{{ order.order_id }}{% endblock %}</title>
 
   <style>
-    /* Modern Color System */
     :root {
-      --primary-color: #6366f1;
-      --accent-color: #fbbf24;
-      --text-dark: #1e293b;
-      --text-muted: #64748b;
-      --bg-light: #f8fafc;
-      --border-light: #e2e8f0;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --white: #ffffff;
+      --main-tone: #6366f1;
+      --highlight: #fbbf24;
+      --ink: #1e293b;
+      --ink-dim: #64748b;
+      --surface: #f8fafc;
+      --edge: #e2e8f0;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --paper: #ffffff;
     }
 
     * {
@@ -32,8 +31,8 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       line-height: 1.6;
-      color: var(--text-dark);
-      background: var(--white);
+      color: var(--ink);
+      background: var(--paper);
     }
 
     .container {
@@ -42,9 +41,8 @@
       padding: 2rem;
     }
 
-    /* Header Section */
-    .invoice-header {
-      background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+    .doc-banner {
+      background: linear-gradient(135deg, var(--main-tone), #8b5cf6);
       color: white;
       padding: 2rem;
       border-radius: 16px;
@@ -52,66 +50,64 @@
       text-align: center;
     }
 
-    .invoice-title {
+    .doc-title {
       font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
 
-    .invoice-subtitle {
+    .doc-sub {
       font-size: 1.2rem;
       opacity: 0.9;
       font-weight: 500;
     }
 
-    /* Modern Card Styles */
-    .modern-card {
-      background: var(--white);
+    .doc-card {
+      background: var(--paper);
       border-radius: 16px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       overflow: hidden;
       margin-bottom: 2rem;
     }
 
-    .card-header {
-      background: var(--bg-light);
+    .doc-card-top {
+      background: var(--surface);
       padding: 1.5rem;
-      border-bottom: 2px solid var(--border-light);
+      border-bottom: 2px solid var(--edge);
     }
 
-    .card-title {
+    .doc-card-heading {
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--text-dark);
+      color: var(--ink);
       margin: 0;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .card-body {
+    .doc-card-core {
       padding: 1.5rem;
     }
 
-    /* Table Styles */
-    .table-container {
+    .data-wrap {
       overflow-x: auto;
       border-radius: 12px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     }
 
-    .modern-table {
+    .data-table {
       width: 100%;
       border-collapse: collapse;
-      background: var(--white);
+      background: var(--paper);
     }
 
-    .modern-table thead {
-      background: var(--primary-color);
+    .data-table thead {
+      background: var(--main-tone);
       color: white;
     }
 
-    .modern-table th {
+    .data-table th {
       padding: 1rem;
       text-align: left;
       font-weight: 600;
@@ -120,21 +116,20 @@
       letter-spacing: 0.05em;
     }
 
-    .modern-table td {
+    .data-table td {
       padding: 1rem;
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--edge);
     }
 
-    .modern-table tbody tr:hover {
-      background: var(--bg-light);
+    .data-table tbody tr:hover {
+      background: var(--surface);
     }
 
-    .modern-table tbody tr:last-child td {
+    .data-table tbody tr:last-child td {
       border-bottom: none;
     }
 
-    /* Badge Styles */
-    .badge {
+    .tag {
       display: inline-block;
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
@@ -142,87 +137,84 @@
       font-weight: 500;
     }
 
-    .badge-primary {
-      background: var(--primary-color);
+    .tag-main {
+      background: var(--main-tone);
       color: white;
     }
 
-    .badge-accent {
-      background: var(--accent-color);
-      color: var(--text-dark);
+    .tag-highlight {
+      background: var(--highlight);
+      color: var(--ink);
     }
 
-    .badge-success {
-      background: var(--success-color);
+    .tag-ok {
+      background: var(--ok);
       color: white;
     }
 
-    /* Info Grid */
-    .info-grid {
+    .data-grid {
       display: grid;
       gap: 1rem;
     }
 
-    .info-item {
+    .data-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.75rem 0;
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--edge);
     }
 
-    .info-item:last-child {
+    .data-row:last-child {
       border-bottom: none;
     }
 
-    .info-label {
+    .data-key {
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--ink-dim);
       font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    .info-value {
+    .data-val {
       font-weight: 700;
-      color: var(--text-dark);
+      color: var(--ink);
       text-align: right;
     }
 
-    /* Summary Styles */
-    .summary-item {
+    .calc-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.75rem 0;
     }
 
-    .summary-divider {
+    .calc-sep {
       border: none;
       height: 2px;
-      background: var(--border-light);
+      background: var(--edge);
       margin: 1rem 0;
     }
 
-    .total-item {
-      background: var(--bg-light);
+    .calc-total {
+      background: var(--surface);
       padding: 1rem;
       border-radius: 8px;
       margin-top: 1rem;
     }
 
-    .total-item .info-label,
-    .total-item .info-value {
+    .calc-total .data-key,
+    .calc-total .data-val {
       font-size: 1.125rem;
       font-weight: 700;
-      color: var(--text-dark);
+      color: var(--ink);
     }
 
-    .discount-value {
-      color: var(--success-color);
+    .discount-val {
+      color: var(--ok);
     }
 
-    /* Layout */
     .row {
       display: flex;
       flex-wrap: wrap;
@@ -247,7 +239,6 @@
       padding: 1rem;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
 
       .col-8,
@@ -260,7 +251,7 @@
         padding: 1rem;
       }
 
-      .invoice-title {
+      .doc-title {
         font-size: 2rem;
       }
     }
@@ -269,29 +260,27 @@
 
 <body>
   <div class="container">
-    <!-- Invoice Header -->
-    <div class="invoice-header">
-      <h1 class="invoice-title">INVOICE</h1>
-      <p class="invoice-subtitle">Order #{{ order.order_id }}</p>
-    </div>
+    <header class="doc-banner">
+      <h1 class="doc-title">RECEIPT</h1>
+      <p class="doc-sub">Order #{{ order.order_id }}</p>
+    </header>
 
-    <!-- Order Items Section -->
-    <div class="modern-card">
-      <div class="card-header">
-        <h2 class="card-title">
-          Order Items
+    <article class="doc-card">
+      <div class="doc-card-top">
+        <h2 class="doc-card-heading">
+          Purchased Items
         </h2>
       </div>
-      <div class="card-body">
-        <div class="table-container">
-          <table class="modern-table">
+      <div class="doc-card-core">
+        <figure class="data-wrap">
+          <table class="data-table">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Quantity</th>
-                <th style="text-align: right;">Price</th>
+                <th>Item</th>
+                <th>Spec</th>
+                <th>Hue</th>
+                <th>Count</th>
+                <th style="text-align: right;">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -301,17 +290,17 @@
                   <strong>{{ item.product.product_name }}</strong>
                 </td>
                 <td>
-                  <span class="badge badge-primary">{{ item.size_variant.size_name|default:"N/A" }}</span>
+                  <span class="tag tag-main">{{ item.size_variant.size_name|default:"N/A" }}</span>
                 </td>
                 {% if item.size_variant %}
                 {% for color in item.product.color_variant.all %}
                 <td>
-                  <span class="badge badge-primary">{{ color.color_name|default:"N/A" }}</span>
+                  <span class="tag tag-main">{{ color.color_name|default:"N/A" }}</span>
                 </td>
                 {% endfor %}
                 {% endif %}
                 <td>
-                  <span class="badge badge-accent">{{ item.quantity }}</span>
+                  <span class="tag tag-highlight">{{ item.quantity }}</span>
                 </td>
                 <td style="text-align: right;">
                   <strong>¥{{ item.product_price }}</strong>
@@ -320,32 +309,31 @@
               {% endfor %}
             </tbody>
           </table>
-        </div>
+        </figure>
       </div>
-    </div>
+    </article>
 
     <div class="row">
-      <!-- Order Information -->
       <div class="col-8">
-        <div class="modern-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              Order Information
+        <article class="doc-card">
+          <div class="doc-card-top">
+            <h2 class="doc-card-heading">
+              Transaction Info
             </h2>
           </div>
-          <div class="card-body">
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Order ID</span>
-                <span class="info-value">{{ order.order_id }}</span>
+          <div class="doc-card-core">
+            <div class="data-grid">
+              <div class="data-row">
+                <span class="data-key">Transaction ID</span>
+                <span class="data-val">{{ order.order_id }}</span>
               </div>
-              <div class="info-item">
-                <span class="info-label">Order Date</span>
-                <span class="info-value">{{ order.order_date|date:"F j, Y" }}</span>
+              <div class="data-row">
+                <span class="data-key">Transaction Date</span>
+                <span class="data-val">{{ order.order_date|date:"F j, Y" }}</span>
               </div>
-              <div class="info-item">
-                <span class="info-label">Customer</span>
-                <span class="info-value">
+              <div class="data-row">
+                <span class="data-key">Buyer</span>
+                <span class="data-val">
                   {% if order.user.first_name or order.user.last_name %}
                   {{ order.user.first_name }} {{ order.user.last_name }}
                   {% elif order.user.get_full_name %}
@@ -355,54 +343,53 @@
                   {% endif %}
                 </span>
               </div>
-              <div class="info-item">
-                <span class="info-label">Payment Status</span>
-                <span class="info-value">
+              <div class="data-row">
+                <span class="data-key">Payment State</span>
+                <span class="data-val">
                   <span
-                    class="badge {% if order.payment_status == 'Paid' %}badge-success{% else %}badge-accent{% endif %}">
+                    class="tag {% if order.payment_status == 'Paid' %}tag-ok{% else %}tag-highlight{% endif %}">
                     {{ order.payment_status }}
                   </span>
                 </span>
               </div>
-              <div class="info-item">
-                <span class="info-label">Payment Mode</span>
-                <span class="info-value">{{ order.payment_mode }}</span>
+              <div class="data-row">
+                <span class="data-key">Payment Method</span>
+                <span class="data-val">{{ order.payment_mode }}</span>
               </div>
-              <div class="info-item">
-                <span class="info-label">Shipping Address</span>
-                <span class="info-value">{{ order.shipping_address|default:"Not Provided" }}</span>
+              <div class="data-row">
+                <span class="data-key">Delivery Address</span>
+                <span class="data-val">{{ order.shipping_address|default:"Unavailable" }}</span>
               </div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
 
-      <!-- Payment Summary -->
       <div class="col-4">
-        <div class="modern-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              Payment Summary
+        <article class="doc-card">
+          <div class="doc-card-top">
+            <h2 class="doc-card-heading">
+              Bill Summary
             </h2>
           </div>
-          <div class="card-body">
-            <div class="summary-item">
-              <span class="info-label">Subtotal</span>
-              <span class="info-value">¥{{ order.order_total_price }}</span>
+          <div class="doc-card-core">
+            <div class="calc-row">
+              <span class="data-key">Item Total</span>
+              <span class="data-val">¥{{ order.order_total_price }}</span>
             </div>
-            <div class="summary-item">
-              <span class="info-label">Coupon Discount</span>
-              <span class="info-value discount-value">-¥{{ order.coupon.discount_amount|default:"0" }}</span>
+            <div class="calc-row">
+              <span class="data-key">Promo Discount</span>
+              <span class="data-val discount-val">-¥{{ order.coupon.discount_amount|default:"0" }}</span>
             </div>
-            <hr class="summary-divider">
-            <div class="total-item">
-              <div class="summary-item">
-                <span class="info-label">Grand Total</span>
-                <span class="info-value">¥{{ order.grand_total }}</span>
+            <hr class="calc-sep">
+            <div class="calc-total">
+              <div class="calc-row">
+                <span class="data-key">Total Amount</span>
+                <span class="data-val">¥{{ order.grand_total }}</span>
               </div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </div>
